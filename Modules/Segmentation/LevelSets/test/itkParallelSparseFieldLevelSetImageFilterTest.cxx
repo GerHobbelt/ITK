@@ -230,7 +230,10 @@ itkParallelSparseFieldLevelSetImageFilterTest(int argc, char * argv[])
     return EXIT_FAILURE;
   }
 
-  using ImageType = itk::Image<float, 3>;
+  constexpr unsigned int Dimension = 3;
+
+  using PixelType = float;
+  using ImageType = itk::Image<PixelType, Dimension>;
 
   constexpr int n = 100;                // Number of iterations
   constexpr int numberOfWorkUnits = 11; // Number of work units to be used
@@ -305,6 +308,10 @@ itkParallelSparseFieldLevelSetImageFilterTest(int argc, char * argv[])
   typename PSFLSIFT::MorphFilter::StatusType numberOfLayers = 3;
   mf->SetNumberOfLayers(numberOfLayers);
   ITK_TEST_SET_GET_VALUE(numberOfLayers, mf->GetNumberOfLayers());
+
+  typename PSFLSIFT::MorphFilter::ValueType isoSurfaceValue = 0.0;
+  mf->SetIsoSurfaceValue(isoSurfaceValue);
+  ITK_TEST_SET_GET_VALUE(isoSurfaceValue, mf->GetIsoSurfaceValue());
 
   ITK_TRY_EXPECT_NO_EXCEPTION(mf->Update());
 

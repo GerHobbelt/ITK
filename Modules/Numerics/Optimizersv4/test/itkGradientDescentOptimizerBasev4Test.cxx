@@ -173,15 +173,13 @@ itkGradientDescentOptimizerBasev4Test(int, char *[])
   auto metric = MetricType::New();
   auto optimizer = GradientDescentOptimizerBasev4TestOptimizer::New();
 
-  /* exercise some methods */
-  optimizer->SetMetric(metric);
-  if (optimizer->GetMetric() != metric)
-  {
-    std::cerr << "Set/GetMetric failed." << std::endl;
-    return EXIT_FAILURE;
-  }
+  bool doEstimateScales = true;
+  ITK_TEST_SET_GET_BOOLEAN(optimizer, DoEstimateScales, doEstimateScales);
 
-  std::cout << "value: " << optimizer->GetCurrentMetricValue() << std::endl;
+  optimizer->SetMetric(metric);
+  ITK_TEST_SET_GET_VALUE(metric, optimizer->GetMetric());
+
+  ITK_TEST_SET_GET_VALUE(0.0, optimizer->GetCurrentMetricValue());
 
   optimizer->SetNumberOfWorkUnits(2);
 

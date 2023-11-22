@@ -37,7 +37,7 @@
 
 #include "openjpegDllConfig.h"
 
-#if defined(OPJ_STATIC) || (!defined(WIN32) && !defined(__MINGW32__)) || defined(__WIN32__)
+#if defined(BUILD_MONOLTHIC) || defined(OPJ_STATIC) || (!defined(WIN32) && !defined(__MINGW32__)) || defined(__WIN32__)
   #define OPJ_API
   #define OPJ_CALLCONV
 #else

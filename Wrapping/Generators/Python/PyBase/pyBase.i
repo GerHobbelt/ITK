@@ -430,7 +430,7 @@ str = str
                 Return keys related to the transform's metadata.
                 These keys are used in the dictionary resulting from dict(transform).
                 """
-                result = ['name', 'inputDimension', 'outputDimension', 'inputSpaceName', 'outputSpaceName', 'numberOfParameters', 'numberOfFixedParameters', 'parameters', 'fixedParameters']
+                result = ['transformType', 'name', 'inputSpaceName', 'outputSpaceName', 'numberOfParameters', 'numberOfFixedParameters', 'parameters', 'fixedParameters']
                 return result
 
             def __getitem__(self, key):
@@ -438,7 +438,7 @@ str = str
                 import itk
                 if isinstance(key, str):
                     state = itk.dict_from_transform(self)
-                    return state[0][key]
+                    return state[key]
 
             def __setitem__(self, key, value):
                 if isinstance(key, str):
@@ -474,7 +474,6 @@ str = str
             def __setstate__(self, state):
                 """Set object state, necessary for serialization with pickle."""
                 import itk
-                import numpy as np
                 deserialized = itk.transform_from_dict(state)
                 self.__dict__['this'] = deserialized
             %}
@@ -515,8 +514,10 @@ str = str
             def ndim(self):
                 """Equivalent to the np.ndarray ndim attribute when converted
                 to an image with itk.array_view_from_image."""
+                import itk
+
                 spatial_dims = self.GetImageDimension()
-                if self.GetNumberOfComponentsPerPixel() > 1:
+                if self.GetNumberOfComponentsPerPixel() > 1 or isinstance(self, itk.VectorImage):
                     return spatial_dims + 1
                 else:
                     return spatial_dims
@@ -525,11 +526,13 @@ str = str
             def shape(self):
                 """Equivalent to the np.ndarray shape attribute when converted
                 to an image with itk.array_view_from_image."""
+                import itk
+
                 itksize = self.GetLargestPossibleRegion().GetSize()
                 dim = len(itksize)
                 result = [int(itksize[idx]) for idx in range(dim)]
 
-                if(self.GetNumberOfComponentsPerPixel() > 1):
+                if self.GetNumberOfComponentsPerPixel() > 1 or isinstance(self, itk.VectorImage):
                     result = [self.GetNumberOfComponentsPerPixel(), ] + result
                 # ITK is C-order. The shape needs to be reversed unless we are a view on
                 # a NumPy array that is Fortran-order.
@@ -729,6 +732,50 @@ str = str
                 import itk
                 import numpy as np
                 deserialized = itk.pointset_from_dict(state)
+                self.__dict__['this'] = deserialized
+            %}
+    }
+
+%enddef
+
+%define DECL_PYTHON_POLYLINEPARAMETRICPATH_CLASS(swig_name)
+    %extend swig_name {
+        %pythoncode %{
+            def keys(self):
+                """
+                Return keys related to the polyline's metadata.
+                These keys are used in the dictionary resulting from dict(polyline).
+                """
+                result = ['name', 'vertexList']
+                return result
+
+            def __getitem__(self, key):
+                """Access metadata keys, see help(pointset.keys), for string keys."""
+                import itk
+                if isinstance(key, str):
+                    state = itk.dict_from_polyline(self)
+                    return state[key]
+
+            def __setitem__(self, key, value):
+                if isinstance(key, str):
+                    import numpy as np
+                    if key == 'name':
+                        self.SetObjectName(value)
+                    elif key == 'vertexList':
+                        self.GetVertexList().Initialize()
+                        for vertex in value:
+                            polyline.AddVertex(vertex)
+
+            def __getstate__(self):
+                """Get object state, necessary for serialization with pickle."""
+                import itk
+                state = itk.dict_from_polyline(self)
+                return state
+
+            def __setstate__(self, state):
+                """Set object state, necessary for serialization with pickle."""
+                import itk
+                deserialized = itk.polyline_from_dict(state)
                 self.__dict__['this'] = deserialized
             %}
     }

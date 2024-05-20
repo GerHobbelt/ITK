@@ -34,6 +34,8 @@ namespace itk
 class ITKIOImageBase_EXPORT ImageFileWriterException : public ExceptionObject
 {
 public:
+  ITK_DEFAULT_COPY_AND_MOVE(ImageFileWriterException);
+
   /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(ImageFileWriterException);
 

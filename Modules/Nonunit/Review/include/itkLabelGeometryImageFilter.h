@@ -66,6 +66,8 @@ namespace itk
  *  by Padfield D., Miller J
  *  https://www.insight-journal.org/browse/publication/301
  *
+ * This class contains computational inefficiencies and bugs such as some attributes are not computed with respect to
+ * image geometry, consider using these supported alternatives:
  * \sa LabelStatisticsImageFilter
  * \sa LabelImageToShapeLabelMapFilter
  *
@@ -76,7 +78,9 @@ namespace itk
  * \endsphinx
  */
 template <typename TLabelImage, typename TIntensityImage = TLabelImage>
-class ITK_TEMPLATE_EXPORT LabelGeometryImageFilter : public ImageToImageFilter<TLabelImage, TIntensityImage>
+class ITK_TEMPLATE_EXPORT [[deprecated(
+  "This class contains known computational bugs. See class documentation for details.")]] LabelGeometryImageFilter
+  : public ImageToImageFilter<TLabelImage, TIntensityImage>
 {
 public:
   ITK_DISALLOW_COPY_AND_MOVE(LabelGeometryImageFilter);
@@ -250,8 +254,7 @@ public:
   // Macros for enabling the calculation of additional features.
   itkGetMacro(CalculatePixelIndices, bool);
   itkBooleanMacro(CalculatePixelIndices);
-  void
-  SetCalculatePixelIndices(const bool value)
+  void SetCalculatePixelIndices(const bool value)
   {
     // CalculateOrientedBoundingBox, CalculateOrientedLabelImage, and
     // CalculateOrientedIntensityImage all need CalculatePixelIndices to be
@@ -277,8 +280,7 @@ public:
 
   itkGetMacro(CalculateOrientedBoundingBox, bool);
   itkBooleanMacro(CalculateOrientedBoundingBox);
-  void
-  SetCalculateOrientedBoundingBox(const bool value)
+  void SetCalculateOrientedBoundingBox(const bool value)
   {
     if (this->m_CalculateOrientedBoundingBox != value)
     {
@@ -296,8 +298,7 @@ public:
 
   itkGetMacro(CalculateOrientedLabelRegions, bool);
   itkBooleanMacro(CalculateOrientedLabelRegions);
-  void
-  SetCalculateOrientedLabelRegions(const bool value)
+  void SetCalculateOrientedLabelRegions(const bool value)
   {
     if (this->m_CalculateOrientedLabelRegions != value)
     {
@@ -315,8 +316,7 @@ public:
 
   itkGetMacro(CalculateOrientedIntensityRegions, bool);
   itkBooleanMacro(CalculateOrientedIntensityRegions);
-  void
-  SetCalculateOrientedIntensityRegions(const bool value)
+  void SetCalculateOrientedIntensityRegions(const bool value)
   {
     if (this->m_CalculateOrientedIntensityRegions != value)
     {
@@ -333,117 +333,83 @@ public:
   }
 
   /** Set the intensity image */
-  void
-  SetIntensityInput(const TIntensityImage * input)
+  void SetIntensityInput(const TIntensityImage * input)
   {
     // Process object is not const-correct so the const casting is required.
     this->SetNthInput(1, const_cast<TIntensityImage *>(input));
   }
 
   /** Get the label image */
-  const TIntensityImage *
-  GetIntensityInput() const
+  const TIntensityImage * GetIntensityInput() const
   {
     return static_cast<TIntensityImage *>(const_cast<DataObject *>(this->ProcessObject::GetInput(1)));
   }
 
   /** Does the specified label exist? Can only be called after
    * a call to Update(). */
-  bool
-  HasLabel(LabelPixelType label) const
-  {
-    return m_LabelGeometryMapper.find(label) != m_LabelGeometryMapper.end();
-  }
+  bool HasLabel(LabelPixelType label) const { return m_LabelGeometryMapper.find(label) != m_LabelGeometryMapper.end(); }
 
   /** Get the number of labels used */
-  SizeValueType
-  GetNumberOfObjects() const
-  {
-    return m_LabelGeometryMapper.size();
-  }
+  SizeValueType GetNumberOfObjects() const { return m_LabelGeometryMapper.size(); }
 
-  SizeValueType
-  GetNumberOfLabels() const
-  {
-    return this->GetNumberOfObjects();
-  }
+  SizeValueType GetNumberOfLabels() const { return this->GetNumberOfObjects(); }
 
   /** Get the labels that are in the image. */
-  std::vector<LabelPixelType>
-  GetLabels() const
-  {
-    return m_AllLabels;
-  }
+  std::vector<LabelPixelType> GetLabels() const { return m_AllLabels; }
 
   /** Return the all pixel indices for a label. */
-  LabelIndicesType
-  GetPixelIndices(LabelPixelType label) const;
+  LabelIndicesType GetPixelIndices(LabelPixelType label) const;
 
   /** Return the number of pixels for a label.  This is the same as
    * the volume and the zero order moment */
-  SizeValueType
-  GetVolume(LabelPixelType label) const;
+  SizeValueType GetVolume(LabelPixelType label) const;
 
   /** Return the computed integrated pixel intensity for a label. */
-  RealType
-  GetIntegratedIntensity(LabelPixelType label) const;
+  RealType GetIntegratedIntensity(LabelPixelType label) const;
 
   /** Return the unweighted centroid for a label. */
-  LabelPointType
-  GetCentroid(LabelPixelType label) const;
+  LabelPointType GetCentroid(LabelPixelType label) const;
 
   /** Return the weighted centroid for a label. */
-  LabelPointType
-  GetWeightedCentroid(LabelPixelType label) const;
+  LabelPointType GetWeightedCentroid(LabelPixelType label) const;
 
   /** Return the eigenvalues as a vector. */
-  VectorType
-  GetEigenvalues(LabelPixelType label) const;
+  VectorType GetEigenvalues(LabelPixelType label) const;
 
   /** Return the eigenvectors as a matrix. */
-  MatrixType
-  GetEigenvectors(LabelPixelType label) const;
+  MatrixType GetEigenvectors(LabelPixelType label) const;
 
   /** Return the axes length for a label. */
-  AxesLengthType
-  GetAxesLength(LabelPixelType label) const;
+  AxesLengthType GetAxesLength(LabelPixelType label) const;
 
   /** Return the minor axis length for a label.  This is a convenience
    * class that returns the shortest length from GetAxesLength. */
-  RealType
-  GetMinorAxisLength(LabelPixelType label) const;
+  RealType GetMinorAxisLength(LabelPixelType label) const;
 
   /** Return the major axis length for a label.  This is a convenience
    * class that returns the longest length from GetAxesLength. */
-  RealType
-  GetMajorAxisLength(LabelPixelType label) const;
+  RealType GetMajorAxisLength(LabelPixelType label) const;
 
   /** Return the eccentricity for a label. */
-  RealType
-  GetEccentricity(LabelPixelType label) const;
+  RealType GetEccentricity(LabelPixelType label) const;
 
   /** Return the elongation for a label.  This is defined as the
    * length of the major axis divided by the length of the minor axis. */
-  RealType
-  GetElongation(LabelPixelType label) const;
+  RealType GetElongation(LabelPixelType label) const;
 
   /** Return the orientation for a label defined in radians. */
-  RealType
-  GetOrientation(LabelPixelType label) const;
+  RealType GetOrientation(LabelPixelType label) const;
 
   /** Return the computed bounding box for a label.
    * This is organized in min/max pairs as [min(X), max(X), min(Y),
    * max(Y), min(Z), max(Z),...]  */
-  BoundingBoxType
-  GetBoundingBox(LabelPixelType label) const;
+  BoundingBoxType GetBoundingBox(LabelPixelType label) const;
 
   /** Return the volume of the bounding box. */
-  RealType
-  GetBoundingBoxVolume(LabelPixelType label) const;
+  RealType GetBoundingBoxVolume(LabelPixelType label) const;
 
   /** Return the size of the bounding box. */
-  LabelSizeType
-  GetBoundingBoxSize(LabelPixelType label) const;
+  LabelSizeType GetBoundingBoxSize(LabelPixelType label) const;
 
   /** Return the oriented bounding box vertices.  The order of the
    * vertices corresponds with binary counting, where min is zero and
@@ -451,38 +417,30 @@ public:
    * [0,0],[0,1],[1,0],[1,1], which corresponds to
    * [minX,minY],[minX,maxY],[maxX,minY],[maxX,maxY]. Each
    * vertex is defined as an ND point.   */
-  BoundingBoxVerticesType
-  GetOrientedBoundingBoxVertices(LabelPixelType label) const;
+  BoundingBoxVerticesType GetOrientedBoundingBoxVertices(LabelPixelType label) const;
 
   /** Return the volume of the oriented bounding box. */
-  RealType
-  GetOrientedBoundingBoxVolume(LabelPixelType label) const;
+  RealType GetOrientedBoundingBoxVolume(LabelPixelType label) const;
 
   /** Return the size of the oriented bounding box. */
-  LabelPointType
-  GetOrientedBoundingBoxSize(LabelPixelType label) const;
+  LabelPointType GetOrientedBoundingBoxSize(LabelPixelType label) const;
 
   /** Return the origin of the oriented bounding box. */
-  LabelPointType
-  GetOrientedBoundingBoxOrigin(LabelPixelType label) const;
+  LabelPointType GetOrientedBoundingBoxOrigin(LabelPixelType label) const;
 
   /** Return the rotation matrix defined by the
    * eigenvalues/eigenvectors. */
-  MatrixType
-  GetRotationMatrix(LabelPixelType label) const;
+  MatrixType GetRotationMatrix(LabelPixelType label) const;
 
   /** Return the region defined by the bounding box. */
-  RegionType
-  GetRegion(LabelPixelType label) const;
+  RegionType GetRegion(LabelPixelType label) const;
 
   /** Return the label region defined by the oriented bounding box. */
-  TLabelImage *
-  GetOrientedLabelImage(LabelPixelType label) const;
+  TLabelImage * GetOrientedLabelImage(LabelPixelType label) const;
 
   /** Return the intensity region defined by the oriented bounding
    * box. */
-  TIntensityImage *
-  GetOrientedIntensityImage(LabelPixelType label) const;
+  TIntensityImage * GetOrientedIntensityImage(LabelPixelType label) const;
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   // Begin concept checking
@@ -493,15 +451,12 @@ public:
 protected:
   LabelGeometryImageFilter();
   ~LabelGeometryImageFilter() override = default;
-  void
-  PrintSelf(std::ostream & os, Indent indent) const override;
+  void PrintSelf(std::ostream & os, Indent indent) const override;
 
-  void
-  GenerateData() override;
+  void GenerateData() override;
 
 private:
-  bool
-  CalculateOrientedBoundingBoxVertices(vnl_symmetric_eigensystem<double> eig, LabelGeometry & m_LabelGeometry);
+  bool CalculateOrientedBoundingBoxVertices(vnl_symmetric_eigensystem<double> eig, LabelGeometry & m_LabelGeometry);
 
   bool m_CalculatePixelIndices{};
   bool m_CalculateOrientedBoundingBox{};

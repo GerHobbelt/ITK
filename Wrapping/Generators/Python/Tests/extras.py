@@ -224,6 +224,14 @@ image_back = itk.image_from_dict(image_dict)
 diff = itk.comparison_image_filter(image.astype(itk.F), image_back.astype(itk.F))
 assert np.sum(diff) == 0
 
+
+largest_region = itk.ImageRegion[2]([0, 0], [1024, 1024])
+image.SetLargestPossibleRegion(largest_region)
+image_dict = itk.dict_from_image(image)
+image_back = itk.image_from_dict(image_dict)
+diff = itk.comparison_image_filter(image.astype(itk.F), image_back.astype(itk.F))
+assert np.sum(diff) == 0
+
 mesh_dict = itk.dict_from_mesh(mesh)
 mesh_back = itk.mesh_from_dict(mesh_dict)
 
@@ -233,6 +241,20 @@ pointset.SetPointData(mesh.GetPointData())
 
 pointset_dict = itk.dict_from_pointset(pointset)
 pointset_back = itk.pointset_from_dict(pointset_dict)
+
+polyline = itk.PolyLineParametricPath[dim].New()
+polyline.AddVertex([0.0, 0.0])
+polyline.AddVertex([1.0, 1.0])
+polyline.AddVertex([4.0, 3.0])
+polyline_dict = itk.dict_from_polyline(polyline)
+polyline_back = itk.polyline_from_dict(polyline_dict)
+original_vertices = itk.array_from_vector_container(polyline.GetVertexList())
+back_vertices = itk.array_from_vector_container(polyline_back.GetVertexList())
+assert np.allclose(original_vertices, back_vertices)
+
+serialize_deserialize = pickle.loads(pickle.dumps(polyline))
+back_vertices = itk.array_from_vector_container(serialize_deserialize.GetVertexList())
+assert np.allclose(original_vertices, back_vertices)
 
 # test search
 res = itk.search("Index")
@@ -342,6 +364,14 @@ assert np.allclose(fixed_parameters, baseline_fixed_parameters)
 assert np.allclose(parameters, baseline_parameters)
 parameters = np.asarray(transforms[0].GetParameters())
 assert np.allclose(parameters, np.array(baseline_additional_transform_params))
+
+transform_dict = itk.dict_from_transform(transforms[0])
+transform_back = itk.transform_from_dict(transform_dict)
+transform_dict = itk.dict_from_transform(transforms)
+transform_back = itk.transform_from_dict(transform_dict)
+
+# Write single transform
+itk.transformwrite(transforms[0], sys.argv[7], compression=True)
 
 # pipeline, auto_pipeline and templated class are tested in other files
 

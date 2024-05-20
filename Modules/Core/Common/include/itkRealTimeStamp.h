@@ -45,6 +45,8 @@ namespace itk
 class ITKCommon_EXPORT RealTimeStamp
 {
 public:
+  ITK_DEFAULT_COPY_AND_MOVE(RealTimeStamp);
+
   using Self = RealTimeStamp;
 
   friend class RealTimeClock;

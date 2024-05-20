@@ -13,7 +13,8 @@ set(ITKIOGDCMTests
     itkGDCMImageOrientationPatientTest.cxx
     itkGDCMLoadImageSpacingTest.cxx
     itkGDCMLegacyMultiFrameTest.cxx
-    itkGDCMImageIONoPreambleTest.cxx)
+    itkGDCMImageIONoPreambleTest.cxx
+    itkGDCMImageIO32bitsStoredTest.cxx)
 
 createtestdriver(ITKIOGDCM "${ITKIOGDCM-Test_LIBRARIES}" "${ITKIOGDCMTests}")
 
@@ -267,6 +268,14 @@ itk_add_test(
 
 itk_add_test(
   NAME
+  itkGDCMImageIO32bitsStoredTest
+  COMMAND
+  ITKIOGDCMTestDriver
+  itkGDCMImageIO32bitsStoredTest
+  DATA{Input/image32bitsStoredTest.dcm})
+
+itk_add_test(
+  NAME
   itkGDCMImageReadWriteTest_RGB
   COMMAND
   ITKIOGDCMTestDriver
@@ -276,6 +285,19 @@ itk_add_test(
   itkGDCMImageReadWriteTest
   DATA{${ITK_DATA_ROOT}/Input/RGBDicomTest.dcm}
   ${ITK_TEST_OUTPUT_DIR}/itkGDCMImageReadWriteTest_RGB.mha
+  rgb)
+
+itk_add_test(
+  NAME
+  itkGDCMImageReadWriteTest_SC_RGB
+  COMMAND
+  ITKIOGDCMTestDriver
+  --compare
+  DATA{Baseline/itkGDCMImageReadWriteTest_SC_RGB.nrrd}
+  ${ITK_TEST_OUTPUT_DIR}/itkGDCMImageReadWriteTest_SC_RGB.nrrd
+  itkGDCMImageReadWriteTest
+  DATA{Input/visible-male-rgb-slice.dcm}
+  ${ITK_TEST_OUTPUT_DIR}/itkGDCMImageReadWriteTest_SC_RGB.nrrd
   rgb)
 
 itk_add_test(
@@ -397,7 +419,7 @@ function(AddComplianceTest fileName)
     --compareCoordinateTolerance
     0.001
     --compare
-    DATA{Baseline/Lily.png}
+    DATA{Baseline/Lily.mha}
     ${ITK_TEST_OUTPUT_DIR}/itkGDCM_ComplianceTestRGB_${fileName}.mha
     itkGDCMImageReadWriteTest
     DATA{Input/Lily/${fileName}.dcm}

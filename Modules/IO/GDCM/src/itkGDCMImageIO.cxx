@@ -188,12 +188,6 @@ readNoPreambleDicom(std::ifstream & file) // NOTE: This file is duplicated in it
     }
   } while (groupNo == 2);
 
-#if defined(NDEBUG)
-  std::ostringstream itkmsg;
-  itkmsg << "No DICOM magic number found, but the file appears to be DICOM without a preamble.\n"
-         << "Proceeding without caution.";
-  itk::OutputWindowDisplayDebugText(itkmsg.str().c_str());
-#endif
   return true;
 }
 
@@ -286,6 +280,8 @@ GDCMImageIO::Read(void * pointer)
   inputFileStream.close();
 
   itkAssertInDebugAndIgnoreInReleaseMacro(gdcm::ImageHelper::GetForceRescaleInterceptSlope());
+  // Secondary capture image orientation patient and image position patient support
+  itkAssertInDebugAndIgnoreInReleaseMacro(gdcm::ImageHelper::GetSecondaryCaptureImagePlaneModule());
   gdcm::ImageReader reader;
   reader.SetFileName(m_FileName.c_str());
   if (!reader.Read())
@@ -454,6 +450,8 @@ GDCMImageIO::InternalReadImageInformation()
 
   // In general this should be relatively safe to assume
   gdcm::ImageHelper::SetForceRescaleInterceptSlope(true);
+  // Secondary capture image orientation patient and image position patient support
+  gdcm::ImageHelper::SetSecondaryCaptureImagePlaneModule(true);
 
   gdcm::ImageReader reader;
   reader.SetFileName(m_FileName.c_str());

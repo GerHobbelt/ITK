@@ -94,7 +94,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(VectorImage, ImageBase);
+  itkOverrideGetNameOfClassMacro(VectorImage);
 
   /** Pixel type alias support Used to declare pixel type in filters
    * or other operations. This is not the actual pixel type contained in
@@ -203,7 +203,7 @@ public:
   /** Allocate the image memory. The size of the image must
    * already be set, e.g. by calling SetRegions(). */
   void
-  Allocate(bool UseDefaultConstructor = false) override;
+  Allocate(bool UseValueInitialization = false) override;
 
   /** Restore the data object to its initial state. This means releasing
    * memory. */

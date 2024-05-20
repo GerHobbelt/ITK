@@ -174,7 +174,7 @@ public:
     }
 
     /** Run-time type information (and related methods).   */
-    itkTypeMacro(MultiVisitor, LightObject);
+    itkOverrideGetNameOfClassMacro(MultiVisitor);
 
     /** Typedefs for the visitor class.   */
     using VisitorPointer = typename VisitorType::Pointer;
@@ -462,7 +462,7 @@ public:
 #endif
 
   /** Standard part of every itk Object. */
-  itkTypeMacroNoParent(CellInterface);
+  itkVirtualGetNameOfClassMacro(CellInterface);
 
 public:
   CellInterface() = default;

@@ -1,4 +1,4 @@
-# Frequenty asked questions (FAQ)
+# Frequently asked questions (FAQ)
 
 ## General information and availability
 
@@ -16,7 +16,7 @@ via a factory mechanism based on the file extension
 ([`itk::ImageIOFactory`](https://itk.org/Doxygen/html/classitk_1_1ImageIOFactory.html)). Some proprietary files format are only imported.
 
 More information on supported file formats is available on the
-[ITK-wasm Image File Formats](https://wasm.itk.org/en/latest/introduction/file_formats/images.html)
+[ITK-Wasm Image File Formats](https://wasm.itk.org/en/latest/introduction/file_formats/images.html)
 site.
 
 Other file formats not listed below, such as [OME-NGFF](https://ngff.openmicroscopy.org/0.4/),
@@ -33,7 +33,7 @@ images.
 | Analyze 7.5 | `itk::AnalyzeImageIO` | |
 | [BioRad](https://www.bio-rad.com/) | | |
 | [BMP](https://en.wikipedia.org/wiki/BMP_file_format) † | [`itk::BMPImageIO`](https://itk.org/Doxygen/html/classitk_1_1BMPImageIO.html) | |
-| [DICOM](https://dicom.nema.org/) | [`itk::GDCMImageIO`](https://itk.org/Doxygen/html/classitk_1_1GDCMImageIO.html) | Using DicomImageIO is backward compatible, but user should prefer GDCMImageIO |
+| [DICOM](https://dicom.nema.org/) | [`itk::GDCMImageIO`](https://itk.org/Doxygen/html/classitk_1_1GDCMImageIO.html) | |
 | [DICOM Series](https://dicom.nema.org/) | | |
 | GE 4x | [`itk::GE4ImageIO`](https://itk.org/Doxygen/html/classitk_1_1GE4ImageIO.html) | |
 | GE 5x | [`itk::GE5ImageIO`](https://itk.org/Doxygen/html/classitk_1_1GE5ImageIO.html) | |
@@ -92,8 +92,8 @@ formats:
 
 | File Format | Read/Write | Import |
 | ----------- | ---------- | ------ |
-| [BYU](http://www.eg-models.de/formats/Format_Byu.html) | [
-[`itk::BYUMeshIO`]https://itk.org/Doxygen/html/classitk_1_1BYUMeshIO.html | |
+| [BYU](http://www.eg-models.de/formats/Format_Byu.html) |
+ [`itk::BYUMeshIO`](https://itk.org/Doxygen/html/classitk_1_1BYUMeshIO.html) | |
 | [FreeSurfer surface, binary and ASCII](http://www.grahamwideman.com/gw/brain/fs/surfacefileformats.htm) | [`itk::FreeSurferBinaryMeshIO`](https://itk.org/Doxygen/html/classitk_1_1FreeSurferBinaryMeshIO.html), [`itk::FreeSurferAsciiMeshIO`](https://itk.org/Doxygen/html/classitk_1_1FreeSurferAsciiMeshIO.html) | |
 | [OFF](https://en.wikipedia.org/wiki/OFF_%28file_format%29) | [`ìtk::OFFMeshIO`](https://itk.org/Doxygen/html/classitk_1_1OFFMeshIO.html) | |
 | [STL](https://en.wikipedia.org/wiki/STL_%28file_format%29) | | |
@@ -102,7 +102,7 @@ formats:
 | [VTK legacy file format for vtkPolyData](https://www.vtk.org/wp-content/uploads/2015/04/file-formats.pdf) | [`itk::VTKPolyDataMeshIO`](https://itk.org/Doxygen/html/classitk_1_1VTKPolyDataMeshIO.html) | |
 
 More information on supported mesh and point set file formats is available on the
-[ITK-wasm Mesh and Point Set File Formats](https://wasm.itk.org/en/latest/introduction/file_formats/meshes.html)
+[ITK-Wasm Mesh and Point Set File Formats](https://wasm.itk.org/en/latest/introduction/file_formats/meshes.html)
 site.
 
 ### What transform file formats can ITK import and export?
@@ -134,13 +134,9 @@ in case of desperation.
 1. Write a MetaImage header. This is a small text file holding
    information about the image: spacing, dimensions, pixelt type, etc.
    This header can hold the list of DICOM files you want to read. The
-   only restriction is that the files must be uncompressed.
-   The easy way to create a MetaImage header is to use the application:
-   `MetaImageImporter` that is available in
-   [ITKApps/MetaImageImporter](https://github.com/InsightSoftwareConsortium/ITKApps/tree/master/MetaImageImporter).
-   You can also take an existing MetaImage reader and modify it in
-   order to fit your needs. Please find attached one file that you
-   can edit it with your favorite text editor.
+   only restriction is that the files must be uncompressed. You can
+   take an existing MetaImage header and modify it in order to fit
+   your needs.
 1. Use `MRIConvert`: Jolinda Smith from the Lewis Center for
    Neuroimaging at the University of Oregon developed a nice
    application that allows you to load DICOM series and export them in
@@ -176,7 +172,7 @@ installed version of GDCM and link ITK to it using `ITK_USE_SYSTEM_GDCM`.
 
 ITK supports a number of language bindings, including Python and
 JavaScript, among others, through [SimpleITK](https://simpleitk.org/)
-and [itk-wasm](https://wasm.itk.org/en/latest/).
+and [ITK-Wasm](https://wasm.itk.org/en/latest/).
 
 ### How do I cite the use of ITK in a publication?
 
@@ -350,27 +346,9 @@ be summarized as follows:
  guidelines for the development of software-related medical devices."
 ```
 
-For mode details see the page [FDA Guidelines for Software Developement](https://itk.org/Wiki/FDA_Guidelines_for_Software_Development).
+For mode details see the page [FDA guidelines for software development](fda_sw_development_guidelines.md).
 
 ## Using ITK
-
-### How do I combine ITK and VTK in my application?
-
-A full tutorial on how to combine ITK and VTK is available at [Getting Started with ITK and VTK](http://www.itk.org/CourseWare/Training/GettingStarted-II.pdf).
-
-You will need the auxiliary classes available at the [ITKApps](https://github.com/InsightSoftwareConsortium/ITKApps)
-repository.
-
-For example, for converting ITK images into VTK images and back, you
-will find useful the files from the [ITKVTKGlue](https://github.com/InsightSoftwareConsortium/ITKVtkGlue)
-module:
-
-```
-itkImageToVTKImageFilter.h
-itkImageToVTKImageFilter.hxx
-itkVTKImageToImageFilter.h
-itkVTKImageToImageFilter.hxx
-```
 
 ### How do I configure Vim for ITK coding style?
 
@@ -400,6 +378,9 @@ example.
 
 ### What are Hounsfield Units?
 
+CT imaging data are measured in Hounsfield Units (HU), which is a
+quantitative scale for describing radiodensity.
+
 Hounsfield units were defined by Sir Godfrey N. Hounsfield, one of the
 pioneers of Computer Tomography for clinical applications.
 
@@ -412,19 +393,34 @@ the level for Air is -1000.
 The attenuation of any other material is mapped linearly into this
 range.
 
-A table of Hounsfield units for common human tissues is avalable in the
-following link [ITK Hounsfield Units](https://itk.org/Wiki/ITK_Hounsfield_Units)
+The table below shows the HU of various human tissues.
+
+| Tissue | HU |
+| ------ | -- |
+| Bone | 1000 |
+| Liver | [40, 60] |
+| White matter | 46 |
+| Grey matter| 43 |
+| Blood | 40 |
+| Muscle | [10, 40] |
+| Kidney | 30 |
+| Cerebrospinal fluid | 15 |
+| Water | 0 |
+| Fat | [-100, -50] |
+| Air | -1000 |
+
+More details can be found in the Wikipedia article [Houndfield Units](https://en.wikipedia.org/wiki/Hounsfield_scale).
 
 ### What are MRI T1 / T2 units?
 
-MRI images measure two types of relaxation times.
+MRI images measure two types of relaxation times, T1 and T2.
 
 The units are millisecons and the two relaxation concepts relate to how
 long it takes for the molecules in the tissue to realign themselves with
 a magentic field after being perturbed.
 
 Details on the MRI units are available on the [Relaxation (NMR)](https://en.wikipedia.org/wiki/Relaxation_%28NMR%29)
-Wikipedia page.
+Wikipedia article.
 
 ### DICOM: Bits Allocated, Bits Stored and High Bit
 
@@ -473,13 +469,13 @@ as 12 bits.
 
 ### I'm working with DICOM images, where can I find more information?
 
-See [ITK/DICOM](https://itk.org/Wiki/ITK/DICOM).
+See the [DICOM](dicom.md) page.
 
 ## Data display
 
 ### What imaging software is available for displaying medical image files?
 
-Please see the [third party applications](https://itk.org/Wiki/ITK/Third_Party_Applications) page for
+Please see the [third party applications](third_party_applications.md) page for
 visualization applications that used ITK to perform image
 reading/writing.
 
@@ -510,9 +506,7 @@ particular, you will find interesting the section where the mutual
 information metric is described.
 
 Examples on multimodality registration are available in
-[Examples/RegistrationITKv4](https://github.com/InsightSoftwareConsortium/ITK/tree/master/Examples/RegistrationITKv4). A demo application using mutual
-information is available under
-[ITKApps/LandmarkInitializedMutualInformationRegistration](https://github.com/InsightSoftwareConsortium/ITKApps/tree/master/LandmarkInitializedMutualInformationRegistration).
+[Examples/RegistrationITKv4](https://github.com/InsightSoftwareConsortium/ITK/tree/master/Examples/RegistrationITKv4).
 
 It is strongly recommended that you read the chapter on "Geometric
 Transformations" section, where resampling is explained, before you get

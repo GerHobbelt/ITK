@@ -51,6 +51,7 @@
 #endif
 
 #include <sstream>
+#include <type_traits> // For is_same, remove_const, and remove_reference.
 
 /** \namespace itk
  * \brief The "itk" namespace contains all Insight Segmentation and
@@ -432,15 +433,44 @@ namespace itk
     ITK_MACROEND_NOOP_STATEMENT
 #endif
 
-/** Macro used to add standard methods to all classes, mainly type
- * information. */
-#define itkTypeMacro(thisClass, superclass)                           \
-  const char * GetNameOfClass() const override { return #thisClass; } \
+
+/** Macro's used to add `GetNameOfClass()` member functions to polymorphic ITK classes: `itkVirtualGetNameOfClassMacro`
+ * adds a virtual `GetNameOfClass()` member function to the class definition, and `itkOverrideGetNameOfClassMacro` adds
+ * a `GetNameOfClass()` override. */
+#define itkVirtualGetNameOfClassMacro(thisClass)                                                             \
+  virtual const char * GetNameOfClass() const                                                                \
+  {                                                                                                          \
+    static_assert(std::is_same_v<thisClass, std::remove_const_t<std::remove_reference_t<decltype(*this)>>>); \
+    return #thisClass;                                                                                       \
+  }                                                                                                          \
   ITK_MACROEND_NOOP_STATEMENT
 
-#define itkTypeMacroNoParent(thisClass)                              \
-  virtual const char * GetNameOfClass() const { return #thisClass; } \
+#define itkOverrideGetNameOfClassMacro(thisClass)                                                            \
+  const char * GetNameOfClass() const override                                                               \
+  {                                                                                                          \
+    static_assert(std::is_same_v<thisClass, std::remove_const_t<std::remove_reference_t<decltype(*this)>>>); \
+    return #thisClass;                                                                                       \
+  }                                                                                                          \
   ITK_MACROEND_NOOP_STATEMENT
+
+#ifdef ITK_FUTURE_LEGACY_REMOVE
+#  define itkTypeMacro(thisClass, superclass)                                                                      \
+    static_assert(false,                                                                                           \
+                  "In a future revision of ITK, the macro `itkTypeMacro(thisClass, superclass)` will be removed. " \
+                  "Please call `itkOverrideGetNameOfClassMacro(thisClass)` instead!")
+#  define itkTypeMacroNoParent(thisClass)                                                                      \
+    static_assert(false,                                                                                       \
+                  "In a future revision of ITK, the macro `itkTypeMacroNoParent(thisClass)` will be removed. " \
+                  "Please call `itkVirtualGetNameOfClassMacro(thisClass)` instead!")
+#else
+/** Legacy macro's to add or override a `GetNameOfClass()` member function.
+ * \deprecated Instead of `itkTypeMacro`, it is preferred to call `itkOverrideGetNameOfClassMacro` (without `superclass`
+ * argument). Instead of `itkTypeMacroNoParent`, it is preferred to call `itkVirtualGetNameOfClassMacro`.
+ */
+#  define itkTypeMacro(thisClass, superclass) itkOverrideGetNameOfClassMacro(thisClass)
+#  define itkTypeMacroNoParent(thisClass) itkVirtualGetNameOfClassMacro(thisClass)
+#endif
+
 
 namespace itk
 {
@@ -531,7 +561,7 @@ OutputWindowDisplayDebugText(const char *);
     static constexpr const char * const default_exception_message = whatmessage;     \
     /* Inherit the constructors from its base class. */                              \
     using parentexcp::parentexcp;                                                    \
-    itkTypeMacro(newexcp, parentexcp);                                               \
+    itkOverrideGetNameOfClassMacro(newexcp);                                         \
   };                                                                                 \
   }                                                                                  \
   ITK_MACROEND_NOOP_STATEMENT

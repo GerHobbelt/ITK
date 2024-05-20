@@ -28,7 +28,7 @@ To compile the document locally create a python virtual environment and install 
 
 For example in Linux / macOS:
 
-```sh
+```bash
 cd ITK/Documentation/docs
 python -m venv env
 source env/bin/activate
@@ -43,7 +43,7 @@ Open `_build/html/index.html` in your browser to inspect the result.
 To automatically rebuild the website with any input markdown changes and serve
 the result, use [sphinx-autobuild]
 
-```sh
+```bash
 cd ITK/Documentation/docs
 pip install -r requirements.txt
 pip install sphinx-autobuild
@@ -55,3 +55,5 @@ sphinx-autobuild -a . _build/html
 
 This will start a server at [http://127.0.0.1:8000](http://127.0.0.1:8000)
 and rebuild whenever the documentation changes.
+
+[sphinx-autobuild]: https://github.com/executablebooks/sphinx-autobuild

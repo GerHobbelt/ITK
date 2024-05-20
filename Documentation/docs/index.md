@@ -26,12 +26,14 @@ licenses
 
 
 ```{toctree}
-:maxdepth: 3
+:maxdepth: 1
 :caption: 📖 Learn
 
+learn/python_quick_start.md
 Examples <https://examples.itk.org>
 Tutorial <https://github.com/InsightSoftwareConsortium/ScientificImageAnalysisVisualizationAndArtificialIntelligenceCourse>
 Software Guide <https://itk.org/ItkSoftwareGuide.pdf>
+learn/faq.md
 learn/courses.md
 ```
 
@@ -43,9 +45,16 @@ learn/courses.md
 API <https://itk.org/Doxygen/html/index.html>
 Discussion <https://discourse.itk.org>
 Issue tracker <https://github.com/InsightSoftwareConsortium/ITK/issues>
-CDash Dashboard <https://open.cdash.org/index.php?project=Insight>
 supported_compilers
 migration_guides/index
 contributing/code_of_conduct
 contributing/index
+```
+
+
+```{toctree}
+:maxdepth: 1
+:caption: 🌱 Scientific ecosystem
+
+scientific_ecosystem/itk_ecosystem.md
 ```

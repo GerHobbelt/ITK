@@ -186,7 +186,9 @@ set(ITKCommon2Tests
     itkImageRegionSplitterMultidimensionalTest.cxx
     itkMetaDataObjectTest.cxx
     # itkVectorMultiplyTest.cxx
-    itkXMLFileOutputWindowTest.cxx)
+    itkXMLFileOutputWindowTest.cxx
+    itkXMLFilterWatcherTest.cxx)
+
 if(ITK_BUILD_SHARED_LIBS AND ITK_DYNAMIC_LOADING)
   list(APPEND ITKCommon2Tests itkDownCastTest.cxx)
 endif()
@@ -1667,6 +1669,16 @@ itk_add_test(
   itkXMLFileOutputWindowTest
   ${ITK_TEST_OUTPUT_DIR}/itkXMLFileOutputWindowTest.xml)
 
+itk_add_test(
+  NAME
+  itkXMLFilterWatcherTest
+  COMMAND
+  ITKCommon2TestDriver
+  --redirectOutput
+  ${ITK_TEST_OUTPUT_DIR}/itkXMLFilterWatcherTest.txt
+  itkXMLFilterWatcherTest
+  DATA{${ITK_DATA_ROOT}/Input/cthead1.png})
+
 if(ITK_BUILD_SHARED_LIBS AND ITK_DYNAMIC_LOADING)
   macro(BuildClientTestLibrary _name _type)
     add_library(ClientTestLibrary${_name} ${_type} ClientTestLibrary${_name}.cxx)
@@ -1715,6 +1727,7 @@ set(ITKCommonGTests
     itkImageBufferRangeGTest.cxx
     itkImageRegionRangeGTest.cxx
     itkImageIORegionGTest.cxx
+    itkImageRandomConstIteratorWithIndexGTest.cxx
     itkImageRegionGTest.cxx
     itkIndexGTest.cxx
     itkIndexRangeGTest.cxx

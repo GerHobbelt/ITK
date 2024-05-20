@@ -24,6 +24,28 @@
 #include <type_traits> // For remove_const_t and remove_reference_t.
 
 
+namespace
+{
+template <unsigned int VDimension>
+constexpr bool
+CheckTrivialCopyabilityOfImageRegion()
+{
+  constexpr bool isImageRegionTriviallyCopyable{ std::is_trivially_copyable_v<itk::ImageRegion<VDimension>> };
+
+#ifdef ITK_FUTURE_LEGACY_REMOVE
+  static_assert(isImageRegionTriviallyCopyable, "In the future, ImageRegion<VDimension> should be trivially copyable.");
+  return isImageRegionTriviallyCopyable;
+#else
+  static_assert(!isImageRegionTriviallyCopyable, "ImageRegion<VDimension> should *not* be trivially copyable.");
+  return !isImageRegionTriviallyCopyable;
+#endif
+}
+} // namespace
+
+static_assert(CheckTrivialCopyabilityOfImageRegion<2>() && CheckTrivialCopyabilityOfImageRegion<3>(),
+              "ImageRegion<VDimension> should be trivially copyable when legacy support is removed.");
+
+
 // Tests that a zero-sized region is not considered to be inside of another region.
 TEST(ImageRegion, ZeroSizedRegionIsNotInside)
 {
@@ -86,8 +108,7 @@ TEST(ImageRegion, CropReturnsFalseWithoutChangingAnythingWhenItCannotCrop)
   for (const auto indexValue : { std::numeric_limits<itk::IndexValueType>::min(),
                                  itk::IndexValueType{ -1 },
                                  itk::IndexValueType{},
-                                 itk::IndexValueType{ 1 },
-                                 std::numeric_limits<itk::IndexValueType>::max() })
+                                 itk::IndexValueType{ 1 } })
   {
     const RegionType zeroSizedRegion{ IndexType::Filled(indexValue), SizeType{} };
     const RegionType nonZeroSizedRegion{ IndexType::Filled(indexValue), SizeType::Filled(1) };

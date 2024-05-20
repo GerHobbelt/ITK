@@ -84,13 +84,19 @@ ImageRegion<VImageDimension>::GetNumberOfPixels() const -> SizeValueType
 
 template <unsigned int VImageDimension>
 void
+ImageRegion<VImageDimension>::Print(std::ostream & os, Indent indent) const
+{
+  os << indent << this->GetNameOfClass() << " (" << this << ")\n";
+  this->PrintSelf(os, indent.GetNextIndent());
+}
+
+template <unsigned int VImageDimension>
+void
 ImageRegion<VImageDimension>::PrintSelf(std::ostream & os, Indent indent) const
 {
-  Superclass::PrintSelf(os, indent);
-
   os << indent << "Dimension: " << this->GetImageDimension() << std::endl;
-  os << indent << "Index: " << this->GetIndex() << std::endl;
-  os << indent << "Size: " << this->GetSize() << std::endl;
+  os << indent << "Index: " << m_Index << std::endl;
+  os << indent << "Size: " << m_Size << std::endl;
 }
 
 template <unsigned int VImageDimension>
@@ -187,60 +193,39 @@ template <unsigned int VImageDimension>
 bool
 ImageRegion<VImageDimension>::Crop(const Self & region)
 {
-  OffsetValueType crop;
-  unsigned int    i;
-  bool            cropPossible = true;
-
   // Can we crop?
-  for (i = 0; i < VImageDimension && cropPossible; ++i)
+  for (unsigned int i = 0; i < VImageDimension; ++i)
   {
-    // Is left edge of current region to the right of the right edge
-    // of the region to crop with? (if so, we cannot crop)
-    if (m_Index[i] >= region.GetIndex()[i] + static_cast<OffsetValueType>(region.GetSize()[i]))
+    // Is the left edge of current region to the right of the right edge of the region to crop with? Or is the right
+    // edge of the current region to the left of the left edge of the region to crop with? (if so, we cannot crop)
+    if (m_Index[i] >= region.m_Index[i] + static_cast<OffsetValueType>(region.m_Size[i]) ||
+        m_Index[i] + static_cast<OffsetValueType>(m_Size[i]) <= region.m_Index[i])
     {
-      cropPossible = false;
+      // if we cannot crop, return without changing anything
+      return false;
     }
-    // If right edge of the current region to the left of the left
-    // edge of the region to crop with? (if so, we cannot crop)
-    if (m_Index[i] + static_cast<OffsetValueType>(m_Size[i]) <= region.GetIndex()[i])
-    {
-      cropPossible = false;
-    }
-  }
-
-  // if we cannot crop, return without changing anything
-  if (!cropPossible)
-  {
-    return cropPossible;
   }
 
   // we can crop, so crop
-  for (i = 0; i < VImageDimension; ++i)
+  for (unsigned int i = 0; i < VImageDimension; ++i)
   {
     // first check the start index
-    if (m_Index[i] < region.GetIndex()[i])
+    if (m_Index[i] < region.m_Index[i])
     {
-      // how much do we need to adjust
-      crop = region.GetIndex()[i] - m_Index[i];
-
-      // adjust the start index and the size of the current region
-      m_Index[i] += crop;
-      m_Size[i] -= static_cast<SizeValueType>(crop);
+      // adjust the size and the start index of the current region
+      m_Size[i] -= static_cast<SizeValueType>(region.m_Index[i] - m_Index[i]);
+      m_Index[i] = region.m_Index[i];
     }
     // now check the final size
     if (m_Index[i] + static_cast<OffsetValueType>(m_Size[i]) >
-        region.GetIndex()[i] + static_cast<OffsetValueType>(region.GetSize()[i]))
+        region.m_Index[i] + static_cast<OffsetValueType>(region.m_Size[i]))
     {
-      // how much do we need to adjust
-      crop = m_Index[i] + static_cast<OffsetValueType>(m_Size[i]) - region.GetIndex()[i] -
-             static_cast<OffsetValueType>(region.GetSize()[i]);
-
       // adjust the size
-      m_Size[i] -= static_cast<SizeValueType>(crop);
+      m_Size[i] = region.m_Size[i] - static_cast<SizeValueType>(m_Index[i] - region.m_Index[i]);
     }
   }
 
-  return cropPossible;
+  return true;
 }
 
 template <unsigned int VImageDimension>

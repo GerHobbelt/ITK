@@ -323,3 +323,75 @@ TEST(ImageMaskSpatialObject, CornerPointIsNotInsideMaskOfZeroValues)
   const double cornerPoint[] = { 1.5, 1.5 };
   ASSERT_FALSE(imageMaskSpatialObject->IsInsideInObjectSpace(cornerPoint));
 }
+
+// Check that the IsInsideInWorldSpace overloads yield the same result, when depth = 0 and name = "".
+TEST(ImageMaskSpatialObject, IsInsideInWorldSpaceOverloads)
+{
+  constexpr auto imageDimension = 2U;
+  using ImageMaskSpatialObjectType = itk::ImageMaskSpatialObject<imageDimension>;
+  using MaskImageType = ImageMaskSpatialObjectType::ImageType;
+  using MaskPixelType = MaskImageType::PixelType;
+  using PointType = MaskImageType::PointType;
+
+  // Create a mask image.
+  const auto maskImage = MaskImageType::New();
+  maskImage->SetRegions(itk::Size<imageDimension>::Filled(2));
+  maskImage->Allocate(true);
+  maskImage->SetPixel({}, MaskPixelType{ 1 });
+  maskImage->SetSpacing(itk::MakeFilled<MaskImageType::SpacingType>(0.5));
+
+  const auto imageMaskSpatialObject = ImageMaskSpatialObjectType::New();
+  imageMaskSpatialObject->SetImage(maskImage);
+
+  for (const double pointValue : { -1.0, 0.0, 0.5, 1.0 })
+  {
+    const PointType point(pointValue);
+
+    EXPECT_EQ(imageMaskSpatialObject->IsInsideInWorldSpace(point),
+              imageMaskSpatialObject->IsInsideInWorldSpace(point, 0, ""));
+  }
+}
+
+
+// Check that regions of the mask image are stored in the spatial object.
+TEST(ImageMaskSpatialObject, StoresRegionsFromMaskImage)
+{
+  using ImageMaskSpatialObjectType = itk::ImageMaskSpatialObject<>;
+  using MaskImageType = ImageMaskSpatialObjectType::ImageType;
+
+  // Test image regions of various indices and sizes:
+  for (const itk::IndexValueType indexValue : { -1, 0, 1 })
+  {
+    // Just test some small sizes, to make the test run fast:
+    for (itk::SizeValueType sizeValue{ 2 }; sizeValue < 4; ++sizeValue)
+    {
+      using RegionType = MaskImageType::RegionType;
+      using IndexType = MaskImageType::IndexType;
+      using SizeType = MaskImageType::SizeType;
+
+      // Create a mask image.
+      const auto maskImage = MaskImageType::New();
+      maskImage->SetRegions(RegionType{ IndexType::Filled(indexValue), SizeType::Filled(sizeValue) });
+      maskImage->Allocate(true);
+
+      const auto imageMaskSpatialObject = ImageMaskSpatialObjectType::New();
+      imageMaskSpatialObject->SetImage(maskImage);
+
+      EXPECT_EQ(imageMaskSpatialObject->GetLargestPossibleRegion(), maskImage->GetLargestPossibleRegion());
+      EXPECT_EQ(imageMaskSpatialObject->GetBufferedRegion(), maskImage->GetBufferedRegion());
+      EXPECT_EQ(imageMaskSpatialObject->GetRequestedRegion(), maskImage->GetRequestedRegion());
+
+      // Modify one of the image regions.
+      maskImage->SetRequestedRegion(RegionType{ IndexType::Filled(indexValue + 1), SizeType::Filled(sizeValue - 1) });
+
+      // Note: when an image region is modified _after_ calling SetImage, the user must call Update() to keep the
+      // regions of the spatial object up-to-date.
+      imageMaskSpatialObject->Update();
+
+      // Do the same checks after the Update():
+      EXPECT_EQ(imageMaskSpatialObject->GetLargestPossibleRegion(), maskImage->GetLargestPossibleRegion());
+      EXPECT_EQ(imageMaskSpatialObject->GetBufferedRegion(), maskImage->GetBufferedRegion());
+      EXPECT_EQ(imageMaskSpatialObject->GetRequestedRegion(), maskImage->GetRequestedRegion());
+    }
+  }
+}

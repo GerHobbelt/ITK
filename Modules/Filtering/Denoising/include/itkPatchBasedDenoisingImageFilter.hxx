@@ -23,9 +23,9 @@
 #include "itkResampleImageFilter.h"
 #include "itkIdentityTransform.h"
 #include "itkLinearInterpolateImageFunction.h"
-#include "itkImageFileWriter.h"
 #include "itkGaussianOperator.h"
 #include "itkImageAlgorithm.h"
+#include "itkIntTypes.h"
 #include "itkVectorImageToImageAdaptor.h"
 #include "itkSpatialNeighborSubsampler.h"
 #include "itkMacro.h"
@@ -43,7 +43,7 @@ PatchBasedDenoisingImageFilter<TInputImage, TOutputImage>::PatchBasedDenoisingIm
   m_MinProbability(NumericTraits<RealValueType>::min() * 100)
   , // to avoid divide by zero
   m_SigmaUpdateDecimationFactor(
-    static_cast<unsigned int>(Math::Round<double>(1.0 / m_KernelBandwidthFractionPixelsForEstimation)))
+    static_cast<unsigned int>(Math::Round<int64_t>(1.0 / m_KernelBandwidthFractionPixelsForEstimation)))
   , m_NoiseSigma()
   , m_NoiseSigmaSquared()
   , m_SearchSpaceList(ListAdaptorType::New())
@@ -239,10 +239,10 @@ PatchBasedDenoisingImageFilter<TInputImage, TOutputImage>::Initialize()
 
   // For automatic sigma estimation, select every 'k'th pixel.
   m_SigmaUpdateDecimationFactor =
-    static_cast<unsigned int>(Math::Round<double>(1.0 / m_KernelBandwidthFractionPixelsForEstimation));
+    static_cast<unsigned int>(Math::Round<int64_t>(1.0 / m_KernelBandwidthFractionPixelsForEstimation));
   // For automatic sigma estimation, use at least 1% of pixels.
-  m_SigmaUpdateDecimationFactor = std::min(m_SigmaUpdateDecimationFactor,
-                                           static_cast<unsigned int>(Math::Round<double>(m_TotalNumberPixels / 100.0)));
+  m_SigmaUpdateDecimationFactor = std::min(
+    m_SigmaUpdateDecimationFactor, static_cast<unsigned int>(Math::Round<int64_t>(m_TotalNumberPixels / 100.0)));
   // For automatic sigma estimation, can't use more than 100% of pixels.
   m_SigmaUpdateDecimationFactor = std::max(m_SigmaUpdateDecimationFactor, 1u);
 
@@ -636,9 +636,7 @@ PatchBasedDenoisingImageFilter<TInputImage, TOutputImage>::DispatchedRiemannianM
   str.Filter = this;
   str.Img = const_cast<InputImageType *>(img);
   this->GetMultiThreader()->SetNumberOfWorkUnits(this->GetNumberOfWorkUnits());
-  this->GetMultiThreader()->SetSingleMethod(this->RiemannianMinMaxThreaderCallback, &str);
-  // Multithread the execution
-  this->GetMultiThreader()->SingleMethodExecute();
+  this->GetMultiThreader()->SetSingleMethodAndExecute(this->RiemannianMinMaxThreaderCallback, &str);
   this->ResolveRiemannianMinMax();
 }
 
@@ -1358,9 +1356,7 @@ PatchBasedDenoisingImageFilter<TInputImage, TOutputImage>::ApplyUpdate()
   ThreadFilterStruct str;
   str.Filter = this;
   this->GetMultiThreader()->SetNumberOfWorkUnits(this->GetNumberOfWorkUnits());
-  this->GetMultiThreader()->SetSingleMethod(this->ApplyUpdateThreaderCallback, &str);
-  // Multithread the execution
-  this->GetMultiThreader()->SingleMethodExecute();
+  this->GetMultiThreader()->SetSingleMethodAndExecute(this->ApplyUpdateThreaderCallback, &str);
 
   // Explicitly call Modified on GetOutput here since ThreadedApplyUpdate
   // changes this buffer through iterators which don't increment the output
@@ -1910,10 +1906,7 @@ PatchBasedDenoisingImageFilter<TInputImage, TOutputImage>::ComputeImageUpdate()
   // Compute smoothing updated for intensities at each pixel
   // based on gradient of the joint entropy
   this->GetMultiThreader()->SetNumberOfWorkUnits(this->GetNumberOfWorkUnits());
-  this->GetMultiThreader()->SetSingleMethod(this->ComputeImageUpdateThreaderCallback, &str);
-
-  // Multithread the execution
-  this->GetMultiThreader()->SingleMethodExecute();
+  this->GetMultiThreader()->SetSingleMethodAndExecute(this->ComputeImageUpdateThreaderCallback, &str);
 }
 
 template <typename TInputImage, typename TOutputImage>

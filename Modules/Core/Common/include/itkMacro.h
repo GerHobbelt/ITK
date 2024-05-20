@@ -48,6 +48,7 @@
 #include <cstdlib>
 #ifndef NDEBUG
 #  include <cassert>
+#  include "itkPrintHelper.h" // for ostream operator<<std::vector<T>
 #endif
 
 #include <sstream>
@@ -318,13 +319,8 @@ namespace itk
   }                                                       \
   ITK_MACROEND_NOOP_STATEMENT
 
-#define itkCreateAnotherMacro(x)                             \
-  ::itk::LightObject::Pointer CreateAnother() const override \
-  {                                                          \
-    ::itk::LightObject::Pointer smartPtr;                    \
-    smartPtr = x::New().GetPointer();                        \
-    return smartPtr;                                         \
-  }                                                          \
+#define itkCreateAnotherMacro(x)                                                               \
+  ::itk::LightObject::Pointer CreateAnother() const override { return x::New().GetPointer(); } \
   ITK_MACROEND_NOOP_STATEMENT
 
 #define itkCloneMacro(x)                                                  \
@@ -370,21 +366,15 @@ namespace itk
  * UnRegister() on the rawPtr to compensate for LightObject's constructor
  * initializing an object's reference count to 1 (needed for proper
  * initialization of process objects and data objects cycles). */
-#define itkFactorylessNewMacro(x)                            \
-  static Pointer New()                                       \
-  {                                                          \
-    Pointer smartPtr;                                        \
-    x *     rawPtr = new x;                                  \
-    smartPtr = rawPtr;                                       \
-    rawPtr->UnRegister();                                    \
-    return smartPtr;                                         \
-  }                                                          \
-  ::itk::LightObject::Pointer CreateAnother() const override \
-  {                                                          \
-    ::itk::LightObject::Pointer smartPtr;                    \
-    smartPtr = x::New().GetPointer();                        \
-    return smartPtr;                                         \
-  }                                                          \
+#define itkFactorylessNewMacro(x) \
+  static Pointer New()            \
+  {                               \
+    x *     rawPtr = new x;       \
+    Pointer smartPtr = rawPtr;    \
+    rawPtr->UnRegister();         \
+    return smartPtr;              \
+  }                               \
+  itkCreateAnotherMacro(x);       \
   ITK_MACROEND_NOOP_STATEMENT
 
 //
@@ -509,6 +499,7 @@ OutputWindowDisplayDebugText(const char *);
 #  define itkDebugMacro(x)                                                     \
     do                                                                         \
     {                                                                          \
+      using namespace ::itk::print_helper; /* for ostream << std::vector<T> */ \
       if (this->GetDebug() && ::itk::Object::GetGlobalWarningDisplay())        \
       {                                                                        \
         std::ostringstream itkmsg;                                             \

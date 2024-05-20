@@ -45,6 +45,7 @@
 #include <string>
 #include <algorithm>
 #include <cctype>
+#include <utility> // For move.
 
 #if defined(ITK_USE_TBB)
 #  include "itkTBBMultiThreader.h"
@@ -445,6 +446,15 @@ MultiThreaderBase::SingleMethodProxy(void * arg)
   return ITK_THREAD_RETURN_DEFAULT_VALUE;
 }
 
+
+void
+MultiThreaderBase::SetSingleMethodAndExecute(ThreadFunctionType func, void * data)
+{
+  this->SetSingleMethod(std::move(func), data);
+  this->SingleMethodExecute();
+}
+
+
 void
 MultiThreaderBase::ParallelizeArray(SizeValueType             firstIndex,
                                     SizeValueType             lastIndexPlus1,
@@ -467,8 +477,7 @@ MultiThreaderBase::ParallelizeArray(SizeValueType             firstIndex,
     {
       aFunc, firstIndex, lastIndexPlus1, filter
     };
-    this->SetSingleMethod(&MultiThreaderBase::ParallelizeArrayHelper, &acParams);
-    this->SingleMethodExecute();
+    this->SetSingleMethodAndExecute(&MultiThreaderBase::ParallelizeArrayHelper, &acParams);
   }
   else if (firstIndex + 1 == lastIndexPlus1)
   {
@@ -527,8 +536,7 @@ MultiThreaderBase::ParallelizeImageRegion(unsigned int                          
   {
     funcP, dimension, index, size, filter
   };
-  this->SetSingleMethod(&MultiThreaderBase::ParallelizeImageRegionHelper, &rnc);
-  this->SingleMethodExecute();
+  this->SetSingleMethodAndExecute(&MultiThreaderBase::ParallelizeImageRegionHelper, &rnc);
 }
 
 ITK_THREAD_RETURN_FUNCTION_CALL_CONVENTION

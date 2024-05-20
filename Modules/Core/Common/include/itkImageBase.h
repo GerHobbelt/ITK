@@ -44,6 +44,15 @@
 namespace itk
 {
 
+/** The default tolerance when comparing the geometry of two images.
+ *
+ * The value was chosen based on precisions of file formats such as DICOM,
+ * to enable interoperability with images saved to file formats with higher precision.
+ */
+inline constexpr double DefaultImageCoordinateTolerance = 1e-6;
+inline constexpr double DefaultImageDirectionTolerance = 1e-6;
+
+
 /** \class ImageBase
  * \brief Base class for templated image classes.
  *
@@ -116,7 +125,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(ImageBase);
 
   /** Type of image dimension */
@@ -241,6 +250,14 @@ public:
    */
   virtual void
   Allocate(bool initialize = false);
+
+  /** Allocates the pixel buffer of the image, zero-initializing its pixels. `AllocateInitialized()` is equivalent to
+   * `Allocate(true)`. It is just intended to make the code more readable. */
+  void
+  AllocateInitialized()
+  {
+    return this->Allocate(true);
+  }
 
   /** Set the region object that defines the size and starting index
    * for the largest possible region this image could represent.  This
@@ -767,6 +784,24 @@ public:
    * region is not within the LargestPossibleRegion. */
   bool
   VerifyRequestedRegion() override;
+
+  /** Checks whether the images' pixels with the same index occupy the same physical space.
+   * Compares the origin, spacing, and direction for equality within provided tolerances.
+   * There is no check for valid regions in between the images. */
+  bool
+  IsCongruentImageGeometry(const ImageBase * otherImage, double coordinateTolerance, double directionTolerance) const;
+
+  /** Check whether this image and the other image have the same grid in physical space.
+   * Compares largest possible regions for equality, and the origin, spacing,
+   * and direction cosines for equality within provided tolerances.
+   * See also: ImageToImageFilter, namely:
+   * https://github.com/InsightSoftwareConsortium/ITK/blob/v5.3.0/Modules/Core/Common/include/itkImageToImageFilter.h#L78-L92
+   * https://github.com/InsightSoftwareConsortium/ITK/blob/v5.3.0/Modules/Core/Common/src/itkImageToImageFilterCommon.cxx#L26-L27
+   */
+  bool
+  IsSameImageGeometryAs(const ImageBase * otherImage,
+                        double            coordinateTolerance = DefaultImageCoordinateTolerance,
+                        double            directionTolerance = DefaultImageDirectionTolerance) const;
 
   /** INTERNAL This method is used internally by filters to copy meta-data from
    * the output to the input. Users should not have a need to use this method.

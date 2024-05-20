@@ -25,6 +25,7 @@
 #include "vnl/algo/vnl_symmetric_eigensystem.h"
 #include "vnl/algo/vnl_matrix_inverse.h"
 #include "itkCastImageFilter.h"
+#include <algorithm> // For min and max.
 
 namespace itk
 {
@@ -258,14 +259,8 @@ DisplacementFieldTransform<TParametersValueType, VDimension>::ComputeJacobianWit
       difIndex[1][col] -= 1;
       difIndex[2][col] += 1;
       difIndex[3][col] += 2;
-      if (difIndex[0][col] < startingIndex[col])
-      {
-        difIndex[0][col] = startingIndex[col];
-      }
-      if (difIndex[3][col] > upperIndex[col])
-      {
-        difIndex[3][col] = upperIndex[col];
-      }
+      difIndex[0][col] = std::max(difIndex[0][col], startingIndex[col]);
+      difIndex[3][col] = std::min(difIndex[3][col], upperIndex[col]);
 
       OutputVectorType pixDisp[4];
       for (unsigned int i = 0; i < 4; ++i)
@@ -427,8 +422,7 @@ DisplacementFieldTransform<TParametersValueType, VDimension>::VerifyFixedParamet
       originString << "InverseDisplacementField Spacing: " << inverseFieldSpacing
                    << ", DisplacementField Spacing: " << fieldSpacing << std::endl;
     }
-    if (!inverseFieldDirection.GetVnlMatrix().as_ref().is_equal(fieldDirection.GetVnlMatrix().as_ref(),
-                                                                directionTolerance))
+    if (!inverseFieldDirection.GetVnlMatrix().is_equal(fieldDirection.GetVnlMatrix(), directionTolerance))
     {
       unequalDirections = true;
       originString << "InverseDisplacementField Direction: " << inverseFieldDirection
@@ -522,16 +516,12 @@ DisplacementFieldTransform<TParametersValueType, VDimension>::SetFixedParameters
     }
   }
 
-  PixelType zeroDisplacement;
-  zeroDisplacement.Fill(0.0);
-
   auto displacementField = DisplacementFieldType::New();
   displacementField->SetSpacing(spacing);
   displacementField->SetOrigin(origin);
   displacementField->SetDirection(direction);
   displacementField->SetRegions(size);
-  displacementField->Allocate();
-  displacementField->FillBuffer(zeroDisplacement);
+  displacementField->AllocateInitialized();
 
   this->SetDisplacementField(displacementField);
 
@@ -542,8 +532,7 @@ DisplacementFieldTransform<TParametersValueType, VDimension>::SetFixedParameters
     inverseDisplacementField->SetOrigin(origin);
     inverseDisplacementField->SetDirection(direction);
     inverseDisplacementField->SetRegions(size);
-    inverseDisplacementField->Allocate();
-    inverseDisplacementField->FillBuffer(zeroDisplacement);
+    inverseDisplacementField->AllocateInitialized();
 
     this->SetInverseDisplacementField(inverseDisplacementField);
   }

@@ -50,7 +50,7 @@ WarpHarmonicEnergyCalculator<TInputImage>::SetUseImageSpacing(bool f)
 
   // Only reset the weights if they were previously set to the image spacing,
   // otherwise, the user may have provided their own weightings.
-  if (f == false && m_UseImageSpacing == true)
+  if (f == false && m_UseImageSpacing)
   {
     for (unsigned int i = 0; i < ImageDimension; ++i)
     {
@@ -73,15 +73,17 @@ WarpHarmonicEnergyCalculator<TInputImage>::Compute()
   // Set the weights on the derivatives.
   // Are we using image spacing in the calculations?  If so we must update now
   // in case our input image has changed.
-  if (m_UseImageSpacing == true)
+  if (m_UseImageSpacing)
   {
+    const auto & spacing = m_Image->GetSpacing();
+
     for (unsigned int i = 0; i < ImageDimension; ++i)
     {
-      if (m_Image->GetSpacing()[i] <= 0.0)
+      if (spacing[i] <= 0.0)
       {
         itkExceptionMacro("Image spacing in dimension " << i << " is zero.");
       }
-      m_DerivativeWeights[i] = 1.0 / static_cast<double>(m_Image->GetSpacing()[i]);
+      m_DerivativeWeights[i] = 1.0 / static_cast<double>(spacing[i]);
     }
   }
 

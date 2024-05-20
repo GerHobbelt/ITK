@@ -67,7 +67,7 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(VectorCentralDifferenceImageFunction);
 
   /** Method for creation through the object factory. */
@@ -147,7 +147,7 @@ protected:
 private:
   // flag to take or not the image direction into account
   // when computing the derivatives.
-  bool m_UseImageDirection{};
+  bool m_UseImageDirection{ true };
 };
 } // end namespace itk
 

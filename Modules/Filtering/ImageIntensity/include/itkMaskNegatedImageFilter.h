@@ -92,7 +92,7 @@ private:
   TPixelType
   DefaultOutsideValue(TPixelType *)
   {
-    return NumericTraits<TPixelType>::ZeroValue();
+    return TPixelType{};
   }
 
   template <typename TValue>
@@ -160,7 +160,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Runtime information support. */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(MaskNegatedImageFilter);
 
   /** Typedefs **/
@@ -273,12 +273,12 @@ private:
     // output image. If not, throw an exception.
     VariableLengthVector<TValue> currentValue = this->GetFunctor().GetOutsideValue();
     VariableLengthVector<TValue> zeroVector(currentValue.GetSize());
-    zeroVector.Fill(NumericTraits<TValue>::ZeroValue());
+    zeroVector.Fill(TValue{});
 
     if (currentValue == zeroVector)
     {
       zeroVector.SetSize(this->GetOutput()->GetVectorLength());
-      zeroVector.Fill(NumericTraits<TValue>::ZeroValue());
+      zeroVector.Fill(TValue{});
       this->GetFunctor().SetOutsideValue(zeroVector);
     }
     else if (this->GetFunctor().GetOutsideValue().GetSize() != this->GetOutput()->GetVectorLength())

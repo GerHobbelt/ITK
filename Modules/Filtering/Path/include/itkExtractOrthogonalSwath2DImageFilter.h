@@ -55,7 +55,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(ExtractOrthogonalSwath2DImageFilter);
 
   /** Some convenient type alias. */
@@ -131,7 +131,7 @@ public:
 protected:
   ExtractOrthogonalSwath2DImageFilter()
   {
-    m_DefaultPixelValue = NumericTraits<ImagePixelType>::ZeroValue();
+    m_DefaultPixelValue = ImagePixelType{};
     m_Size[0] = 512;
     m_Size[1] = 16 * 2 + 1; // must be odd
     m_Origin[0] = m_Origin[1] = 0.0;

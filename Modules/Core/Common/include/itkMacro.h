@@ -312,7 +312,7 @@ namespace itk
     Pointer smartPtr = ::itk::ObjectFactory<x>::Create(); \
     if (smartPtr == nullptr)                              \
     {                                                     \
-      smartPtr = new x;                                   \
+      smartPtr = new x();                                 \
     }                                                     \
     smartPtr->UnRegister();                               \
     return smartPtr;                                      \
@@ -369,7 +369,7 @@ namespace itk
 #define itkFactorylessNewMacro(x) \
   static Pointer New()            \
   {                               \
-    x *     rawPtr = new x;       \
+    x *     rawPtr = new x();     \
     Pointer smartPtr = rawPtr;    \
     rawPtr->UnRegister();         \
     return smartPtr;              \
@@ -485,6 +485,7 @@ OutputWindowDisplayGenericOutputText(const char *);
 
 extern ITKCommon_EXPORT void
 OutputWindowDisplayDebugText(const char *);
+
 } // end namespace itk
 
 // The itkDebugStatement is to be used to protect code that is only used in the itkDebugMacro

@@ -78,7 +78,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(MatchCardinalityImageToImageMetric);
 
   /** Types transferred from the base class */
@@ -102,7 +102,7 @@ public:
   GetDerivative(const TransformParametersType &, DerivativeType & derivative) const override
   {
     itkWarningMacro("This metric does not provide metric derivatives.");
-    derivative.Fill(NumericTraits<typename DerivativeType::ValueType>::ZeroValue());
+    derivative.Fill(typename DerivativeType::ValueType{});
   }
 
   /**  Get the value of the metric at a particular parameter

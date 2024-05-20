@@ -83,7 +83,7 @@ public:
   /** Standard New method. */
   itkNewMacro(Self);
 
-  /** Runtime information support. */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(LabelMapMaskImageFilter);
 
   /** Set the feature image */
@@ -117,7 +117,7 @@ public:
 
   /**
    * Set/Get the value used as "background" in the output image.
-   * Defaults to NumericTraits<PixelType>::ZeroValue().
+   * Defaults to PixelType{}.
    */
   itkSetMacro(BackgroundValue, OutputImagePixelType);
   itkGetConstMacro(BackgroundValue, OutputImagePixelType);

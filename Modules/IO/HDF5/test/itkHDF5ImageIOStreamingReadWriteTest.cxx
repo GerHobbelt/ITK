@@ -53,14 +53,14 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(DemoImageSource);
 
   /** Set the value to fill the image. */
   itkSetMacro(Value, typename TOutputImage::PixelType);
 
 protected:
-  DemoImageSource() { m_Value = NumericTraits<typename TOutputImage::PixelType>::ZeroValue(); }
+  DemoImageSource() { m_Value = typename TOutputImage::PixelType{}; }
   ~DemoImageSource() override = default;
 
   /** Does the real work. */

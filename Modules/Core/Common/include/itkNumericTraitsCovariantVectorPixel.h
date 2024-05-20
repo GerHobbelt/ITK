@@ -116,7 +116,7 @@ public:
   static const Self
   ZeroValue()
   {
-    return MakeFilled<Self>(NumericTraits<T>::ZeroValue());
+    return Self{};
   }
 
   static const Self
@@ -157,7 +157,7 @@ public:
     {
       itkGenericExceptionMacro("Cannot set the size of a CovariantVector of length " << D << " to " << s);
     }
-    m.Fill(NumericTraits<T>::ZeroValue());
+    m.Fill(T{});
   }
 
   /** Return the length of the vector. */

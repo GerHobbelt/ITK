@@ -21,6 +21,7 @@
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkNumericTraits.h"
 #include <cstdlib>
+#include <algorithm> // For max.
 
 namespace itk
 {
@@ -40,7 +41,7 @@ TriangleMeshToBinaryImageFilter<TInputMesh, TOutputImage>::TriangleMeshToBinaryI
   }
 
   m_InsideValue = NumericTraits<ValueType>::OneValue();
-  m_OutsideValue = NumericTraits<ValueType>::ZeroValue();
+  m_OutsideValue = ValueType{};
   m_Direction.GetVnlMatrix().set_identity();
 
   m_Tolerance = 1e-5;
@@ -227,10 +228,7 @@ TriangleMeshToBinaryImageFilter<TInputMesh, TOutputImage>::PolygonToImageRaster(
     }
 
     // cap to the volume extents
-    if (zmin < extent[4])
-    {
-      zmin = extent[4];
-    }
+    zmin = std::max(zmin, extent[4]);
     if (zmax >= extent[5])
     {
       zmax = extent[5] + 1;

@@ -50,15 +50,15 @@ public:
   using OutputDomainType = typename Traits::OutputDomainType;
   using OutputDomainPointer = typename Traits::OutputDomainPointer;
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(FastMarchingStoppingCriterionBase);
 
   /** Reinitialize internal values. */
   void
   Reinitialize()
   {
-    m_CurrentValue = NumericTraits<OutputPixelType>::ZeroValue();
-    m_PreviousValue = NumericTraits<OutputPixelType>::ZeroValue();
+    m_CurrentValue = OutputPixelType{};
+    m_PreviousValue = OutputPixelType{};
 
     this->Reset();
   }
@@ -79,8 +79,8 @@ protected:
     : Superclass()
     , m_Domain(nullptr)
   {
-    m_CurrentValue = NumericTraits<OutputPixelType>::ZeroValue();
-    m_PreviousValue = NumericTraits<OutputPixelType>::ZeroValue();
+    m_CurrentValue = OutputPixelType{};
+    m_PreviousValue = OutputPixelType{};
   }
 
   /** Destructor */

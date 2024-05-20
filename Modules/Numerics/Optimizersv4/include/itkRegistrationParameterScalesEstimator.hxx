@@ -23,6 +23,7 @@
 #include "itkPointSet.h"
 #include "itkObjectToObjectMetric.h"
 #include "itkPrintHelper.h"
+#include <algorithm> // For min.
 
 namespace itk
 {
@@ -59,10 +60,7 @@ RegistrationParameterScalesEstimator<TMetric>::EstimateMaximumStepSize() -> Floa
 
   for (SizeValueType d = 0; d < dim; ++d)
   {
-    if (minSpacing > spacing[d])
-    {
-      minSpacing = spacing[d];
-    }
+    minSpacing = std::min<FloatType>(minSpacing, spacing[d]);
   }
 
   return minSpacing;
@@ -287,7 +285,7 @@ RegistrationParameterScalesEstimator<TMetric>::ComputeSquaredJacobianNorms(const
 
     for (SizeValueType p = 0; p < numPara; ++p)
     {
-      squareNorms[p] = NumericTraits<typename ParametersType::ValueType>::ZeroValue();
+      squareNorms[p] = typename ParametersType::ValueType{};
       for (SizeValueType d = 0; d < dim; ++d)
       {
         squareNorms[p] += jacobian[d][p] * jacobian[d][p];
@@ -300,7 +298,7 @@ RegistrationParameterScalesEstimator<TMetric>::ComputeSquaredJacobianNorms(const
 
     for (SizeValueType p = 0; p < numPara; ++p)
     {
-      squareNorms[p] = NumericTraits<typename ParametersType::ValueType>::ZeroValue();
+      squareNorms[p] = typename ParametersType::ValueType{};
       for (SizeValueType d = 0; d < dim; ++d)
       {
         squareNorms[p] += jacobian[d][p] * jacobian[d][p];

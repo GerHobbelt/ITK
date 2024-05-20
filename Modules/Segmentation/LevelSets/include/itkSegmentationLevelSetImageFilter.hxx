@@ -36,7 +36,7 @@ SegmentationLevelSetImageFilter<TInputImage, TFeatureImage, TOutputPixelType>::S
   this->SetNumberOfLayers(TInputImage::ImageDimension);
   m_SegmentationFunction = nullptr;
   m_AutoGenerateSpeedAdvection = true;
-  this->SetIsoSurfaceValue(NumericTraits<ValueType>::ZeroValue());
+  this->SetIsoSurfaceValue(ValueType{});
 
   // Provide some reasonable defaults which will at least prevent infinite
   // looping.
@@ -72,14 +72,14 @@ SegmentationLevelSetImageFilter<TInputImage, TFeatureImage, TOutputPixelType>::G
 
   // A positive speed value causes surface expansion, the opposite of the
   // default. Flip the sign of the propagation and advection weights.
-  if (m_ReverseExpansionDirection == true)
+  if (m_ReverseExpansionDirection)
   {
     this->GetSegmentationFunction()->ReverseExpansionDirection();
   }
 
   // Allocate the images from which speeds will be sampled.
   // if it is uninitialized and AutoGenerateSpeedAdvection is true
-  if (!this->m_IsInitialized && m_AutoGenerateSpeedAdvection == true)
+  if (!this->m_IsInitialized && m_AutoGenerateSpeedAdvection)
   {
     if (Math::NotExactlyEquals(this->GetSegmentationFunction()->GetPropagationWeight(), 0))
     {
@@ -96,7 +96,7 @@ SegmentationLevelSetImageFilter<TInputImage, TFeatureImage, TOutputPixelType>::G
   Superclass::GenerateData();
 
   // Reset all the signs of the weights.
-  if (m_ReverseExpansionDirection == true)
+  if (m_ReverseExpansionDirection)
   {
     this->GetSegmentationFunction()->ReverseExpansionDirection();
   }

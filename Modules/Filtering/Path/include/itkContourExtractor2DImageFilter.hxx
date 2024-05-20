@@ -32,7 +32,7 @@ namespace itk
 template <typename TInputImage>
 ContourExtractor2DImageFilter<TInputImage>::ContourExtractor2DImageFilter()
 {
-  this->m_ContourValue = NumericTraits<InputRealType>::ZeroValue();
+  this->m_ContourValue = InputRealType{};
   this->m_ReverseContourOrientation = false;
   this->m_VertexConnectHighPixels = false;
   this->m_LabelContours = false;
@@ -628,7 +628,7 @@ void
 ContourExtractor2DImageFilter<TInputImage>::ClearRequestedRegion()
 {
   itkDebugMacro("Clearing RequestedRegion.");
-  if (this->m_UseCustomRegion == true)
+  if (this->m_UseCustomRegion)
   {
     this->m_UseCustomRegion = false;
     this->Modified();

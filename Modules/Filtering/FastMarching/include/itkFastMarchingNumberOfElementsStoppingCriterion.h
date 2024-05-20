@@ -52,7 +52,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(FastMarchingNumberOfElementsStoppingCriterion);
 
   using typename Superclass::OutputPixelType;
@@ -77,8 +77,8 @@ public:
 protected:
   FastMarchingNumberOfElementsStoppingCriterion()
     : Superclass()
-    , m_CurrentNumberOfElements(NumericTraits<IdentifierType>::ZeroValue())
-    , m_TargetNumberOfElements(NumericTraits<IdentifierType>::ZeroValue())
+    , m_CurrentNumberOfElements(IdentifierType{})
+    , m_TargetNumberOfElements(IdentifierType{})
   {}
 
   ~FastMarchingNumberOfElementsStoppingCriterion() override = default;
@@ -95,7 +95,7 @@ protected:
   void
   Reset() override
   {
-    this->m_CurrentNumberOfElements = NumericTraits<IdentifierType>::ZeroValue();
+    this->m_CurrentNumberOfElements = IdentifierType{};
   }
 };
 

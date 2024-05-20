@@ -135,7 +135,7 @@ test_fft(unsigned int * SizeOfDimensions)
     sizes[i] = complexImageSize[i];
   }
 
-  /* Print out the the frequency domain data obtained after performing
+  /* Print out the frequency domain data obtained after performing
    * the forward transform. */
   std::cout << "Frequency domain data after forward transform:" << std::endl;
   for (unsigned int i = 0; i < sizes[2]; ++i)
@@ -203,7 +203,7 @@ test_fft(unsigned int * SizeOfDimensions)
     TPixel val = originalImageIterator.Value();
     TPixel val2 = inverseFFTImageIterator.Value();
     TPixel diff = itk::Math::abs(val - val2);
-    if (itk::Math::NotAlmostEquals(val, itk::NumericTraits<TPixel>::ZeroValue()))
+    if (itk::Math::NotAlmostEquals(val, TPixel{}))
     {
       diff /= itk::Math::abs(val);
     }
@@ -321,7 +321,7 @@ test_fft_rtc(unsigned int * SizeOfDimensions)
     sizesB[i] = complexImageSizeB[i];
   }
 
-  // Print out the the frequency domain data obtained after performing
+  // Print out the frequency domain data obtained after performing
   // the forward transform.
   std::cout << "Frequency domain data after forward transform:" << std::endl;
   for (unsigned int i = 0; i < sizesA[2]; ++i)

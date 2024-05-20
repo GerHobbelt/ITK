@@ -53,12 +53,12 @@ public:
 
   MeanAccumulator(SizeValueType size) { m_Size = size; }
 
-  ~MeanAccumulator() { m_Size = NumericTraits<SizeValueType>::ZeroValue(); }
+  ~MeanAccumulator() { m_Size = SizeValueType{}; }
 
   inline void
   Initialize()
   {
-    m_Sum = NumericTraits<TAccumulate>::ZeroValue();
+    m_Sum = TAccumulate{};
   }
 
   inline void
@@ -103,7 +103,7 @@ public:
   using OutputImageType = TOutputImage;
   using OutputPixelType = typename OutputImageType::PixelType;
 
-  /** Runtime information support. */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(MeanProjectionImageFilter);
 
   /** Method for creation through the object factory. */

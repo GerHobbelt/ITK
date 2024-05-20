@@ -306,7 +306,7 @@ MattesMutualInformationImageToImageMetric<TFixedImage, TMovingImage>::Initialize
     for (ThreadIdType workUnitID = 0; workUnitID < this->m_NumberOfWorkUnits; ++workUnitID)
     {
       this->m_MMIMetricPerThreadVariables[workUnitID].MetricDerivative.SetSize(this->GetNumberOfParameters());
-      this->m_MMIMetricPerThreadVariables[workUnitID].MetricDerivative.Fill(NumericTraits<MeasureType>::ZeroValue());
+      this->m_MMIMetricPerThreadVariables[workUnitID].MetricDerivative.Fill(MeasureType{});
     }
   }
 
@@ -699,7 +699,7 @@ MattesMutualInformationImageToImageMetric<TFixedImage, TMovingImage>::GetValueAn
   DerivativeType &       derivative) const
 {
   // Set output values to zero
-  value = NumericTraits<MeasureType>::ZeroValue();
+  value = MeasureType{};
 
   if (this->m_UseExplicitPDFDerivatives)
   {
@@ -715,7 +715,7 @@ MattesMutualInformationImageToImageMetric<TFixedImage, TMovingImage>::GetValueAn
     this->m_PRatioArray.Fill(0.0);
     for (ThreadIdType workUnitID = 0; workUnitID < this->m_NumberOfWorkUnits; ++workUnitID)
     {
-      this->m_MMIMetricPerThreadVariables[workUnitID].MetricDerivative.Fill(NumericTraits<MeasureType>::ZeroValue());
+      this->m_MMIMetricPerThreadVariables[workUnitID].MetricDerivative.Fill(MeasureType{});
     }
     this->m_ImplicitDerivativesSecondPass = false;
   }
@@ -828,8 +828,8 @@ MattesMutualInformationImageToImageMetric<TFixedImage, TMovingImage>::CommonGetV
 
   // NOTE: Since the m_ThreaderFixedImageMarginalPDF is the sum of mass
   // in the fixed image dimension, accumulating these values gives the
-  // same answer as computing the the sum of individual values over
-  // the the entire histogram.  IMPORTANT NOTICE: THIS MAKES AN
+  // same answer as computing the sum of individual values over
+  // the entire histogram.  IMPORTANT NOTICE: THIS MAKES AN
   // ASSUMPTION OF CONSERVATION OF MASS OF THE BSPLINE SMOOTHING.  The
   // sum of all the values should equal the number of samples being
   // used, since each sample contributes only one sample somewhere in
@@ -911,7 +911,7 @@ MattesMutualInformationImageToImageMetric<TFixedImage, TMovingImage>::ComputePDF
     precomputedWeight = this->m_PRatioArray[pdfFixedIndex][pdfMovingIndex];
   }
 
-  if (!this->m_TransformIsBSpline)
+  if (!this->m_BSplineTransform)
   {
     /**
      * Generic version which works for all transforms.

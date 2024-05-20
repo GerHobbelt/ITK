@@ -82,7 +82,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(LabelMap);
 
   using LabelObjectType = TLabelObject;
@@ -279,7 +279,7 @@ public:
   GetLabels() const;
 
   /**
-   * Return the the label objects available in the label map
+   * Return the label objects available in the label map
    */
   LabelObjectVectorType
   GetLabelObjects() const;

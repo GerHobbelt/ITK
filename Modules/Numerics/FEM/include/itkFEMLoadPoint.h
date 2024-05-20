@@ -45,7 +45,7 @@ public:
   /** Method for creation through the object factory. */
   itkSimpleNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(LoadPoint);
 
   /** CreateAnother method will clone the existing instance of this type,
@@ -55,8 +55,8 @@ public:
 
   /** Default constructor. */
   LoadPoint()
-    : m_Point(2, NumericTraits<Float>::ZeroValue())
-    , m_ForcePoint(2, NumericTraits<Float>::ZeroValue())
+    : m_Point(2, Float{})
+    , m_ForcePoint(2, Float{})
   {
     // Default initialization of 2D point and force vector
   }

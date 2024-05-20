@@ -126,7 +126,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Runtime information support. */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(GradientRecursiveGaussianImageFilter);
 
   /** Set/Get the Sigma value. Sigma is measured in the units of image spacing. */
@@ -255,7 +255,7 @@ private:
   bool m_NormalizeAcrossScale{};
 
   /** Take into account image orientation when computing the Gradient */
-  bool m_UseImageDirection{};
+  bool m_UseImageDirection{ true };
 
   /** Standard deviation of the gaussian */
   SigmaArrayType m_Sigma{};

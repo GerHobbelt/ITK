@@ -179,7 +179,7 @@ public:
     }
     else
     {
-      return NumericTraits<TInputPixel>::ZeroValue();
+      return TInputPixel{};
     }
   }
 
@@ -255,7 +255,7 @@ public:
   /** Standard New method. */
   itkNewMacro(Self);
 
-  /** Runtime information support. */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(MovingHistogramMorphologicalGradientImageFilter);
 
   /** Image related type alias. */

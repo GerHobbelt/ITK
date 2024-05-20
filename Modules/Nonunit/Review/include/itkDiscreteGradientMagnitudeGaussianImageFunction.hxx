@@ -77,7 +77,7 @@ DiscreteGradientMagnitudeGaussianImageFunction<TInputImage, TOutput>::RecomputeG
       m_OperatorArray[idx].SetMaximumKernelWidth(m_MaximumKernelWidth);
       m_OperatorArray[idx].SetMaximumError(m_MaximumError);
 
-      if ((m_UseImageSpacing == true) && (this->GetInputImage()))
+      if (m_UseImageSpacing && (this->GetInputImage()))
       {
         if (this->GetInputImage()->GetSpacing()[direction] == 0.0)
         {
@@ -122,8 +122,7 @@ DiscreteGradientMagnitudeGaussianImageFunction<TInputImage, TOutput>::RecomputeG
   region.SetSize(size);
 
   kernelImage->SetRegions(region);
-  kernelImage->Allocate();
-  kernelImage->FillBuffer(itk::NumericTraits<TOutput>::ZeroValue());
+  kernelImage->AllocateInitialized();
 
   // Initially the kernel image will be an impulse at the center
   typename KernelImageType::IndexType centerIndex;
@@ -146,7 +145,7 @@ DiscreteGradientMagnitudeGaussianImageFunction<TInputImage, TOutput>::RecomputeG
   for (unsigned int i = 0; i < Self::ImageDimension2; ++i)
   {
     // Reset kernel image
-    kernelImage->FillBuffer(itk::NumericTraits<TOutput>::ZeroValue());
+    kernelImage->FillBuffer(TOutput{});
     kernelImage->SetPixel(centerIndex, itk::NumericTraits<TOutput>::OneValue());
 
     for (unsigned int direction = 0; direction < Self::ImageDimension2; ++direction)

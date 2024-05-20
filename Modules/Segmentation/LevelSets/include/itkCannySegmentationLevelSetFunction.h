@@ -48,7 +48,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods) */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(CannySegmentationLevelSetFunction);
 
   /** Extract some parameters from the superclass. */
@@ -120,7 +120,7 @@ protected:
   CannySegmentationLevelSetFunction()
   {
     m_Variance = 0.0;
-    m_Threshold = NumericTraits<ScalarValueType>::ZeroValue();
+    m_Threshold = ScalarValueType{};
     m_Caster = CastImageFilter<FeatureImageType, ImageType>::New();
     m_Canny = CannyEdgeDetectionImageFilter<ImageType, ImageType>::New();
     m_Distance = DanielssonDistanceMapImageFilter<ImageType, ImageType>::New();

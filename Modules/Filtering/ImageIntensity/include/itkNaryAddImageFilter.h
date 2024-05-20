@@ -38,7 +38,7 @@ public:
   inline TOutput
   operator()(const std::vector<TInput> & B) const
   {
-    AccumulatorType sum = NumericTraits<TOutput>::ZeroValue();
+    AccumulatorType sum = TOutput{};
 
     for (unsigned int i = 0; i < B.size(); ++i)
     {
@@ -113,7 +113,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Runtime information support. */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(NaryAddImageFilter);
 
 #ifdef ITK_USE_CONCEPT_CHECKING

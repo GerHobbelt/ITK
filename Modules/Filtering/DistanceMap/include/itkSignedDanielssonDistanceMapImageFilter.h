@@ -35,7 +35,7 @@ public:
   {
     if (input)
     {
-      return NumericTraits<InputPixelType>::ZeroValue();
+      return InputPixelType{};
     }
     else
     {
@@ -105,7 +105,7 @@ public:
   /** Method for creation through the object factory */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(SignedDanielssonDistanceMapImageFilter);
 
   /** Type for input image. */
@@ -233,7 +233,7 @@ protected:
 
 private:
   bool m_SquaredDistance{};
-  bool m_UseImageSpacing{};
+  bool m_UseImageSpacing{ true };
   bool m_InsideIsPositive{}; // ON is treated as inside pixels
 };                           // end of SignedDanielssonDistanceMapImageFilter
                              // class

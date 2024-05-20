@@ -26,8 +26,8 @@
 #include "itkImageRegionIterator.h"
 #include "itkOffset.h"
 #include "itkNeighborhoodAlgorithm.h"
-#include "itkShapedNeighborhoodIterator.h"
 #include "itkZeroFluxNeumannBoundaryCondition.h"
+#include <algorithm> // For min.
 
 /*
  *
@@ -125,7 +125,7 @@ BoxAccumulateFunction(const TInputImage *               inputImage,
   itk_impl_details::setConnectivityEarlyBox(&noutIt, true);
 
   ConstantBoundaryCondition<OutputImageType> oBC;
-  oBC.SetConstant(NumericTraits<OutputPixelType>::ZeroValue());
+  oBC.SetConstant(OutputPixelType{});
   noutIt.OverrideBoundaryCondition(&oBC);
   // This uses several iterators. An alternative and probably better
   // approach would be to copy the input to the output and convolve
@@ -359,10 +359,7 @@ BoxMeanCalculatorFunction(const TInputImage *               accImage,
             if (unitCorners[k][j] > 0)
             {
               // leading edge - crop it
-              if (thisCorner[j] > static_cast<OffsetValueType>(regionLimit[j]))
-              {
-                thisCorner[j] = static_cast<OffsetValueType>(regionLimit[j]);
-              }
+              thisCorner[j] = std::min(thisCorner[j], static_cast<OffsetValueType>(regionLimit[j]));
             }
             else
             {
@@ -552,10 +549,7 @@ BoxSigmaCalculatorFunction(const TInputImage *               accImage,
             if (unitCorners[k][j] > 0)
             {
               // leading edge - crop it
-              if (thisCorner[j] > static_cast<OffsetValueType>(regionLimit[j]))
-              {
-                thisCorner[j] = static_cast<OffsetValueType>(regionLimit[j]);
-              }
+              thisCorner[j] = std::min(thisCorner[j], static_cast<OffsetValueType>(regionLimit[j]));
             }
             else
             {
@@ -618,7 +612,7 @@ BoxSquareAccumulateFunction(const TInputImage *               inputImage,
   itk_impl_details::setConnectivityEarlyBox(&noutIt, true);
 
   ConstantBoundaryCondition<OutputImageType> oBC;
-  oBC.SetConstant(NumericTraits<OutputPixelType>::ZeroValue());
+  oBC.SetConstant(OutputPixelType{});
   noutIt.OverrideBoundaryCondition(&oBC);
   // This uses several iterators. An alternative and probably better
   // approach would be to copy the input to the output and convolve

@@ -65,7 +65,7 @@ public:
   /** Type used for representing point components  */
   using CoordinateRepresentationType = typename Superclass::ParametersValueType;
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(ImageToImageMetric);
 
   /**  Type of the moving Image. */
@@ -459,8 +459,12 @@ protected:
    * only inspecting the parameters within the support region
    * of a mapped point.  */
 
-  /** Boolean to indicate if the transform is BSpline deformable. */
+#ifndef ITK_FUTURE_LEGACY_REMOVE
+  /** Boolean to indicate if the transform is BSpline deformable.
+  \deprecated `m_TransformIsBSpline` is intended to be removed, in the future. Please use `m_BSplineTransform`
+  instead. For example, `if (m_TransformIsBSpline)` may be rewritten as `if (m_BSplineTransform)`. */
   bool m_TransformIsBSpline{ false };
+#endif
 
   /** The number of BSpline transform weights is the number of
    * of parameter in the support region (per dimension ). */
@@ -537,8 +541,13 @@ protected:
                                 ImageDerivativesType & movingImageGradient,
                                 ThreadIdType           threadId) const;
 
-  /** Boolean to indicate if the interpolator BSpline. */
+#ifndef ITK_FUTURE_LEGACY_REMOVE
+  /** Boolean to indicate if the interpolator BSpline.
+  \deprecated `m_InterpolatorIsBSpline` is intended to be removed, in the future. Please use `m_BSplineInterpolator`
+  instead. For example, `if (m_InterpolatorIsBSpline)` may be rewritten as `if (m_BSplineInterpolator)`. */
   bool m_InterpolatorIsBSpline{ false };
+#endif
+
   /** Pointer to BSplineInterpolator. */
   typename BSplineInterpolatorType::Pointer m_BSplineInterpolator{};
 

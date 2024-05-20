@@ -27,7 +27,7 @@ OFFMeshIO::OFFMeshIO()
 {
   this->AddSupportedWriteExtension(".off");
   this->SetByteOrderToBigEndian();
-  m_PointsStartPosition = itk::NumericTraits<StreamOffsetType>::ZeroValue();
+  m_PointsStartPosition = StreamOffsetType{};
   m_TriangleCellType = true;
 }
 
@@ -250,13 +250,13 @@ OFFMeshIO::ReadMeshInformation()
   this->m_PointPixelComponentType = IOComponentEnum::FLOAT;
   this->m_PointPixelType = IOPixelEnum::SCALAR;
   this->m_UpdatePointData = false;
-  this->m_NumberOfPointPixelComponents = itk::NumericTraits<unsigned int>::OneValue();
+  this->m_NumberOfPointPixelComponents = 1;
 
   // Set default cell pixel component and point pixel type
   this->m_CellPixelComponentType = IOComponentEnum::FLOAT;
   this->m_CellPixelType = IOPixelEnum::SCALAR;
   this->m_UpdateCellData = false;
-  this->m_NumberOfCellPixelComponents = itk::NumericTraits<unsigned int>::OneValue();
+  this->m_NumberOfCellPixelComponents = 1;
 }
 
 void

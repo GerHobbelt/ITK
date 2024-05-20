@@ -36,7 +36,6 @@ GaussianBlurImageFunction<TInputImage, TOutput>::GaussianBlurImageFunction()
     m_MaximumKernelWidth = 32;
     m_Extent[i] = 1.0f;
   }
-  m_UseImageSpacing = true;
 
   m_GaussianFunction = GaussianFunctionType::New();
   m_GaussianFunction->SetMean(mean);
@@ -187,7 +186,7 @@ GaussianBlurImageFunction<TInputImage, TOutput>::RecomputeGaussianKernel()
     gaussianOperator.SetMaximumError(m_MaximumError[direction]);
     gaussianOperator.SetMaximumKernelWidth(m_MaximumKernelWidth);
 
-    if ((m_UseImageSpacing == true) && (this->GetInputImage()))
+    if (m_UseImageSpacing && (this->GetInputImage()))
     {
       if (this->GetInputImage()->GetSpacing()[direction] == 0.0)
       {
@@ -214,7 +213,7 @@ GaussianBlurImageFunction<TInputImage, TOutput>::RecomputeGaussianKernel()
   typename InternalImageType::RegionType region;
   region.SetSize(size);
   m_InternalImage->SetRegions(region);
-  m_InternalImage->Allocate(true); // initialize buffer to zero
+  m_InternalImage->AllocateInitialized();
 }
 
 /** Evaluate the function at the specified point */
@@ -371,7 +370,7 @@ GaussianBlurImageFunction<TInputImage, TOutput>::RecomputeContinuousGaussianKern
     {
       typename GaussianFunctionType::InputType pt;
       pt[0] = gaussianNeighborhood.GetOffset(i)[direction] - offset[direction];
-      if ((m_UseImageSpacing == true) && (this->GetInputImage()))
+      if (m_UseImageSpacing && (this->GetInputImage()))
       {
         if (this->GetInputImage()->GetSpacing()[direction] == 0.0)
         {

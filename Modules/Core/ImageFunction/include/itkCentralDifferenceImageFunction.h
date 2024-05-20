@@ -87,7 +87,7 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(CentralDifferenceImageFunction);
 
   /** Method for creation through the object factory. */
@@ -260,7 +260,7 @@ private:
 
   // flag to take or not the image direction into account
   // when computing the derivatives.
-  bool m_UseImageDirection{};
+  bool m_UseImageDirection{ true };
 
   // interpolator
   InterpolatorPointer m_Interpolator{};

@@ -148,7 +148,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods) */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(VectorGradientMagnitudeImageFilter);
 
   /** Extract some information from the image types.  Dimensionality
@@ -320,10 +320,10 @@ protected:
     unsigned int i, j;
     TRealType    dx, sum, accum;
 
-    accum = NumericTraits<TRealType>::ZeroValue();
+    accum = TRealType{};
     for (i = 0; i < ImageDimension; ++i)
     {
-      sum = NumericTraits<TRealType>::ZeroValue();
+      sum = TRealType{};
       for (j = 0; j < VectorDimension; ++j)
       {
         dx = m_DerivativeWeights[i] * m_SqrtComponentWeights[j] * 0.5 * (it.GetNext(i)[j] - it.GetPrevious(i)[j]);
@@ -494,7 +494,7 @@ protected:
   ComponentWeightsType m_SqrtComponentWeights = ComponentWeightsType::Filled(1);
 
 private:
-  bool m_UseImageSpacing{};
+  bool m_UseImageSpacing{ true };
   bool m_UsePrincipleComponents{};
 
   ThreadIdType m_RequestedNumberOfWorkUnits{};

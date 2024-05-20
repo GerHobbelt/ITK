@@ -82,7 +82,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(SymmetricForcesDemonsRegistrationFilter);
 
   /** FixedImage image type. */
@@ -109,7 +109,7 @@ public:
 
   /** Get the metric value. The metric value is the mean square difference
    * in intensity between the fixed image and transforming moving image
-   * computed over the the overlapping region between the two images.
+   * computed over the overlapping region between the two images.
    * This value is calculated for the current iteration */
   virtual double
   GetMetric() const;

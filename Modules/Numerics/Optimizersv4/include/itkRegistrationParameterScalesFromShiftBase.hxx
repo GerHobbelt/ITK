@@ -18,6 +18,7 @@
 #ifndef itkRegistrationParameterScalesFromShiftBase_hxx
 #define itkRegistrationParameterScalesFromShiftBase_hxx
 
+#include <algorithm> // For max.
 
 namespace itk
 {
@@ -73,7 +74,7 @@ RegistrationParameterScalesFromShiftBase<TMetric>::EstimateScales(ScalesType & p
   {
     // For local support, we need to refill deltaParameters with zeros at each loop
     // since smoothing may change the values around the local voxel.
-    deltaParameters.Fill(NumericTraits<typename ParametersType::ValueType>::ZeroValue());
+    deltaParameters.Fill(typename ParametersType::ValueType{});
     deltaParameters[offset + i] = this->m_SmallParameterVariation;
 
     maxShift = this->ComputeMaximumVoxelShift(deltaParameters);
@@ -140,14 +141,11 @@ RegistrationParameterScalesFromShiftBase<TMetric>::EstimateStepScale(const Param
   FloatType maxStep{};
   for (typename ParametersType::SizeValueType p = 0; p < step.GetSize(); ++p)
   {
-    if (maxStep < itk::Math::abs(step[p]))
-    {
-      maxStep = itk::Math::abs(step[p]);
-    }
+    maxStep = std::max(maxStep, itk::Math::abs(step[p]));
   }
   if (maxStep <= NumericTraits<FloatType>::epsilon())
   {
-    return NumericTraits<FloatType>::ZeroValue();
+    return FloatType{};
   }
   else
   {
@@ -185,7 +183,7 @@ RegistrationParameterScalesFromShiftBase<TMetric>::EstimateLocalStepScales(const
   const SizeValueType numLocals = numAllPara / numPara;
 
   localStepScales.SetSize(numLocals);
-  localStepScales.Fill(NumericTraits<typename ScalesType::ValueType>::ZeroValue());
+  localStepScales.Fill(typename ScalesType::ValueType{});
 
   const auto numSamples = static_cast<const SizeValueType>(this->m_SamplePoints.size());
   for (SizeValueType c = 0; c < numSamples; ++c)
@@ -211,10 +209,7 @@ RegistrationParameterScalesFromShiftBase<TMetric>::ComputeMaximumVoxelShift(cons
   FloatType maxShift{};
   for (SizeValueType s = 0; s < sampleShifts.size(); ++s)
   {
-    if (maxShift < sampleShifts[s])
-    {
-      maxShift = sampleShifts[s];
-    }
+    maxShift = std::max(maxShift, sampleShifts[s]);
   }
 
   return maxShift;

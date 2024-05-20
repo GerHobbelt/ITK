@@ -414,7 +414,7 @@ ObjectToObjectMetric<TFixedDimension, TMovingDimension, TVirtualImage, TParamete
   else
   {
     VirtualOriginType origin;
-    origin.Fill(NumericTraits<typename VirtualOriginType::ValueType>::ZeroValue());
+    origin.Fill(typename VirtualOriginType::ValueType{});
     return origin;
   }
 }
@@ -511,8 +511,7 @@ ObjectToObjectMetric<TFixedDimension, TMovingDimension, TVirtualImage, TParamete
 
   if (!this->GetVirtualOrigin().GetVnlVector().is_equal(field->GetOrigin().GetVnlVector(), coordinateTol) ||
       !this->GetVirtualSpacing().GetVnlVector().is_equal(field->GetSpacing().GetVnlVector(), coordinateTol) ||
-      !this->GetVirtualDirection().GetVnlMatrix().as_ref().is_equal(field->GetDirection().GetVnlMatrix().as_ref(),
-                                                                    directionTol))
+      !this->GetVirtualDirection().GetVnlMatrix().is_equal(field->GetDirection().GetVnlMatrix(), directionTol))
   {
     std::ostringstream originString, spacingString, directionString;
     originString << "Virtual Origin: " << this->GetVirtualOrigin()
@@ -541,7 +540,7 @@ ObjectToObjectMetric<TFixedDimension, TMovingDimension, TVirtualImage, TParamete
   if (this->m_NumberOfValidPoints == 0)
   {
     value = NumericTraits<MeasureType>::max();
-    derivative.Fill(NumericTraits<DerivativeValueType>::ZeroValue());
+    derivative.Fill(DerivativeValueType{});
     itkWarningMacro("No valid points were found during metric evaluation. "
                     "For image metrics, verify that the images overlap appropriately. "
                     "For instance, you can align the image centers by translation. "

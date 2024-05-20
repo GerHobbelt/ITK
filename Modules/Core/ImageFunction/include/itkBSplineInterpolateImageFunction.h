@@ -91,7 +91,7 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(BSplineInterpolateImageFunction);
 
   /** New macro for creation of through a Smart Pointer */
@@ -411,7 +411,7 @@ private:
 
   // flag to take or not the image direction into account when computing the
   // derivatives.
-  bool m_UseImageDirection{};
+  bool m_UseImageDirection{ true };
 
   ThreadIdType                          m_NumberOfWorkUnits{};
   std::unique_ptr<vnl_matrix<long>[]>   m_ThreadedEvaluateIndex;

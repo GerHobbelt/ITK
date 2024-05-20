@@ -21,6 +21,8 @@
 #include "itkImageToImageFilter.h"
 #include "itkCovariantVector.h"
 #include "itkImageRegionIterator.h"
+#include "itkZeroFluxNeumannBoundaryCondition.h"
+#include <memory> // For unique_ptr.
 
 namespace itk
 {
@@ -87,7 +89,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(GradientImageFilter);
 
   /** Image type alias support */
@@ -163,7 +165,7 @@ public:
 
 protected:
   GradientImageFilter();
-  ~GradientImageFilter() override;
+  ~GradientImageFilter() override = default;
   void
   PrintSelf(std::ostream & os, Indent indent) const override;
 
@@ -219,14 +221,16 @@ private:
   }
 
 
-  bool m_UseImageSpacing{};
+  bool m_UseImageSpacing{ true };
 
   // flag to take or not the image direction into account
   // when computing the derivatives.
-  bool m_UseImageDirection{};
+  bool m_UseImageDirection{ true };
 
   // allow setting the the m_BoundaryCondition
-  ImageBoundaryCondition<TInputImage, TInputImage> * m_BoundaryCondition{};
+  std::unique_ptr<ImageBoundaryCondition<TInputImage, TInputImage>> m_BoundaryCondition{
+    std::make_unique<ZeroFluxNeumannBoundaryCondition<TInputImage>>()
+  };
 };
 } // end namespace itk
 

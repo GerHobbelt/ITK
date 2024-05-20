@@ -189,7 +189,7 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(ImageToImageMetricv4);
 
   /** Type used internally for computations */
@@ -495,7 +495,7 @@ public:
   itkGetConstReferenceMacro(UseMovingImageGradientFilter, bool);
   itkBooleanMacro(UseMovingImageGradientFilter);
 
-  /** Get number of work units to used in the the most recent
+  /** Get number of work units to used in the most recent
    * evaluation.  Only valid after GetValueAndDerivative() or
    * GetValue() has been called. */
   virtual ThreadIdType
@@ -510,7 +510,7 @@ public:
   GetMaximumNumberOfWorkUnits() const;
 
 #if !defined(ITK_LEGACY_REMOVE)
-  /** Get number of threads to used in the the most recent
+  /** Get number of threads to used in the most recent
    * evaluation.  Only valid after GetValueAndDerivative() or
    * GetValue() has been called.
    *

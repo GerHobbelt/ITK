@@ -43,7 +43,7 @@ itkSignedDanielssonDistanceMapImageFilterTest11(int, char *[])
 
   auto inputImage2D = myImageType2D1::New();
   inputImage2D->SetRegions(region2D);
-  inputImage2D->Allocate(true);
+  inputImage2D->AllocateInitialized();
 
   /* Set pixel (4,4) with the value 1
    * The SignedDanielsson Distance is performed for each pixel with a value > 0
@@ -131,7 +131,7 @@ itkSignedDanielssonDistanceMapImageFilterTest11(int, char *[])
     return EXIT_FAILURE;
   }
 
-  if (filter2D->GetSquaredDistance() == true)
+  if (filter2D->GetSquaredDistance())
   {
     std::cerr << "filter2D->GetSquaredDistance() == true & it should not" << std::endl;
     return EXIT_FAILURE;

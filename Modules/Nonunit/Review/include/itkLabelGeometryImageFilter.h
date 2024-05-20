@@ -87,7 +87,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Runtime information support. */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(LabelGeometryImageFilter);
 
   /** Image related type alias. */
@@ -157,7 +157,7 @@ public:
     {
       // initialized to the default values
       this->m_Label = 0;
-      this->m_Sum = NumericTraits<RealType>::ZeroValue();
+      this->m_Sum = RealType{};
 
       const unsigned int imageDimension = Self::ImageDimension;
 
@@ -214,7 +214,7 @@ public:
     LabelPointType                          m_WeightedCentroid;
     SizeValueType                           m_ZeroOrderMoment;
     IndexArrayType                          m_FirstOrderRawMoments;
-    IndexArrayType                          m_FirstOrderWeightedRawMoments;
+    AxesLengthType                          m_FirstOrderWeightedRawMoments;
     SizeValueType                           m_FirstOrderRawCrossMoment;
     RealType                                m_FirstOrderCentralCrossMoment;
     MatrixType                              m_SecondOrderRawMoments;
@@ -257,8 +257,8 @@ public:
     // turned off if any of these flags are turned on.
     if (value == false)
     {
-      if ((this->m_CalculateOrientedBoundingBox == true) || (this->m_CalculateOrientedLabelRegions == true) ||
-          (this->m_CalculateOrientedIntensityRegions == true))
+      if ((this->m_CalculateOrientedBoundingBox) || (this->m_CalculateOrientedLabelRegions) ||
+          (this->m_CalculateOrientedIntensityRegions))
       {
         // We cannot change the value, so return.
         return;
@@ -285,7 +285,7 @@ public:
 
     // CalculateOrientedBoundingBox needs
     // CalculatePixelIndices to be turned on.
-    if (value == true)
+    if (value)
     {
       this->SetCalculatePixelIndices(true);
     }
@@ -303,7 +303,7 @@ public:
 
       // CalculateOrientedLabelImage needs
       // CalculateOrientedBoundingBox to be turned on.
-      if (value == true)
+      if (value)
       {
         SetCalculateOrientedBoundingBox(true);
       }
@@ -322,7 +322,7 @@ public:
 
       // CalculateOrientedIntensityImage needs
       // CalculateOrientedBoundingBox to be turned on.
-      if (value == true)
+      if (value)
       {
         this->SetCalculateOrientedBoundingBox(true);
       }

@@ -476,7 +476,7 @@ MultiphaseSparseFiniteDifferenceImageFilter<TInputImage, TFeatureImage, TOutputI
       {
         // mark this pixel so we don't add it twice.
         statusIt.SetPixel(m_NeighborList.GetArrayIndex(i), m_StatusChanging, bounds_status);
-        if (bounds_status == true)
+        if (bounds_status)
         {
           node = sparsePtr->m_LayerNodeStore->Borrow();
           node->m_Value = statusIt.GetIndex() + m_NeighborList.GetNeighborhoodOffset(i);
@@ -571,7 +571,7 @@ MultiphaseSparseFiniteDifferenceImageFilter<TInputImage, TFeatureImage, TOutputI
         }
       }
 
-      if (flag == true)
+      if (flag)
       {
         ++layerIt;
         ++updateIt;
@@ -625,7 +625,7 @@ MultiphaseSparseFiniteDifferenceImageFilter<TInputImage, TFeatureImage, TOutputI
         }
       }
 
-      if (flag == true)
+      if (flag)
       {
         ++layerIt;
         ++updateIt;
@@ -1311,7 +1311,7 @@ MultiphaseSparseFiniteDifferenceImageFilter<TInputImage, TFeatureImage, TOutputI
       if (statusIt.GetPixel(neighborIndex) == m_StatusNull)
       {
         statusIt.SetPixel(neighborIndex, to, boundary_status);
-        if (boundary_status == true) // in bounds
+        if (boundary_status) // in bounds
         {
           node = sparsePtr->m_LayerNodeStore->Borrow();
           node->m_Value = statusIt.GetIndex() + m_NeighborList.GetNeighborhoodOffset(i);
@@ -1331,7 +1331,7 @@ MultiphaseSparseFiniteDifferenceImageFilter<TInputImage, TFeatureImage, TOutputI
   // Get the output pointer and clear its contents
   OutputImagePointer output = this->GetOutput();
 
-  output->FillBuffer(NumericTraits<OutputPixelType>::ZeroValue());
+  output->FillBuffer(OutputPixelType{});
 
   // Set the values in the levelset image for the active layer.
   this->InitializeActiveLayerValues();

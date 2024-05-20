@@ -63,7 +63,7 @@ public:
   inline void
   Initialize()
   {
-    m_Sum = NumericTraits<TAccumulate>::ZeroValue();
+    m_Sum = TAccumulate{};
     m_Values.clear();
   }
 
@@ -80,7 +80,7 @@ public:
     // to avoid division by zero
     if (m_Size <= 1)
     {
-      return NumericTraits<RealType>::ZeroValue();
+      return RealType{};
     }
 
     typename NumericTraits<TInputPixel>::RealType mean = ((RealType)m_Sum) / m_Size;
@@ -123,7 +123,7 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  /** Runtime information support. */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(StandardDeviationProjectionImageFilter);
 
   /** Method for creation through the object factory. */

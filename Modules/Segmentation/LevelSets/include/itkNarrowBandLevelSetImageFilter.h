@@ -171,7 +171,7 @@ public:
   /** The type used for the advection field */
   using VectorImageType = typename SegmentationFunctionType::VectorImageType;
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(NarrowBandLevelSetImageFilter);
 
   /** Set/Get the feature image to be used for speed function of the level set
@@ -234,7 +234,7 @@ public:
   SetUseNegativeFeatures(bool u)
   {
     itkWarningMacro("SetUseNegativeFeatures has been deprecated.  Please use SetReverseExpansionDirection instead");
-    if (u == true)
+    if (u)
     {
       this->SetReverseExpansionDirection(false);
     }

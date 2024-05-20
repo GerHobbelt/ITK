@@ -100,7 +100,7 @@ InvertDisplacementFieldImageFilter<TInputImage, TOutputImage>::GenerateData()
 
   this->m_ScaledNormImage->CopyInformation(displacementField);
   this->m_ScaledNormImage->SetRegions(displacementField->GetRequestedRegion());
-  this->m_ScaledNormImage->Allocate(true); // initialize buffer to zero
+  this->m_ScaledNormImage->AllocateInitialized();
 
   SizeValueType numberOfPixelsInRegion = (displacementField->GetRequestedRegion()).GetNumberOfPixels();
   this->m_MaxErrorNorm = NumericTraits<RealType>::max();
@@ -125,8 +125,8 @@ InvertDisplacementFieldImageFilter<TInputImage, TOutputImage>::GenerateData()
     this->m_ComposedField->DisconnectPipeline();
 
     // Multithread processing to multiply each element of the composed field by 1 / spacing
-    this->m_MeanErrorNorm = NumericTraits<RealType>::ZeroValue();
-    this->m_MaxErrorNorm = NumericTraits<RealType>::ZeroValue();
+    this->m_MeanErrorNorm = RealType{};
+    this->m_MaxErrorNorm = RealType{};
 
     float               newProgress = static_cast<float>(2 * iteration - 1) / (2 * m_MaximumNumberOfIterations);
     ProgressTransformer pt(oldProgress, newProgress, this);

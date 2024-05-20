@@ -18,6 +18,7 @@
 
 // First include the header file to be tested:
 #include "itkVector.h"
+#include "itkRangeGTestUtilities.h"
 #include <gtest/gtest.h>
 
 #include <initializer_list>
@@ -46,6 +47,15 @@ Expect_itk_Vector_can_be_constructed_by_std_array()
   EXPECT_TRUE(std::equal(itkVector.cbegin(), itkVector.cend(), stdArray.cbegin()));
 }
 } // namespace
+
+
+// Tests that an itk::Vector that is "value-initialized" (by empty braces, `{}`) is zero-filled.
+TEST(Vector, ValueInitializedIsZeroFilled)
+{
+  itk::RangeGTestUtilities::ExpectEachElementIsZero(itk::Vector<int>{});
+  itk::RangeGTestUtilities::ExpectEachElementIsZero(itk::Vector<float, 2>{});
+  itk::RangeGTestUtilities::ExpectEachElementIsZero(itk::Vector<double, 4>{});
+}
 
 
 // Tests that an itk::Vector can be constructed by specifying

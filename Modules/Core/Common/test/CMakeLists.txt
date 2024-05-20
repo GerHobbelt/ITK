@@ -1712,6 +1712,7 @@ if(ITK_BUILD_SHARED_LIBS AND ITK_DYNAMIC_LOADING)
 endif()
 
 set(ITKCommonGTests
+    itkArray2DGTest.cxx
     itkAggregateTypesGTest.cxx
     itkBitCastGTest.cxx
     itkBooleanStdVectorGTest.cxx
@@ -1719,7 +1720,9 @@ set(ITKCommonGTests
     itkConnectedImageNeighborhoodShapeGTest.cxx
     itkConstantBoundaryImageNeighborhoodPixelAccessPolicyGTest.cxx
     itkCopyGTest.cxx
+    itkCovariantVectorGTest.cxx
     itkDerefGTest.cxx
+    itkDiffusionTensor3DGTest.cxx
     itkExceptionObjectGTest.cxx
     itkFixedArrayGTest.cxx
     itkImageNeighborhoodOffsetsGTest.cxx
@@ -1732,6 +1735,7 @@ set(ITKCommonGTests
     itkImageRegionGTest.cxx
     itkIndexGTest.cxx
     itkIndexRangeGTest.cxx
+    itkLightObjectGTest.cxx
     itkMakeUniqueForOverwriteGTest.cxx
     itkMatrixGTest.cxx
     itkMersenneTwisterRandomVariateGeneratorGTest.cxx
@@ -1741,9 +1745,12 @@ set(ITKCommonGTests
     itkOffsetGTest.cxx
     itkOptimizerParametersGTest.cxx
     itkPointGTest.cxx
+    itkRGBAPixelGTest.cxx
+    itkRGBPixelGTest.cxx
     itkShapedImageNeighborhoodRangeGTest.cxx
     itkSizeGTest.cxx
     itkSmartPointerGTest.cxx
+    itkSymmetricSecondRankTensorGTest.cxx
     itkVectorContainerGTest.cxx
     itkVectorGTest.cxx
     itkWeakPointerGTest.cxx

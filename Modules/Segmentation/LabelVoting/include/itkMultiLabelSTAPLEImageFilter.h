@@ -130,7 +130,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods) */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(MultiLabelSTAPLEImageFilter);
 
   /** Extract some information from the image types.  Dimensionality
@@ -276,7 +276,7 @@ public:
 
 protected:
   MultiLabelSTAPLEImageFilter()
-    : m_LabelForUndecidedPixels(NumericTraits<OutputPixelType>::ZeroValue())
+    : m_LabelForUndecidedPixels(OutputPixelType{})
     , m_TerminationUpdateThreshold(1e-5)
   {}
   ~MultiLabelSTAPLEImageFilter() override = default;

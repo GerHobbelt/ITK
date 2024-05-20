@@ -81,7 +81,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Runtime information support. */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(ContourMeanDistanceImageFilter);
 
   /** Image related type alias. */
@@ -155,7 +155,7 @@ protected:
 
 private:
   RealType m_MeanDistance{};
-  bool     m_UseImageSpacing{};
+  bool     m_UseImageSpacing{ true };
 }; // end of class
 } // end namespace itk
 

@@ -71,7 +71,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(FastMarchingReachedTargetNodesStoppingCriterion);
 
   using typename Superclass::OutputPixelType;
@@ -177,8 +177,8 @@ protected:
   /** Constructor */
   FastMarchingReachedTargetNodesStoppingCriterion()
     : Superclass()
-    , m_TargetOffset(NumericTraits<OutputPixelType>::ZeroValue())
-    , m_StoppingValue(NumericTraits<OutputPixelType>::ZeroValue())
+    , m_TargetOffset(OutputPixelType{})
+    , m_StoppingValue(OutputPixelType{})
   {}
 
   /** Destructor */

@@ -36,7 +36,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(FastMarchingBaseTestHelper);
 
   using typename Superclass::Traits;
@@ -65,7 +65,7 @@ protected:
   const OutputPixelType
   GetOutputValue(OutputDomainType *, const NodeType &) const override
   {
-    return NumericTraits<OutputPixelType>::ZeroValue();
+    return OutputPixelType{};
   }
 
   unsigned char

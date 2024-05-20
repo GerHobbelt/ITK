@@ -31,8 +31,7 @@ ContourMeanDistanceImageFilter<TInputImage1, TInputImage2>::ContourMeanDistanceI
   // this filter requires two input images
   this->SetNumberOfRequiredInputs(2);
 
-  m_MeanDistance = NumericTraits<RealType>::ZeroValue();
-  m_UseImageSpacing = true;
+  m_MeanDistance = RealType{};
 }
 
 template <typename TInputImage1, typename TInputImage2>

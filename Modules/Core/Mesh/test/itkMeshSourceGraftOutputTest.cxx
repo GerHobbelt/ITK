@@ -49,7 +49,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(MeshSourceGraftOutputFilter);
 
   /** Get/Set transform. */
@@ -275,7 +275,7 @@ itkMeshSourceGraftOutputTest(int, char *[])
   std::cout << "Output Mesh has " << outputMesh->GetNumberOfPoints();
   std::cout << "   points " << std::endl;
 
-  // Get the the point container
+  // Get the point container
   MeshType::PointsContainerPointer transformedPoints = outputMesh->GetPoints();
 
 

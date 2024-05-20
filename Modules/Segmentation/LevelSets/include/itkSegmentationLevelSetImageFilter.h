@@ -176,7 +176,7 @@ public:
   using VectorImageType = typename SegmentationFunctionType::VectorImageType;
   using SpeedImageType = typename SegmentationFunctionType::ImageType;
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(SegmentationLevelSetImageFilter);
 
   /** Set/Get the maximum number of iterations allowed for the solver.  This
@@ -281,7 +281,7 @@ public:
   SetUseNegativeFeatures(bool u)
   {
     itkWarningMacro("SetUseNegativeFeatures has been deprecated.  Please use SetReverseExpansionDirection instead");
-    if (u == true)
+    if (u)
     {
       this->SetReverseExpansionDirection(false);
     }

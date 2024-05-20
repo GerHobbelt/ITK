@@ -20,6 +20,7 @@
 
 #include "itkInterpolateImageFunction.h"
 #include "itkVariableLengthVector.h"
+#include <algorithm> // For max.
 
 namespace itk
 {
@@ -58,7 +59,7 @@ public:
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(LinearInterpolateImageFunction);
 
   /** Method for creation through the object factory. */
@@ -132,13 +133,9 @@ private:
   EvaluateOptimized(const Dispatch<1> &, const ContinuousIndexType & index) const
   {
     IndexType basei;
-    basei[0] = Math::Floor<IndexValueType>(index[0]);
-    if (basei[0] < this->m_StartIndex[0])
-    {
-      basei[0] = this->m_StartIndex[0];
-    }
+    basei[0] = std::max(Math::Floor<IndexValueType>(index[0]), this->m_StartIndex[0]);
 
-    const InternalComputationType & distance = index[0] - static_cast<InternalComputationType>(basei[0]);
+    const InternalComputationType distance = index[0] - static_cast<InternalComputationType>(basei[0]);
 
     const TInputImage * const inputImagePtr = this->GetInputImage();
     const RealType &          val0 = inputImagePtr->GetPixel(basei);
@@ -162,19 +159,11 @@ private:
   {
     IndexType basei;
 
-    basei[0] = Math::Floor<IndexValueType>(index[0]);
-    if (basei[0] < this->m_StartIndex[0])
-    {
-      basei[0] = this->m_StartIndex[0];
-    }
-    const InternalComputationType & distance0 = index[0] - static_cast<InternalComputationType>(basei[0]);
+    basei[0] = std::max(Math::Floor<IndexValueType>(index[0]), this->m_StartIndex[0]);
+    const InternalComputationType distance0 = index[0] - static_cast<InternalComputationType>(basei[0]);
 
-    basei[1] = Math::Floor<IndexValueType>(index[1]);
-    if (basei[1] < this->m_StartIndex[1])
-    {
-      basei[1] = this->m_StartIndex[1];
-    }
-    const InternalComputationType & distance1 = index[1] - static_cast<InternalComputationType>(basei[1]);
+    basei[1] = std::max(Math::Floor<IndexValueType>(index[1]), this->m_StartIndex[1]);
+    const InternalComputationType distance1 = index[1] - static_cast<InternalComputationType>(basei[1]);
 
     const TInputImage * const inputImagePtr = this->GetInputImage();
     const RealType &          val00 = inputImagePtr->GetPixel(basei);
@@ -238,26 +227,14 @@ private:
   EvaluateOptimized(const Dispatch<3> &, const ContinuousIndexType & index) const
   {
     IndexType basei;
-    basei[0] = Math::Floor<IndexValueType>(index[0]);
-    if (basei[0] < this->m_StartIndex[0])
-    {
-      basei[0] = this->m_StartIndex[0];
-    }
-    const InternalComputationType & distance0 = index[0] - static_cast<InternalComputationType>(basei[0]);
+    basei[0] = std::max(Math::Floor<IndexValueType>(index[0]), this->m_StartIndex[0]);
+    const InternalComputationType distance0 = index[0] - static_cast<InternalComputationType>(basei[0]);
 
-    basei[1] = Math::Floor<IndexValueType>(index[1]);
-    if (basei[1] < this->m_StartIndex[1])
-    {
-      basei[1] = this->m_StartIndex[1];
-    }
-    const InternalComputationType & distance1 = index[1] - static_cast<InternalComputationType>(basei[1]);
+    basei[1] = std::max(Math::Floor<IndexValueType>(index[1]), this->m_StartIndex[1]);
+    const InternalComputationType distance1 = index[1] - static_cast<InternalComputationType>(basei[1]);
 
-    basei[2] = Math::Floor<IndexValueType>(index[2]);
-    if (basei[2] < this->m_StartIndex[2])
-    {
-      basei[2] = this->m_StartIndex[2];
-    }
-    const InternalComputationType & distance2 = index[2] - static_cast<InternalComputationType>(basei[2]);
+    basei[2] = std::max(Math::Floor<IndexValueType>(index[2]), this->m_StartIndex[2]);
+    const InternalComputationType distance2 = index[2] - static_cast<InternalComputationType>(basei[2]);
 
     const TInputImage * const inputImagePtr = this->GetInputImage();
     const RealType &          val000 = inputImagePtr->GetPixel(basei);
@@ -517,7 +494,7 @@ private:
     const typename TInputImage::PixelType &   tempPixel = inputImagePtr->GetPixel(idx);
     const unsigned int                        sizeOfVarLengthVector = tempPixel.GetSize();
     tempZeros.SetSize(sizeOfVarLengthVector);
-    tempZeros.Fill(NumericTraits<RealTypeScalarRealType>::ZeroValue());
+    tempZeros.Fill(RealTypeScalarRealType{});
   }
 
   template <typename RealTypeScalarRealType>
@@ -525,7 +502,7 @@ private:
   MakeZeroInitializer(const TInputImage * const itkNotUsed(inputImagePtr), RealTypeScalarRealType & tempZeros) const
   {
     // All other cases
-    tempZeros = NumericTraits<RealTypeScalarRealType>::ZeroValue();
+    tempZeros = RealTypeScalarRealType{};
   }
 };
 } // end namespace itk

@@ -51,13 +51,13 @@ public:
   static inline void
   Set(TInternalType & output, const TExternalType & input)
   {
-    output = (TInternalType)((input > NumericTraits<TExternalType>::ZeroValue()) ? input : -input);
+    output = (TInternalType)((input > TExternalType{}) ? input : -input);
   }
 
   static inline TExternalType
   Get(const TInternalType & input)
   {
-    return (TExternalType)((input > NumericTraits<TInternalType>::ZeroValue()) ? input : -input);
+    return (TExternalType)((input > TInternalType{}) ? input : -input);
   }
 };
 } // end namespace Accessor
@@ -89,7 +89,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(AbsImageAdaptor);
 
 protected:

@@ -46,7 +46,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(FastMarchingThresholdStoppingCriterion);
 
   using typename Superclass::OutputPixelType;
@@ -71,7 +71,7 @@ public:
 protected:
   FastMarchingThresholdStoppingCriterion()
     : Superclass()
-    , m_Threshold(NumericTraits<OutputPixelType>::ZeroValue())
+    , m_Threshold(OutputPixelType{})
   {}
 
   ~FastMarchingThresholdStoppingCriterion() override = default;

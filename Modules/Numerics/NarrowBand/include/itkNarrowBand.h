@@ -39,7 +39,7 @@ public:
   TIndexType  m_Index;
   signed char m_NodeState{ 0 };
   BandNode()
-    : m_Data(NumericTraits<TDataType>::ZeroValue())
+    : m_Data(TDataType{})
   {}
 };
 
@@ -62,7 +62,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(NarrowBand);
 
   using NodeContainerType = std::vector<NodeType>;

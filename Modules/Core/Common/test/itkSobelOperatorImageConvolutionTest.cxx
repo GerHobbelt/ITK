@@ -66,7 +66,7 @@ DoConvolution(typename ImageType::Pointer inputImage, unsigned long int directio
 
   auto outputImage = ImageType::New();
   outputImage->SetRegions(inputImage->GetRequestedRegion());
-  outputImage->Allocate(true);
+  outputImage->AllocateInitialized();
 
   IteratorType                             out(outputImage, inputImage->GetRequestedRegion());
   itk::NeighborhoodInnerProduct<ImageType> innerProduct;
@@ -130,7 +130,8 @@ itkSobelOperatorImageConvolutionTest(int argc, char * argv[])
     /*
      * Demonstrate that signed types do work with SobelOperator
      */
-    return_status += DoSimpleConvolutionTest<char, 2>(direction, "char");
+    // Note: `char` can be unsigned on some platforms.
+    return_status += DoSimpleConvolutionTest<signed char, 2>(direction, "signed char");
     return_status += DoSimpleConvolutionTest<short, 2>(direction, "short");
     return_status += DoSimpleConvolutionTest<int, 2>(direction, "int");
     return_status += DoSimpleConvolutionTest<long, 2>(direction, "long");

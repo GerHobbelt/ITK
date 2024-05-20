@@ -25,6 +25,7 @@
 #include "itkNeighborhoodAlgorithm.h"
 #include "itkOffset.h"
 #include "itkTotalProgressReporter.h"
+#include "itkMath.h"
 
 namespace itk
 {
@@ -32,18 +33,8 @@ namespace itk
 template <typename TInputImage, typename TOperatorValueType, typename TOutputValueType, typename TOutputImageType>
 GradientImageFilter<TInputImage, TOperatorValueType, TOutputValueType, TOutputImageType>::GradientImageFilter()
 {
-  // default boundary condition
-  m_BoundaryCondition = new ZeroFluxNeumannBoundaryCondition<TInputImage>();
-  this->m_UseImageSpacing = true;
-  this->m_UseImageDirection = true;
   this->DynamicMultiThreadingOn();
   this->ThreaderUpdateProgressOff();
-}
-
-template <typename TInputImage, typename TOperatorValueType, typename TOutputValueType, typename TOutputImageType>
-GradientImageFilter<TInputImage, TOperatorValueType, TOutputValueType, TOutputImageType>::~GradientImageFilter()
-{
-  delete m_BoundaryCondition;
 }
 
 template <typename TInputImage, typename TOperatorValueType, typename TOutputValue, typename TOutputImage>
@@ -51,8 +42,7 @@ void
 GradientImageFilter<TInputImage, TOperatorValueType, TOutputValue, TOutputImage>::OverrideBoundaryCondition(
   ImageBoundaryCondition<TInputImage> * boundaryCondition)
 {
-  delete m_BoundaryCondition;
-  m_BoundaryCondition = boundaryCondition;
+  m_BoundaryCondition.reset(boundaryCondition);
 }
 
 template <typename TInputImage, typename TOperatorValueType, typename TOutputValueType, typename TOutputImageType>
@@ -126,7 +116,7 @@ GradientImageFilter<TInputImage, TOperatorValueType, TOutputValueType, TOutputIm
     op[i].FlipAxes();
 
     // Take into account the pixel spacing if necessary
-    if (m_UseImageSpacing == true)
+    if (m_UseImageSpacing)
     {
       if (this->GetInput()->GetSpacing()[i] == 0.0)
       {
@@ -141,7 +131,7 @@ GradientImageFilter<TInputImage, TOperatorValueType, TOutputValueType, TOutputIm
 
   // Set the iterator radius to one, which is the value of the first
   // coordinate of the operator radius.
-  const auto radius = Size<InputImageDimension>::Filled(1);
+  static constexpr auto radius = Size<InputImageDimension>::Filled(1);
 
   // Find the data-set boundary "faces"
   NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<InputImageType>                        bC;
@@ -153,10 +143,12 @@ GradientImageFilter<TInputImage, TOperatorValueType, TOutputValueType, TOutputIm
   // Initialize the x_slice array
   ConstNeighborhoodIterator<InputImageType> nit(radius, inputImage, faceList.front());
 
-  std::slice          x_slice[InputImageDimension];
-  const SizeValueType center = nit.Size() / 2;
+  std::slice x_slice[InputImageDimension];
   for (unsigned int i = 0; i < InputImageDimension; ++i)
   {
+    static constexpr SizeValueType neighborhoodSize = Math::UnsignedPower(3, InputImageDimension);
+    static constexpr SizeValueType center = neighborhoodSize / 2;
+
     x_slice[i] = std::slice(center - nit.GetStride(i), op[i].GetSize()[0], nit.GetStride(i));
   }
 
@@ -167,7 +159,7 @@ GradientImageFilter<TInputImage, TOperatorValueType, TOutputValueType, TOutputIm
   {
     nit = ConstNeighborhoodIterator<InputImageType>(radius, inputImage, face);
     ImageRegionIterator<OutputImageType> it(outputImage, face);
-    nit.OverrideBoundaryCondition(m_BoundaryCondition);
+    nit.OverrideBoundaryCondition(m_BoundaryCondition.get());
     nit.GoToBegin();
 
     while (!nit.IsAtEnd())
@@ -222,7 +214,7 @@ GradientImageFilter<TInputImage, TOperatorValueType, TOutputValueType, TOutputIm
   os << indent << "BoundaryCondition: ";
   if (m_BoundaryCondition != nullptr)
   {
-    os << m_BoundaryCondition << std::endl;
+    os << m_BoundaryCondition.get() << std::endl;
   }
   else
   {

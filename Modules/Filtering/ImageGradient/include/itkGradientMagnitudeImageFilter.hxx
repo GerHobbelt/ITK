@@ -24,6 +24,7 @@
 #include "itkDerivativeOperator.h"
 #include "itkNeighborhoodAlgorithm.h"
 #include "itkTotalProgressReporter.h"
+#include "itkMath.h"
 
 namespace itk
 {
@@ -119,7 +120,7 @@ GradientMagnitudeImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerate
     // The operator has default values for its direction (0) and its order (1).
     op[i].CreateDirectional();
 
-    if (m_UseImageSpacing == true)
+    if (m_UseImageSpacing)
     {
       if (this->GetInput()->GetSpacing()[i] == 0.0)
       {
@@ -134,7 +135,7 @@ GradientMagnitudeImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerate
 
   // Set the iterator radius to one, which is the value of the first
   // coordinate of the operator radius.
-  const auto radius = Size<ImageDimension>::Filled(1);
+  static constexpr auto radius = Size<ImageDimension>::Filled(1);
 
   // Find the data-set boundary "faces"
   NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<TInputImage>                        bC;
@@ -147,10 +148,12 @@ GradientMagnitudeImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerate
   // Process non-boundary face
   nit = ConstNeighborhoodIterator<TInputImage>(radius, input, faceList.front());
 
-  std::slice          x_slice[ImageDimension];
-  const SizeValueType center = nit.Size() / 2;
+  std::slice x_slice[ImageDimension];
   for (i = 0; i < ImageDimension; ++i)
   {
+    static constexpr SizeValueType neighborhoodSize = Math::UnsignedPower(3, ImageDimension);
+    static constexpr SizeValueType center = neighborhoodSize / 2;
+
     x_slice[i] = std::slice(center - nit.GetStride(i), op[i].GetSize()[0], nit.GetStride(i));
   }
 

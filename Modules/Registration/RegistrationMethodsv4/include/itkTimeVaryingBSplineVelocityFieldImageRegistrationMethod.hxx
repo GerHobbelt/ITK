@@ -122,13 +122,10 @@ TimeVaryingBSplineVelocityFieldImageRegistrationMethod<TFixedImage,
     }
   }
 
-  constexpr DisplacementVectorType zeroVector{};
-
   auto identityField = DisplacementFieldType::New();
   identityField->CopyInformation(virtualDomainImage);
   identityField->SetRegions(virtualDomainImage->GetLargestPossibleRegion());
-  identityField->Allocate();
-  identityField->FillBuffer(zeroVector);
+  identityField->AllocateInitialized();
 
   this->m_IdentityDisplacementFieldTransform = DisplacementFieldTransformType::New();
   this->m_IdentityDisplacementFieldTransform->SetDisplacementField(identityField);
@@ -351,7 +348,7 @@ TimeVaryingBSplineVelocityFieldImageRegistrationMethod<
   TPointSet>::GetMetricDerivativePointSetForAllTimePoints(VelocityFieldPointSetType * velocityFieldPointSet,
                                                           WeightsContainerType *      velocityFieldWeights)
 {
-  this->m_CurrentMetricValue = NumericTraits<MeasureType>::ZeroValue();
+  this->m_CurrentMetricValue = MeasureType{};
 
   SizeValueType numberOfIntegrationSteps = this->m_NumberOfTimePointSamples + 2;
 
@@ -727,7 +724,7 @@ TimeVaryingBSplineVelocityFieldImageRegistrationMethod<
 
   RealType value;
 
-  metricDerivative.Fill(NumericTraits<typename MetricDerivativeType::ValueType>::ZeroValue());
+  metricDerivative.Fill(typename MetricDerivativeType::ValueType{});
   this->m_Metric->GetValueAndDerivative(value, metricDerivative);
 
   this->m_CurrentMetricValue += value;

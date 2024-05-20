@@ -66,7 +66,7 @@ public:
 
   using SizeType = typename RegionType::SizeType;
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(GaborImageSource);
 
   /** Method for creation through the object factory. */
@@ -78,7 +78,7 @@ public:
   /** Type used to store gabor parameters. */
   using ArrayType = FixedArray<double, Self::ImageDimension>;
 
-  /** Set/Get the the standard deviation in each direction. */
+  /** Set/Get the standard deviation in each direction. */
   itkSetMacro(Sigma, ArrayType);
   itkGetConstReferenceMacro(Sigma, ArrayType);
 

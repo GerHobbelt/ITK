@@ -274,7 +274,7 @@ SparseFieldLevelSetImageFilter<TInputImage, TOutputImage>::ProcessStatusList(Lay
       if (neighbor_status == SearchForStatus)
       { // mark this pixel so we don't add it twice.
         statusIt.SetPixel(m_NeighborList.GetArrayIndex(i), m_StatusChanging, bounds_status);
-        if (bounds_status == true)
+        if (bounds_status)
         {
           node = m_LayerNodeStore->Borrow();
           node->m_Value = statusIt.GetIndex() + m_NeighborList.GetNeighborhoodOffset(i);
@@ -358,7 +358,7 @@ SparseFieldLevelSetImageFilter<TInputImage, TOutputImage>::UpdateActiveLayerValu
           break;
         }
       }
-      if (flag == true)
+      if (flag)
       {
         ++layerIt;
         ++updateIt;
@@ -409,7 +409,7 @@ SparseFieldLevelSetImageFilter<TInputImage, TOutputImage>::UpdateActiveLayerValu
           break;
         }
       }
-      if (flag == true)
+      if (flag)
       {
         ++layerIt;
         ++updateIt;
@@ -509,10 +509,12 @@ SparseFieldLevelSetImageFilter<TInputImage, TOutputImage>::Initialize()
 
   if (this->GetUseImageSpacing())
   {
+    const auto & spacing = this->GetInput()->GetSpacing();
+
     SpacePrecisionType minSpacing = NumericTraits<SpacePrecisionType>::max();
     for (unsigned int i = 0; i < ImageDimension; ++i)
     {
-      minSpacing = std::min(minSpacing, this->GetInput()->GetSpacing()[i]);
+      minSpacing = std::min(minSpacing, spacing[i]);
     }
     m_ConstantGradientValue = minSpacing;
   }
@@ -725,7 +727,7 @@ SparseFieldLevelSetImageFilter<TInputImage, TOutputImage>::ConstructActiveLayer(
           }
 
           statusIt.SetPixel(m_NeighborList.GetArrayIndex(i), layer_number, bounds_status);
-          if (bounds_status == true) // In bounds.
+          if (bounds_status) // In bounds.
           {
             node = m_LayerNodeStore->Borrow();
             node->m_Value = offset_index;
@@ -762,7 +764,7 @@ SparseFieldLevelSetImageFilter<TInputImage, TOutputImage>::ConstructLayer(Status
       if (statusIt.GetPixel(m_NeighborList.GetArrayIndex(i)) == m_StatusNull)
       {
         statusIt.SetPixel(m_NeighborList.GetArrayIndex(i), to, boundary_status);
-        if (boundary_status == true) // in bounds
+        if (boundary_status) // in bounds
         {
           node = m_LayerNodeStore->Borrow();
           node->m_Value = statusIt.GetIndex() + m_NeighborList.GetNeighborhoodOffset(i);
@@ -782,10 +784,12 @@ SparseFieldLevelSetImageFilter<TInputImage, TOutputImage>::InitializeActiveLayer
 
   if (this->GetUseImageSpacing())
   {
+    const auto & spacing = this->GetInput()->GetSpacing();
+
     SpacePrecisionType minSpacing = NumericTraits<SpacePrecisionType>::max();
     for (unsigned int i = 0; i < ImageDimension; ++i)
     {
-      minSpacing = std::min(minSpacing, this->GetInput()->GetSpacing()[i]);
+      minSpacing = std::min(minSpacing, spacing[i]);
     }
     MIN_NORM *= minSpacing;
   }
@@ -858,10 +862,12 @@ SparseFieldLevelSetImageFilter<TInputImage, TOutputImage>::CalculateChange() -> 
   ValueType    MIN_NORM = 1.0e-6;
   if (this->GetUseImageSpacing())
   {
+    const auto & spacing = this->GetInput()->GetSpacing();
+
     SpacePrecisionType minSpacing = NumericTraits<SpacePrecisionType>::max();
     for (i = 0; i < ImageDimension; ++i)
     {
-      minSpacing = std::min(minSpacing, this->GetInput()->GetSpacing()[i]);
+      minSpacing = std::min(minSpacing, spacing[i]);
     }
     MIN_NORM *= minSpacing;
   }
@@ -986,7 +992,7 @@ SparseFieldLevelSetImageFilter<TInputImage, TOutputImage>::PropagateLayerValues(
   unsigned int i;
   ValueType    value, value_temp, delta;
 
-  value = NumericTraits<ValueType>::ZeroValue(); // warnings
+  value = ValueType{}; // warnings
   bool                         found_neighbor_flag;
   typename LayerType::Iterator toIt;
   LayerNodeType *              node;
@@ -1069,7 +1075,7 @@ SparseFieldLevelSetImageFilter<TInputImage, TOutputImage>::PropagateLayerValues(
         found_neighbor_flag = true;
       }
     }
-    if (found_neighbor_flag == true)
+    if (found_neighbor_flag)
     {
       // Set the new value using the smallest distance
       // found in our "from" neighbors.

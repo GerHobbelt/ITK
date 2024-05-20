@@ -125,7 +125,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Run-time type information (and related methods). */
+  /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(BlockMatchingImageFilter);
 
   /** set/get half size */
@@ -166,7 +166,7 @@ protected:
   DataObject::Pointer
   MakeOutput(ProcessObject::DataObjectPointerArraySizeType idx) override;
 
-  /** We need to create our own GenerateOutputInformation because the the
+  /** We need to create our own GenerateOutputInformation because the
    * default version from ProcessObject result in a dynamic_cast of the input
    * pointer to the output pointer type in PointSet::CopyInformation.  This does
    * not work since they are different types. */

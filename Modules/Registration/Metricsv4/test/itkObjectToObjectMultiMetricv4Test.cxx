@@ -128,7 +128,7 @@ itkObjectToObjectMultiMetricv4TestEvaluate(ObjectToObjectMultiMetricv4TestMultiM
   MeasureType                     weightedMetricValue{};
   MultiMetricType::DerivativeType metricDerivative;
   MultiMetricType::DerivativeType DerivResultOfGetValueAndDerivativeTruth(multiVariateMetric->GetNumberOfParameters());
-  DerivResultOfGetValueAndDerivativeTruth.Fill(itk::NumericTraits<MultiMetricType::DerivativeValueType>::ZeroValue());
+  DerivResultOfGetValueAndDerivativeTruth.Fill(MultiMetricType::DerivativeValueType{});
   MultiMetricType::DerivativeValueType totalMagnitude{};
 
   for (itk::SizeValueType i = 0; i < multiVariateMetric->GetNumberOfMetrics(); ++i)
@@ -436,7 +436,7 @@ itkObjectToObjectMultiMetricv4TestRun(bool useDisplacementTransform)
 
 
   // Expect return false because of point set metrics
-  if (multiVariateMetric->SupportsArbitraryVirtualDomainSamples() == true)
+  if (multiVariateMetric->SupportsArbitraryVirtualDomainSamples())
   {
     std::cerr << "Expected SupportsArbitraryVirtualDomainSamples() to return true, but got false. " << std::endl;
     return EXIT_FAILURE;

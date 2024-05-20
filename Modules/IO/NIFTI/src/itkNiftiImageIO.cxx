@@ -279,7 +279,7 @@ dumpdata(const void * x)
 }
 } // namespace
 #else
-#  define dumpdata(x)
+#  define dumpdata(x) ITK_NOOP_STATEMENT
 #endif // #if defined(ITK_USE_VERY_VERBOSE_NIFTI_DEBUGGING)
 
 namespace
@@ -354,45 +354,6 @@ UpperToLowerOrder(int dim)
   for (int i = 0; i < dim; ++i)
   {
     for (int j = 0; j <= i; j++, index2++)
-    {
-      rval[index2] = mat[i][j];
-    }
-  }
-  rval[index2] = -1;
-  for (int i = 0; i < dim; ++i)
-  {
-    delete[] mat[i];
-  }
-  delete[] mat;
-  return rval;
-}
-
-// returns an ordering array for converting lower triangular symmetric matrix
-// to upper triangular symmetric matrix
-int *
-LowerToUpperOrder(int dim)
-{
-  auto ** mat = new int *[dim];
-
-  for (int i = 0; i < dim; ++i)
-  {
-    mat[i] = new int[dim];
-  }
-  // fill in
-  int index(0);
-  for (int i = 0; i < dim; ++i)
-  {
-    for (int j = 0; j <= i; j++, index++)
-    {
-      mat[i][j] = index;
-      mat[j][i] = index;
-    }
-  }
-  auto * rval = new int[index + 1];
-  int    index2(0);
-  for (int i = 0; i < dim; ++i)
-  {
-    for (int j = i; j < dim; j++, index2++)
     {
       rval[index2] = mat[i][j];
     }
@@ -741,7 +702,6 @@ NiftiImageIO::Read(void * buffer)
     if (this->GetPixelType() == IOPixelEnum::DIFFUSIONTENSOR3D ||
         this->GetPixelType() == IOPixelEnum::SYMMETRICSECONDRANKTENSOR)
     {
-      //      vecOrder = LowerToUpperOrder(SymMatDim(numComponents));
       vecOrder = UpperToLowerOrder(SymMatDim(numComponents));
     }
     else
@@ -1385,35 +1345,35 @@ NiftiImageIO::ReadImageInformation()
       this->SetDimensions(6, this->m_NiftiImage->nw);
       // NOTE: Scaling is not defined in this dimension
       this->SetSpacing(6, ignore_negative_pixdim ? itk::Math::abs(this->m_NiftiImage->dw) : this->m_NiftiImage->dw);
-      ITK_FALLTHROUGH;
+      [[fallthrough]];
     case 6:
       this->SetDimensions(5, this->m_NiftiImage->nv);
       // NOTE: Scaling is not defined in this dimension
       this->SetSpacing(5, ignore_negative_pixdim ? itk::Math::abs(this->m_NiftiImage->dv) : this->m_NiftiImage->dv);
-      ITK_FALLTHROUGH;
+      [[fallthrough]];
     case 5:
       this->SetDimensions(4, this->m_NiftiImage->nu);
       // NOTE: Scaling is not defined in this dimension
       this->SetSpacing(4, ignore_negative_pixdim ? itk::Math::abs(this->m_NiftiImage->du) : this->m_NiftiImage->du);
-      ITK_FALLTHROUGH;
+      [[fallthrough]];
     case 4:
       this->SetDimensions(3, this->m_NiftiImage->nt);
       this->SetSpacing(3,
                        ignore_negative_pixdim ? itk::Math::abs(this->m_NiftiImage->dt * timingscale)
                                               : this->m_NiftiImage->dt * timingscale);
-      ITK_FALLTHROUGH;
+      [[fallthrough]];
     case 3:
       this->SetDimensions(2, this->m_NiftiImage->nz);
       this->SetSpacing(2,
                        ignore_negative_pixdim ? itk::Math::abs(this->m_NiftiImage->dz * spacingscale)
                                               : this->m_NiftiImage->dz * spacingscale);
-      ITK_FALLTHROUGH;
+      [[fallthrough]];
     case 2:
       this->SetDimensions(1, this->m_NiftiImage->ny);
       this->SetSpacing(1,
                        ignore_negative_pixdim ? itk::Math::abs(this->m_NiftiImage->dy * spacingscale)
                                               : this->m_NiftiImage->dy * spacingscale);
-      ITK_FALLTHROUGH;
+      [[fallthrough]];
     case 1:
       this->SetDimensions(0, this->m_NiftiImage->nx);
       this->SetSpacing(0,
@@ -1563,32 +1523,32 @@ NiftiImageIO::WriteImageInformation()
       this->m_NiftiImage->dim[7] = this->m_NiftiImage->nw = static_cast<int>(this->GetDimensions(6));
       this->m_NiftiImage->pixdim[7] = this->m_NiftiImage->dw = static_cast<float>(this->GetSpacing(6));
       this->m_NiftiImage->nvox *= this->m_NiftiImage->dim[7];
-      ITK_FALLTHROUGH;
+      [[fallthrough]];
     case 6:
       this->m_NiftiImage->dim[6] = this->m_NiftiImage->nv = this->GetDimensions(5);
       this->m_NiftiImage->pixdim[6] = this->m_NiftiImage->dv = static_cast<float>(this->GetSpacing(5));
       this->m_NiftiImage->nvox *= this->m_NiftiImage->dim[6];
-      ITK_FALLTHROUGH;
+      [[fallthrough]];
     case 5:
       this->m_NiftiImage->dim[5] = this->m_NiftiImage->nu = this->GetDimensions(4);
       this->m_NiftiImage->pixdim[5] = this->m_NiftiImage->du = static_cast<float>(this->GetSpacing(4));
       this->m_NiftiImage->nvox *= this->m_NiftiImage->dim[5];
-      ITK_FALLTHROUGH;
+      [[fallthrough]];
     case 4:
       this->m_NiftiImage->dim[4] = this->m_NiftiImage->nt = this->GetDimensions(3);
       this->m_NiftiImage->pixdim[4] = this->m_NiftiImage->dt = static_cast<float>(this->GetSpacing(3));
       this->m_NiftiImage->nvox *= this->m_NiftiImage->dim[4];
-      ITK_FALLTHROUGH;
+      [[fallthrough]];
     case 3:
       this->m_NiftiImage->dim[3] = this->m_NiftiImage->nz = this->GetDimensions(2);
       this->m_NiftiImage->pixdim[3] = this->m_NiftiImage->dz = static_cast<float>(this->GetSpacing(2));
       this->m_NiftiImage->nvox *= this->m_NiftiImage->dim[3];
-      ITK_FALLTHROUGH;
+      [[fallthrough]];
     case 2:
       this->m_NiftiImage->dim[2] = this->m_NiftiImage->ny = this->GetDimensions(1);
       this->m_NiftiImage->pixdim[2] = this->m_NiftiImage->dy = static_cast<float>(this->GetSpacing(1));
       this->m_NiftiImage->nvox *= this->m_NiftiImage->dim[2];
-      ITK_FALLTHROUGH;
+      [[fallthrough]];
     case 1:
       this->m_NiftiImage->dim[1] = this->m_NiftiImage->nx = this->GetDimensions(0);
       this->m_NiftiImage->pixdim[1] = this->m_NiftiImage->dx = static_cast<float>(this->GetSpacing(0));
@@ -2270,7 +2230,7 @@ NiftiImageIO::SetNIfTIOrientationFromImageIO(unsigned short origdims, unsigned s
   // set the quaternions, from the direction vectors
   // Initialize to size 3 with values of 0
   //
-  // The type here must be float, because that matches the signature
+  // The type here must be a float, because that matches the signature
   // of the nifti_make_orthog_mat44() method below.
   using DirectionMatrixComponentType = float;
   const int                                 mindims(dims < 3 ? 3 : dims);

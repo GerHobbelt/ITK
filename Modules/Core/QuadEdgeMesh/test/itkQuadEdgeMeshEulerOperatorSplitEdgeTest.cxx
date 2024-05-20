@@ -42,15 +42,15 @@ itkQuadEdgeMeshEulerOperatorSplitEdgeTest(int, char *[])
   auto splitEdge = SplitEdge::New();
   std::cout << "     "
             << "Test No Mesh Input";
-  if (splitEdge->Evaluate((QEType *)1))
+  if (splitEdge->Evaluate((QEType *)0))
   {
     std::cout << "FAILED." << std::endl;
     return EXIT_FAILURE;
   }
   std::cout << "OK" << std::endl;
 
-  ITK_TEST_EXPECT_EQUAL((const std::string) "QuadEdgeMeshEulerOperatorSplitEdgeFunction",
-                        (const std::string)splitEdge->GetNameOfClass());
+  ITK_TEST_EXPECT_EQUAL(std::string_view("QuadEdgeMeshEulerOperatorSplitEdgeFunction"),
+                        std::string_view(splitEdge->GetNameOfClass()));
 
   splitEdge->SetInput(mesh);
   std::cout << "     "

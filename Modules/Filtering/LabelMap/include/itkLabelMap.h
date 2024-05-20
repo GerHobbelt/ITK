@@ -267,7 +267,10 @@ public:
    * Return the number of label objects in the image
    */
   typename Self::SizeValueType
-  GetNumberOfLabelObjects() const;
+  GetNumberOfLabelObjects() const
+  {
+    return static_cast<SizeValueType>(m_LabelObjectContainer.size());
+  }
 
   /**
    * Return the labels of the label objects available in the label map
@@ -321,22 +324,6 @@ public:
       m_Begin = lm->m_LabelObjectContainer.begin();
       m_End = lm->m_LabelObjectContainer.end();
       m_Iterator = m_Begin;
-    }
-
-    ConstIterator(const ConstIterator & iter)
-    {
-      m_Iterator = iter.m_Iterator;
-      m_Begin = iter.m_Begin;
-      m_End = iter.m_End;
-    }
-
-    ConstIterator &
-    operator=(const ConstIterator & iter)
-    {
-      m_Iterator = iter.m_Iterator;
-      m_Begin = iter.m_Begin;
-      m_End = iter.m_End;
-      return *this;
     }
 
     const LabelObjectType *
@@ -410,22 +397,6 @@ public:
       m_Iterator = m_Begin;
     }
 
-    Iterator(const Iterator & iter)
-    {
-      m_Iterator = iter.m_Iterator;
-      m_Begin = iter.m_Begin;
-      m_End = iter.m_End;
-    }
-
-    Iterator &
-    operator=(const Iterator & iter)
-    {
-      m_Iterator = iter.m_Iterator;
-      m_Begin = iter.m_Begin;
-      m_End = iter.m_End;
-      return *this;
-    }
-
     LabelObjectType *
     GetLabelObject()
     {
@@ -483,7 +454,7 @@ public:
   };
 
 protected:
-  LabelMap();
+  LabelMap() = default;
   ~LabelMap() override = default;
   void
   PrintSelf(std::ostream & os, Indent indent) const override;

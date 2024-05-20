@@ -84,8 +84,8 @@ for filename in ${remote_modules_path}/*.cmake; do
   curr_commit=${curr_commit/*GIT_TAG /}
 
   # Read the git repository information
-  repository=$(grep -v "\s*#" $filename | grep -m 1 -o "GIT_REPOSITORY \${git_protocol}://github.com/\(\w\|\-\|_\|/\)*")
-  repository=${repository/*GIT_REPOSITORY \${git_protocol\}:\/\/github.com\//}
+  repository=$(grep -v "\s*#" $filename | grep -m 1 -o "GIT_REPOSITORY \https://github.com/\(\w\|\-\|_\|/\)*")
+  repository=${repository/*GIT_REPOSITORY https:\/\/github.com\//}
 
   # Get the latest git commit hash of the remote module.
   # Remotes will usually not be tagged.

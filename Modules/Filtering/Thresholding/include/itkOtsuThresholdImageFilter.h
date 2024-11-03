@@ -119,7 +119,7 @@ protected:
   }
 
   void
-  VerifyPreconditions() ITKv5_CONST override
+  VerifyPreconditions() const override
   {
     Superclass::VerifyPreconditions();
     if (dynamic_cast<const CalculatorType *>(Superclass::GetCalculator()) == nullptr)
@@ -128,13 +128,8 @@ protected:
     }
   }
 
-
 private:
-#if defined(ITKV4_COMPATIBILITY)
-  bool m_ReturnBinMidpoint{ true };
-#else
   bool m_ReturnBinMidpoint{ false };
-#endif
 };
 
 } // end namespace itk

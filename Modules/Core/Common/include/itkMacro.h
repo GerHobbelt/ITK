@@ -68,29 +68,28 @@ namespace itk
 #define itkNotUsed(x)
 
 // clang-format off
-
 /** The `static_assert(true, "")`  idiom is commonly employed for
  *  C++11 or greater to ensure that it is compile-time only
  *  check that can not be part of the binary file.
- *  This allows a macro to be used anywhere that a statement
- *  is expected, and to enforce consistent use of ; after
- *  a macro. The static_assert is a constexpr that can be used
- *  in places where raw statements (i.e. 'do{} while(0)') are
+ *
+ *  The ITK_NOOP_STATEMENT idiom allows a macro to be used anywhere
+ *  that a statement is expected, and to enforce consistent use of
+ *  ';' after a macro. The static_assert is a constexpr that can be
+ *  used in places where raw statements (i.e. 'do{} while(0)') are
  *  not allowed (i.e. after class member function definitions).
  *  */
 #define ITK_NOOP_STATEMENT static_assert(true, "")
 
-
-#if defined(ITK_FUTURE_LEGACY_REMOVE)
-
-#  define ITK_MACROEND_NOOP_STATEMENT ITK_NOOP_STATEMENT
-#else
-/* NOTE:  The ITK_MACROEND_NOOP_STATEMENT must be defined to nothing
- * in order to maintain backwards compatibility with earlier macro
- * uses that may or may not have ';' after the macro is used. */
-/* Purposefully empty */
-#  define ITK_MACROEND_NOOP_STATEMENT
-#endif
+/* NOTE:  The ITK_MACROEND_NOOP_STATEMENT is used at the end
+ * of ITK supported macros to ensure that when the macro
+ * is used in the code base that the line must have ';' after
+ * the macro is used. This makes formatting visually similar
+ * to functions, and greatly improves the clang-format
+ * behaviors for indentation.  This also assists
+ * modern IDE's and removes 1000's of warnings about
+ * unused statements or unnecessary ';' when macros are
+ * used. */
+#define ITK_MACROEND_NOOP_STATEMENT ITK_NOOP_STATEMENT
 // clang-format on
 
 // Define ITK_PRAGMA macro.
@@ -1365,15 +1364,9 @@ compilers.
  * With ITKv5 several methods for Image Iterators have been
  * devirtualized for performance reasons. These definitions may help
  * provide legacy compatibility, or help  detecting derived iterators
- * relying on the virtual  interface. Compatibility for derived
- * classes can be achieved with defining ITKV4_COMPATIBILITY. Code
- * should be migrated to no longer rely on the old virtual interface.
+ * relying on the virtual  interface.
  */
-#if defined(ITKV4_COMPATIBILITY)
-#  define ITK_ITERATOR_VIRTUAL virtual
-#  define ITK_ITERATOR_OVERRIDE override
-#  define ITK_ITERATOR_FINAL
-#elif !defined(ITK_LEGACY_REMOVE)
+#if !defined(ITK_LEGACY_REMOVE)
 #  define ITK_ITERATOR_VIRTUAL virtual
 #  define ITK_ITERATOR_OVERRIDE override
 #  define ITK_ITERATOR_FINAL final
@@ -1383,11 +1376,11 @@ compilers.
 #  define ITK_ITERATOR_FINAL
 #endif
 
-#if defined(ITKV4_COMPATIBILITY)
-// A macro for methods which are const in ITKv5, but not in ITKv4
-#  define ITKv5_CONST
+#if defined(ITK_LEGACY_REMOVE)
+// A macro for methods which are const in ITKv5 and ITKv6 require const for functions
+#  define ITKv5_CONST static_assert(false, "ERROR: ITKv5_CONST must be replaced with 'const'")
 #else
-// A macro for methods which are const in ITKv5, but not in ITKv4
+// A macro for methods which are const in after ITKv4
 #  define ITKv5_CONST const
 #endif
 

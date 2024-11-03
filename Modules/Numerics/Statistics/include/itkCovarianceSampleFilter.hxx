@@ -28,10 +28,7 @@ template <typename TSample>
 CovarianceSampleFilter<TSample>::CovarianceSampleFilter()
 {
   this->ProcessObject::SetNumberOfRequiredInputs(1);
-  this->ProcessObject::SetNumberOfRequiredOutputs(2);
-
-  this->ProcessObject::SetNthOutput(0, this->MakeOutput(0));
-  this->ProcessObject::SetNthOutput(1, this->MakeOutput(1));
+  ProcessObject::MakeRequiredOutputs(*this, 2);
 }
 
 template <typename TSample>
@@ -72,8 +69,7 @@ CovarianceSampleFilter<TSample>::MakeOutput(DataObjectPointerArraySizeType index
 
   if (index == 1)
   {
-    MeasurementVectorRealType mean;
-    (void)mean; // for complainty pants : valgrind
+    [[maybe_unused]] MeasurementVectorRealType mean;
     NumericTraits<MeasurementVectorRealType>::SetLength(mean, this->GetMeasurementVectorSize());
     // NumericTraits::SetLength also initializes array to zero
     auto decoratedMean = MeasurementVectorDecoratedType::New();

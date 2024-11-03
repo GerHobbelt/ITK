@@ -494,12 +494,6 @@ public:
   itkSetClampMacro(NumberOfWorkUnits, ThreadIdType, 1, ITK_MAX_THREADS);
   itkGetConstReferenceMacro(NumberOfWorkUnits, ThreadIdType);
 
-#if !defined(ITK_LEGACY_REMOVE) || defined(ITKV4_COMPATIBILITY)
-  itkLegacyMacro(void SetNumberOfThreads(ThreadIdType count)) { this->SetNumberOfWorkUnits(count); }
-
-  itkLegacyMacro(ThreadIdType GetNumberOfThreads() const) { return this->GetNumberOfWorkUnits(); }
-#endif // !ITK_LEGACY_REMOVE
-
   /** Return the multithreader used by this class. */
   MultiThreaderType *
   GetMultiThreader() const
@@ -788,7 +782,7 @@ protected:
    *
    */
   virtual void
-  VerifyPreconditions() ITKv5_CONST;
+  VerifyPreconditions() const;
 
   /** \brief Verifies that the inputs meta-data is consistent and valid
    * for continued execution of the pipeline, throws an exception if
@@ -801,7 +795,7 @@ protected:
    *
    */
   virtual void
-  VerifyInputInformation() ITKv5_CONST;
+  VerifyInputInformation() const;
 
   /** What is the input requested region that is required to produce the
    * output requested region? By default, the largest possible region is
@@ -925,6 +919,20 @@ protected:
     double temp = static_cast<double>(f) * std::numeric_limits<uint32_t>::max();
     return static_cast<uint32_t>(temp);
   };
+
+
+  /** Sets the required number of outputs, and creates each of them by MakeOutput. */
+  template <typename TSourceObject>
+  static void
+  MakeRequiredOutputs(TSourceObject & sourceObject, const DataObjectPointerArraySizeType numberOfRequiredOutputs)
+  {
+    sourceObject.ProcessObject::SetNumberOfRequiredOutputs(numberOfRequiredOutputs);
+
+    for (unsigned int i{}; i < numberOfRequiredOutputs; ++i)
+    {
+      sourceObject.ProcessObject::SetNthOutput(i, sourceObject.TSourceObject::MakeOutput(i));
+    }
+  }
 
   /** These ivars are made protected so filters like itkStreamingImageFilter
    * can access them directly. */

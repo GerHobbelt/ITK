@@ -151,10 +151,8 @@ public:
   struct NeverReallocate : AllocateRootPolicy
   {
     bool
-    operator()(unsigned int newSize, unsigned int oldSize) const
+    operator()([[maybe_unused]] unsigned int newSize, [[maybe_unused]] unsigned int oldSize) const
     {
-      (void)newSize;
-      (void)oldSize;
       itkAssertInDebugAndIgnoreInReleaseMacro(newSize == oldSize &&
                                               "SetSize is expected to never change the VariableLengthVector size...");
       return true;
@@ -1032,9 +1030,8 @@ struct GetType
    * \note the default unspecialized behaviour returns the input number \c v.
    */
   static Type
-  Load(Type const & v, unsigned int idx)
+  Load(Type const & v, unsigned int itkNotUsed(idx))
   {
-    (void)idx;
     return v;
   }
 };
@@ -1051,9 +1048,8 @@ struct GetType
  */
 template <typename TExpr1, typename TExpr2>
 inline std::enable_if_t<mpl::And<mpl::IsArray<TExpr1>, mpl::IsArray<TExpr2>>::Value, unsigned int>
-GetSize(TExpr1 const & lhs, TExpr2 const & rhs)
+GetSize(TExpr1 const & lhs, [[maybe_unused]] TExpr2 const & rhs)
 {
-  (void)rhs;
   itkAssertInDebugAndIgnoreInReleaseMacro(lhs.Size() == rhs.Size());
   return lhs.Size();
 }

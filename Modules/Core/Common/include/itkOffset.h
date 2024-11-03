@@ -26,9 +26,7 @@
 namespace itk
 {
 
-/**
- * \struct Offset
- * \brief Represent a n-dimensional offset between two n-dimensional indexes of n-dimensional image.
+/** \brief Represent a n-dimensional offset between two n-dimensional indexes of n-dimensional image.
  *
  * Offset is a templated class to represent a multi-dimensional offset,
  * i.e. (i,j,k,...). Offset is templated over the dimension of the space.
@@ -397,25 +395,25 @@ public:
     return m_InternalArray[pos];
   }
 
-  reference
+  constexpr reference
   front()
   {
     return *begin();
   }
 
-  const_reference
+  constexpr const_reference
   front() const
   {
     return *begin();
   }
 
-  reference
+  constexpr reference
   back()
   {
     return VDimension ? *(end() - 1) : *end();
   }
 
-  const_reference
+  constexpr const_reference
   back() const
   {
     return VDimension ? *(end() - 1) : *end();

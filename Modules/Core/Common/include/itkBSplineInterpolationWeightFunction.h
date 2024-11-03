@@ -115,21 +115,6 @@ public:
 protected:
   BSplineInterpolationWeightFunction() = default;
   ~BSplineInterpolationWeightFunction() override = default;
-
-private:
-  /** Lookup table type. */
-  using TableType = FixedArray<IndexType, NumberOfWeights>;
-
-  /** Table mapping linear offset to indices. */
-  const TableType m_OffsetToIndexTable{ [] {
-    TableType     table;
-    // Note: Copied the constexpr value `SupportSize` to a local variable, to prevent a GCC
-    // (Ubuntu 7.5.0-3ubuntu1~18.04) link error, "undefined reference to `SupportSize`", and Clang
-    // (Mac10.13-AppleClang-dbg-x86_64-static) "Undefined symbols for architecture x86_64".
-    const auto    supportSize = SupportSize;
-    std::copy_n(ZeroBasedIndexRange<SpaceDimension>(supportSize).cbegin(), NumberOfWeights, table.begin());
-    return table;
-  }() };
 };
 } // end namespace itk
 

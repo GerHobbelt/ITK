@@ -27,8 +27,7 @@
 namespace itk
 {
 
-/** \struct Index
- * \brief Represent a n-dimensional index in a n-dimensional image.
+/** \brief Represent a n-dimensional index in a n-dimensional image.
  *
  * Index is a templated class to represent a multi-dimensional index,
  * i.e. (i,j,k,...). Index is templated over the dimension of the index.
@@ -445,25 +444,25 @@ public:
     return m_InternalArray[pos];
   }
 
-  reference
+  constexpr reference
   front()
   {
     return *begin();
   }
 
-  const_reference
+  constexpr const_reference
   front() const
   {
     return *begin();
   }
 
-  reference
+  constexpr reference
   back()
   {
     return VDimension ? *(end() - 1) : *end();
   }
 
-  const_reference
+  constexpr const_reference
   back() const
   {
     return VDimension ? *(end() - 1) : *end();

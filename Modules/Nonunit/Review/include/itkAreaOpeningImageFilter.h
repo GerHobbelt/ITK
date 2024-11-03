@@ -37,7 +37,7 @@ namespace itk
  *
  * "Grayscale morphological attribute operations"
  * by Beare R.
- * https://www.insight-journal.org/browse/publication/203
+ * https://doi.org/10.54294/ifvjls
  *
  *
  * \author Richard Beare. Department of Medicine, Monash University, Melbourne, Australia.
@@ -125,7 +125,7 @@ protected:
   PrintSelf(std::ostream & os, Indent indent) const override
   {
     Superclass::PrintSelf(os, indent);
-    os << indent << "UseImageSpacing: " << (m_UseImageSpacing ? "On" : "Off") << std::endl;
+    itkPrintSelfBooleanMacro(UseImageSpacing);
   }
 
 private:

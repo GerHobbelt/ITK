@@ -31,7 +31,7 @@
  *
  * "Grayscale morphological attribute operations"
  * by Beare R.
- * https://www.insight-journal.org/browse/publication/203
+ * https://doi.org/10.54294/ifvjls
  *
  */
 
@@ -237,7 +237,7 @@ AttributeMorphologyBaseImageFilter<TInputImage, TOutputImage, TAttribute, TFunct
 {
   Superclass::PrintSelf(os, indent);
 
-  os << indent << "FullyConnected: " << (m_FullyConnected ? "On" : "Off") << std::endl;
+  itkPrintSelfBooleanMacro(FullyConnected);
   os << indent << "Lambda: " << static_cast<typename NumericTraits<AttributeType>::PrintType>(m_Lambda) << std::endl;
 }
 } // end namespace itk

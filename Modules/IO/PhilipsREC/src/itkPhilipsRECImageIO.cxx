@@ -20,7 +20,7 @@
  *         The Pennsylvania State University 2005
  *
  * This implementation was contributed as a paper to the Insight Journal
- * https://insight-journal.org/midas/handle.php?handle=1926/1381
+ * https://doi.org/10.54294/o8w4c0
  *
  */
 
@@ -387,7 +387,7 @@ PhilipsRECImageIO::PhilipsRECImageIO()
   // Start out with file byte order == system byte order
   // this will be changed if we're reading a file to whatever
   // the file actually contains.
-  if (ByteSwapper<int>::SystemIsBigEndian())
+  if constexpr (ByteSwapper<int>::SystemIsBigEndian())
   {
     this->m_MachineByteOrder = this->m_ByteOrder = IOByteOrderEnum::BigEndian;
   }

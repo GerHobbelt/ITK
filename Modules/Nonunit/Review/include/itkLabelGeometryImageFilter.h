@@ -64,7 +64,7 @@ namespace itk
  *  This filter was contributed in the Insight Journal paper:
  *  "A Label Geometry Image Filter for Multiple Object Measurement"
  *  by Padfield D., Miller J
- *  https://www.insight-journal.org/browse/publication/301
+ *  https://doi.org/10.54294/saa3nn
  *
  * This class contains computational inefficiencies and bugs such as some attributes are not computed with respect to
  * image geometry, consider using these supported alternatives:
@@ -78,9 +78,11 @@ namespace itk
  * \endsphinx
  */
 template <typename TLabelImage, typename TIntensityImage = TLabelImage>
-class ITK_TEMPLATE_EXPORT [[deprecated(
-  "This class contains known computational bugs. See class documentation for details.")]] LabelGeometryImageFilter
-  : public ImageToImageFilter<TLabelImage, TIntensityImage>
+class ITK_TEMPLATE_EXPORT
+#if !defined(ITK_LEGACY_SILENT)
+  [[deprecated("This class contains known computational bugs. See class documentation for details.")]]
+#endif
+  LabelGeometryImageFilter : public ImageToImageFilter<TLabelImage, TIntensityImage>
 {
 public:
   ITK_DISALLOW_COPY_AND_MOVE(LabelGeometryImageFilter);

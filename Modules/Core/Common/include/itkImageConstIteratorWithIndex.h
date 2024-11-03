@@ -144,8 +144,8 @@ public:
    * handle to the image is properly reference counted. */
   ImageConstIteratorWithIndex(const Self & it);
 
-  /** Constructor establishes an iterator to walk a particular image and a
-   * particular region of that image. */
+  /** Constructor establishes an iterator to walk a particular image and a particular region of that image. Initializes
+   * the iterator at the begin of the region. */
   ImageConstIteratorWithIndex(const TImage * ptr, const RegionType & region);
 
   /** Default Destructor. */
@@ -157,7 +157,7 @@ public:
   operator=(const Self & it);
 
   /** Get the dimension (size) of the index. */
-  static unsigned int
+  static constexpr unsigned int
   GetImageDimension()
   {
     return ImageDimension;

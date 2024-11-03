@@ -2388,33 +2388,11 @@ PatchBasedDenoisingImageFilter<TInputImage, TOutputImage>::PrintSelf(std::ostrea
     os << "(Cannot be computed: input not set)" << std::endl;
   }
 
-  if (m_UseSmoothDiscPatchWeights)
-  {
-    os << indent << "UseSmoothDiscPatchWeights: On" << std::endl;
-  }
-  else
-  {
-    os << indent << "UseSmoothDiscPatchWeights: Off" << std::endl;
-  }
+  itkPrintSelfBooleanMacro(UseSmoothDiscPatchWeights);
+  itkPrintSelfBooleanMacro(UseFastTensorComputations);
 
-  if (m_UseFastTensorComputations)
-  {
-    os << indent << "UseFastTensorComputations: On" << std::endl;
-  }
-  else
-  {
-    os << indent << "UseFastTensorComputations: Off" << std::endl;
-  }
-
-  os << indent << "Kernel bandwidth sigma: " << m_KernelBandwidthSigma << std::endl;
-  if (m_KernelBandwidthSigmaIsSet)
-  {
-    os << indent << "KernelBandwidthSigmaIsSet: On" << std::endl;
-  }
-  else
-  {
-    os << indent << "KernelBandwidthSigmaIsSet: Off" << std::endl;
-  }
+  os << indent << "KernelBandwidthSigma: " << m_KernelBandwidthSigma << std::endl;
+  itkPrintSelfBooleanMacro(KernelBandwidthSigmaIsSet);
 
   os << indent << "IntensityRescaleInvFactor: " << m_IntensityRescaleInvFactor << std::endl;
 
@@ -2425,17 +2403,10 @@ PatchBasedDenoisingImageFilter<TInputImage, TOutputImage>::PrintSelf(std::ostrea
   os << indent << "KernelBandwidthFractionPixelsForEstimation: " << m_KernelBandwidthFractionPixelsForEstimation
      << std::endl;
 
-  if (m_ComputeConditionalDerivatives)
-  {
-    os << indent << "ComputeConditionalDerivatives: On" << std::endl;
-  }
-  else
-  {
-    os << indent << "ComputeConditionalDerivatives: Off" << std::endl;
-  }
+  itkPrintSelfBooleanMacro(ComputeConditionalDerivatives);
 
-  os << indent << "Min sigma: " << m_MinSigma << std::endl;
-  os << indent << "Min probability: " << m_MinProbability << std::endl;
+  os << indent << "MinSigma: " << m_MinSigma << std::endl;
+  os << indent << "MinProbability: " << m_MinProbability << std::endl;
 
   os << indent << "SigmaUpdateDecimationFactor: " << m_SigmaUpdateDecimationFactor << std::endl;
   os << indent << "Sigma update convergence tolerance: " << m_SigmaUpdateConvergenceTolerance << std::endl;
@@ -2444,14 +2415,7 @@ PatchBasedDenoisingImageFilter<TInputImage, TOutputImage>::PrintSelf(std::ostrea
 
   os << indent << "NoiseSigma: " << m_NoiseSigma << std::endl;
   os << indent << "NoiseSigmaSquared: " << m_NoiseSigmaSquared << std::endl;
-  if (m_NoiseSigmaIsSet)
-  {
-    os << indent << "NoiseSigmaIsSet: On" << std::endl;
-  }
-  else
-  {
-    os << indent << "NoiseSigmaIsSet: Off" << std::endl;
-  }
+  itkPrintSelfBooleanMacro(NoiseSigmaIsSet);
 
   itkPrintSelfObjectMacro(Sampler);
   itkPrintSelfObjectMacro(UpdateBuffer);

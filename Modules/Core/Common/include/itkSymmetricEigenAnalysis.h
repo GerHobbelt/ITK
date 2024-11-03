@@ -44,7 +44,7 @@ const TValueType *
 GetPointerToMatrixData(const vnl_matrix<TValueType> & inputMatrix)
 {
   return inputMatrix.data_block();
-};
+}
 
 template <typename TValueType, unsigned int VRows, unsigned int VColumns>
 const TValueType *
@@ -119,7 +119,7 @@ permuteColumnsWithSortIndices(QMatrix & eigenVectors, const std::vector<int> & i
 class SymmetricEigenAnalysisEnums
 {
 public:
-  /** \class EigenValueOrder
+  /**
    * \ingroup ITKCommon
    * Order of eigen values
    * OrderByValue:      lambda_1 < lambda_2 < ....

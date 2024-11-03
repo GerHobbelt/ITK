@@ -1037,11 +1037,6 @@ BinaryMask3DMeshSource<TInputImage, TOutputMesh>::CreateMesh()
   InputImageIterator it3(m_InputImage, m_RegionOfInterest);
   InputImageIterator it4(m_InputImage, m_RegionOfInterest);
 
-  it1.GoToBegin();
-  it2.GoToBegin();
-  it3.GoToBegin();
-  it4.GoToBegin();
-
   InputImageSizeType inputImageSize = m_RegionOfInterest.GetSize();
   m_ImageWidth = inputImageSize[0];
   m_ImageHeight = inputImageSize[1];
@@ -2694,7 +2689,7 @@ BinaryMask3DMeshSource<TInputImage, TOutputMesh>::PrintSelf(std::ostream & os, I
 {
   Superclass::PrintSelf(os, indent);
 
-  os << indent << "RegionOfInterestProvidedByUser: " << (m_RegionOfInterestProvidedByUser ? "On" : "Off") << std::endl;
+  itkPrintSelfBooleanMacro(RegionOfInterestProvidedByUser);
   os << indent << "RegionOfInterest: " << m_RegionOfInterest << std::endl;
 
   os << indent << "LUT: " << m_LUT << std::endl;

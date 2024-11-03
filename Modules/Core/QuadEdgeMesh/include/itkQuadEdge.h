@@ -110,7 +110,9 @@
                                                                                                  \
   const pt * GetInvRnext() const { return (dynamic_cast<const pt *>(this->st::GetInvRnext())); } \
                                                                                                  \
-  const pt * GetInvDnext() const { return (dynamic_cast<const pt *>(this->st::GetInvDnext())); }
+  const pt * GetInvDnext() const { return (dynamic_cast<const pt *>(this->st::GetInvDnext())); } \
+                                                                                                 \
+  ITK_MACROEND_NOOP_STATEMENT
 
 namespace itk
 {
@@ -122,7 +124,7 @@ namespace itk
  * \author Alexandre Gouaillard, Leonardo Florez-Valencia, Eric Boix
  *
  * This implementation was contributed as a paper to the Insight Journal
- * https://www.insight-journal.org/browse/publication/122
+ * https://doi.org/10.54294/4mx7kk
  *
  * \sa "Accessing adjacent edges."
  *

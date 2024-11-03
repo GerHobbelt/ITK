@@ -49,24 +49,20 @@ ReadWriteTest(const std::string fileName, const bool isRealDisplacementField, co
   using FieldType = typename DisplacementTransformType::DisplacementFieldType;
   auto knownField = FieldType::New(); // This is based on itk::Image
   {
-    constexpr int                dimLength = 20;
-    typename FieldType::SizeType size;
-    size.Fill(dimLength);
-    typename FieldType::IndexType start;
-    start.Fill(0);
+    constexpr int                  dimLength = 20;
+    auto                           size = FieldType::SizeType::Filled(dimLength);
+    typename FieldType::IndexType  start{};
     typename FieldType::RegionType region{ start, size };
     knownField->SetRegions(region);
 
-    typename FieldType::SpacingType spacing;
-    spacing.Fill(requiredSpacing);
+    auto spacing = itk::MakeFilled<typename FieldType::SpacingType>(requiredSpacing);
     knownField->SetSpacing(spacing);
-    typename FieldType::PointType origin;
-    origin.Fill(requiredOrigin);
+    auto origin = itk::MakeFilled<typename FieldType::PointType>(requiredOrigin);
     knownField->SetOrigin(origin);
     knownField->Allocate();
 
-    typename DisplacementTransformType::OutputVectorType zeroVector;
-    zeroVector.Fill(aNumberThatCanNotBeRepresentedInFloatingPoint);
+    auto zeroVector = itk::MakeFilled<typename DisplacementTransformType::OutputVectorType>(
+      aNumberThatCanNotBeRepresentedInFloatingPoint);
     knownField->FillBuffer(zeroVector);
 
     displacementTransform->SetDisplacementField(knownField);

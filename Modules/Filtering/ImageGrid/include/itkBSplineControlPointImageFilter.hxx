@@ -187,8 +187,7 @@ BSplineControlPointImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenera
     collapsedPhiLattices[i] = PointDataImageType::New();
     collapsedPhiLattices[i]->CopyInformation(inputPtr);
 
-    typename PointDataImageType::SizeType size;
-    size.Fill(1);
+    auto size = PointDataImageType::SizeType::Filled(1);
     for (unsigned int j = 0; j < i; ++j)
     {
       size[j] = inputPtr->GetLargestPossibleRegion().GetSize()[j];
@@ -281,8 +280,7 @@ BSplineControlPointImageFilter<TInputImage, TOutputImage>::CollapsePhiLattice(Po
        !It.IsAtEnd();
        ++It)
   {
-    PointDataType data;
-    data.Fill(0.0);
+    PointDataType                          data{};
     typename PointDataImageType::IndexType idx = It.GetIndex();
     for (unsigned int i = 0; i < this->m_SplineOrder[dimension] + 1; ++i)
     {
@@ -423,8 +421,7 @@ BSplineControlPointImageFilter<TInputPointImage, TOutputImage>::RefineControlPoi
     auto refinedLattice = ControlPointLatticeType::New();
     refinedLattice->SetRegions(size);
     refinedLattice->Allocate();
-    PixelType data;
-    data.Fill(0.0);
+    PixelType data{};
     refinedLattice->FillBuffer(data);
 
     typename ControlPointLatticeType::IndexType            idx;

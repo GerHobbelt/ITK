@@ -62,11 +62,9 @@ itkIterativeInverseDisplacementFieldImageFilterTest(int argc, char * argv[])
   // Creating an input displacement field
   auto field = DisplacementFieldType::New();
 
-  DisplacementFieldType::SpacingType spacing;
-  spacing.Fill(1.0);
+  auto spacing = itk::MakeFilled<DisplacementFieldType::SpacingType>(1.0);
 
-  DisplacementFieldType::PointType origin;
-  origin.Fill(0.0);
+  DisplacementFieldType::PointType origin{};
 
   DisplacementFieldType::RegionType region;
   DisplacementFieldType::SizeType   size;

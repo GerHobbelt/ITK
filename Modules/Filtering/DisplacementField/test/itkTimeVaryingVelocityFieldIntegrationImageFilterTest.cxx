@@ -45,17 +45,13 @@ itkTimeVaryingVelocityFieldIntegrationImageFilterTest(int argc, char * argv[])
   using DisplacementFieldType = itk::Image<VectorType, 3>;
   using TimeVaryingVelocityFieldType = itk::Image<VectorType, 4>;
 
-  TimeVaryingVelocityFieldType::PointType origin;
-  origin.Fill(0.0);
+  TimeVaryingVelocityFieldType::PointType origin{};
 
-  TimeVaryingVelocityFieldType::SpacingType spacing;
-  spacing.Fill(2.0);
+  auto spacing = itk::MakeFilled<TimeVaryingVelocityFieldType::SpacingType>(2.0);
 
-  TimeVaryingVelocityFieldType::SizeType size;
-  size.Fill(25);
+  auto size = TimeVaryingVelocityFieldType::SizeType::Filled(25);
 
-  VectorType constantVelocity;
-  constantVelocity.Fill(0.1);
+  auto constantVelocity = itk::MakeFilled<VectorType>(0.1);
 
   auto constantVelocityField = TimeVaryingVelocityFieldType::New();
 
@@ -107,9 +103,8 @@ itkTimeVaryingVelocityFieldIntegrationImageFilterTest(int argc, char * argv[])
 
   integrator->Update();
 
-  DisplacementFieldType::IndexType index;
-  index.Fill(0);
-  VectorType displacement;
+  DisplacementFieldType::IndexType index{};
+  VectorType                       displacement;
 
   auto inverseIntegrator = IntegratorType::New();
 
@@ -178,8 +173,7 @@ itkTimeVaryingVelocityFieldIntegrationImageFilterTest(int argc, char * argv[])
   size[1] = 3;
   size[2] = 401;
   size[3] = 61;
-  ImportFilterType::IndexType start;
-  start.Fill(0);
+  ImportFilterType::IndexType start{};
 
   ImportFilterType::RegionType region{ start, size };
 

@@ -53,11 +53,9 @@ FastMarchingImageFilterBase<TInput, TOutput>::FastMarchingImageFilterBase()
   m_StartIndex.Fill(0);
   m_LastIndex.Fill(0);
 
-  OutputSizeType outputSize;
-  outputSize.Fill(16);
+  auto outputSize = OutputSizeType::Filled(16);
 
-  NodeType outputIndex;
-  outputIndex.Fill(0);
+  NodeType outputIndex{};
 
   m_OutputRegion.SetSize(outputSize);
   m_OutputRegion.SetIndex(outputIndex);

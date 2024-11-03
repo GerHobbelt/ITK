@@ -25,7 +25,7 @@ itkVectorContainerToListSampleAdaptorTest(int, char *[])
 
   using VectorType = itk::Vector<double, 5>;
 
-  using ContainerType = itk::VectorContainer<unsigned int, VectorType>;
+  using ContainerType = itk::VectorContainer<VectorType>;
 
   using AdaptorType = itk::Statistics::VectorContainerToListSampleAdaptor<ContainerType>;
 
@@ -49,8 +49,7 @@ itkVectorContainerToListSampleAdaptorTest(int, char *[])
   container->Reserve(containerSize);
   for (unsigned int i = 0; i < container->Size(); ++i)
   {
-    VectorType vector;
-    vector.Fill(std::pow(i, 2));
+    auto vector = itk::MakeFilled<VectorType>(std::pow(i, 2));
     container->InsertElement(i, vector);
   }
 

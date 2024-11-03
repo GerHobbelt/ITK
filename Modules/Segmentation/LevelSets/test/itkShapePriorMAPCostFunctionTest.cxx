@@ -82,8 +82,7 @@ itkShapePriorMAPCostFunctionTest(int, char *[])
   /**
    * Create an input level set and active region container
    */
-  ImageType::SizeType size;
-  size.Fill(128);
+  auto                  size = ImageType::SizeType::Filled(128);
   ImageType::RegionType region;
   region.SetSize(size);
 
@@ -150,8 +149,7 @@ itkShapePriorMAPCostFunctionTest(int, char *[])
   costFunction->SetShapeParameterMeans(shapeMean);
   costFunction->SetShapeParameterStandardDeviations(shapeStdDev);
 
-  CostFunctionType::WeightsType weights;
-  weights.Fill(1.5);
+  auto weights = itk::MakeFilled<CostFunctionType::WeightsType>(1.5);
 
   costFunction->SetWeights(weights);
 

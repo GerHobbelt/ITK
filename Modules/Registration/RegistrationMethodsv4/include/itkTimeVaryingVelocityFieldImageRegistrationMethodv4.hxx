@@ -66,8 +66,7 @@ TimeVaryingVelocityFieldImageRegistrationMethodv4<TFixedImage,
 {
   using DisplacementFieldDuplicatorType = ImageDuplicator<DisplacementFieldType>;
   using DisplacementFieldTransformType = DisplacementFieldTransform<RealType, ImageDimension>;
-  typename DisplacementFieldType::PixelType zeroVector;
-  zeroVector.Fill(0);
+  typename DisplacementFieldType::PixelType zeroVector{};
 
   // This transform is used for the fixed image
   using IdentityTransformType = itk::IdentityTransform<RealType, ImageDimension>;
@@ -363,8 +362,7 @@ TimeVaryingVelocityFieldImageRegistrationMethodv4<TFixedImage,
         RealType spatialNorm{};
         RealType spatioTemporalNorm{};
 
-        typename TimeVaryingVelocityFieldType::SizeType radius;
-        radius.Fill(1);
+        auto radius = TimeVaryingVelocityFieldType::SizeType::Filled(1);
 
         using FaceCalculatorType = NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<TimeVaryingVelocityFieldType>;
         FaceCalculatorType                        faceCalculator;

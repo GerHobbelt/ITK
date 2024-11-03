@@ -183,8 +183,7 @@ itkWarpImageFilterTest(int, char *[])
   warper->SetEdgePaddingValue(padValue);
   ITK_TEST_SET_GET_VALUE(padValue, warper->GetEdgePaddingValue());
 
-  itk::FixedArray<double, ImageDimension> array;
-  array.Fill(2.0);
+  auto array = itk::MakeFilled<itk::FixedArray<double, ImageDimension>>(2.0);
   warper->SetOutputSpacing(array.GetDataPointer());
   ITK_TEST_SET_GET_VALUE(array, warper->GetOutputSpacing());
 
@@ -192,8 +191,7 @@ itkWarpImageFilterTest(int, char *[])
   warper->SetOutputSpacing(array.GetDataPointer());
   ITK_TEST_SET_GET_VALUE(array, warper->GetOutputSpacing());
 
-  WarperType::PointType ptarray;
-  ptarray.Fill(-10.0);
+  auto ptarray = itk::MakeFilled<WarperType::PointType>(-10.0);
   warper->SetOutputOrigin(ptarray.GetDataPointer());
   ITK_TEST_SET_GET_VALUE(ptarray, warper->GetOutputOrigin());
 
@@ -207,14 +205,12 @@ itkWarpImageFilterTest(int, char *[])
   ITK_TEST_SET_GET_VALUE(outputDirection, warper->GetOutputDirection());
 
   typename WarperType::IndexType::value_type outputStartIndexVal = 0;
-  typename WarperType::IndexType             outputStartIndex;
-  outputStartIndex.Fill(outputStartIndexVal);
+  auto                                       outputStartIndex = WarperType::IndexType::Filled(outputStartIndexVal);
   warper->SetOutputStartIndex(outputStartIndex);
   ITK_TEST_SET_GET_VALUE(outputStartIndex, warper->GetOutputStartIndex());
 
   typename WarperType::SizeType::value_type outputSizeVal = 0;
-  typename WarperType::SizeType             outputSize;
-  outputSize.Fill(outputSizeVal);
+  auto                                      outputSize = WarperType::SizeType::Filled(outputSizeVal);
   warper->SetOutputSize(outputSize);
   ITK_TEST_SET_GET_VALUE(outputSize, warper->GetOutputSize());
 

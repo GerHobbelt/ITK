@@ -32,17 +32,13 @@ itkTimeVaryingVelocityFieldTransformTest(int, char *[])
   using DisplacementFieldType = itk::Image<VectorType, ComponentDimension>;
   using TimeVaryingVelocityFieldType = itk::Image<VectorType, VelocityFieldDimension>;
 
-  TimeVaryingVelocityFieldType::PointType origin;
-  origin.Fill(0.0);
+  TimeVaryingVelocityFieldType::PointType origin{};
 
-  TimeVaryingVelocityFieldType::SpacingType spacing;
-  spacing.Fill(2.0);
+  auto spacing = itk::MakeFilled<TimeVaryingVelocityFieldType::SpacingType>(2.0);
 
-  TimeVaryingVelocityFieldType::SizeType size;
-  size.Fill(25);
+  auto size = TimeVaryingVelocityFieldType::SizeType::Filled(25);
 
-  VectorType displacement1;
-  displacement1.Fill(0.1);
+  auto displacement1 = itk::MakeFilled<VectorType>(0.1);
 
   auto timeVaryingVelocityField = TimeVaryingVelocityFieldType::New();
 
@@ -64,9 +60,8 @@ itkTimeVaryingVelocityFieldTransformTest(int, char *[])
 
   integrator->Print(std::cout, 3);
 
-  DisplacementFieldType::IndexType index;
-  index.Fill(0);
-  VectorType displacementPixel;
+  DisplacementFieldType::IndexType index{};
+  VectorType                       displacementPixel;
 
   // This integration should result in a constant image of value
   // 0.75 * 0.1 - 0.3 * 0.1 = 0.045 with ~epsilon deviation
@@ -123,15 +118,13 @@ itkTimeVaryingVelocityFieldTransformTest(int, char *[])
   // Now Clone the Transform and test transform again
   TransformType::Pointer clone = transform->Clone();
 
-  TransformType::InputPointType point;
-  point.Fill(1.3);
+  auto point = itk::MakeFilled<TransformType::InputPointType>(1.3);
 
   using OutputPointType = TransformType::OutputPointType;
   OutputPointType transformedPoint = transform->TransformPoint(point);
   OutputPointType cloneTransformedPoint = clone->TransformPoint(point);
 
-  VectorType displacement;
-  displacement.Fill(0.1);
+  auto displacement = itk::MakeFilled<VectorType>(0.1);
 
   point += displacement;
 

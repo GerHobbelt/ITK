@@ -144,8 +144,7 @@ itkBSplineScatteredDataPointSetToImageFilterTest5(int argc, char * argv[])
   size[0] = 1000;
   size[1] = 100;
 
-  ImageType::PointType origin;
-  origin.Fill(0.0);
+  ImageType::PointType origin{};
 
   filter->SetSize(size);
   filter->SetOrigin(origin);
@@ -161,8 +160,7 @@ itkBSplineScatteredDataPointSetToImageFilterTest5(int argc, char * argv[])
   filter->SetNumberOfLevels(4);
   filter->SetGenerateOutputImage(false);
 
-  FilterType::ArrayType close;
-  close.Fill(1);
+  auto close = itk::MakeFilled<FilterType::ArrayType>(1);
   filter->SetCloseDimension(close);
 
   ITK_TRY_EXPECT_NO_EXCEPTION(filter->Update());

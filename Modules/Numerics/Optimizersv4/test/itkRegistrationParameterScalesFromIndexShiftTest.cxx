@@ -128,8 +128,7 @@ itkRegistrationParameterScalesFromIndexShiftTest(int, char *[])
   auto                      movingImage = MovingImageType::New();
   VirtualImageType::Pointer virtualImage = fixedImage;
 
-  MovingImageType::SizeType size;
-  size.Fill(100);
+  auto size = MovingImageType::SizeType::Filled(100);
 
   movingImage->SetRegions(size);
   fixedImage->SetRegions(size);
@@ -261,8 +260,7 @@ itkRegistrationParameterScalesFromIndexShiftTest(int, char *[])
   using FieldType = DisplacementTransformType::DisplacementFieldType;
   using VectorType = itk::Vector<double, ImageDimension>;
 
-  VectorType zero;
-  zero.Fill(0.0);
+  VectorType zero{};
 
   auto field = FieldType::New();
   field->SetRegions(virtualImage->GetLargestPossibleRegion());

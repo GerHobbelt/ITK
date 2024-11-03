@@ -299,8 +299,7 @@ TimeVaryingBSplineVelocityFieldImageRegistrationMethod<TFixedImage,
         RealType spatialNorm{};
         RealType spatioTemporalNorm{};
 
-        typename TimeVaryingVelocityFieldType::SizeType radius;
-        radius.Fill(1);
+        auto radius = TimeVaryingVelocityFieldType::SizeType::Filled(1);
 
         using FaceCalculatorType = NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<TimeVaryingVelocityFieldType>;
         FaceCalculatorType                        faceCalculator;
@@ -352,8 +351,7 @@ TimeVaryingBSplineVelocityFieldImageRegistrationMethod<
 
   SizeValueType numberOfIntegrationSteps = this->m_NumberOfTimePointSamples + 2;
 
-  typename DisplacementFieldType::PixelType zeroVector;
-  zeroVector.Fill(0);
+  typename DisplacementFieldType::PixelType zeroVector{};
 
   velocityFieldPointSet->Initialize();
   velocityFieldWeights->Initialize();

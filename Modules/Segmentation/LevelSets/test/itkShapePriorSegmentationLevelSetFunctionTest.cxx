@@ -81,8 +81,7 @@ protected:
     function->SetCurvatureWeight(0.0);
     function->SetShapePriorWeight(1.0);
 
-    typename ShapePriorFunctionType::RadiusType radius;
-    radius.Fill(1);
+    auto radius = itk::MakeFilled<typename ShapePriorFunctionType::RadiusType>(1);
     function->Initialize(radius);
 
     this->SetDifferenceFunction(function);
@@ -121,8 +120,7 @@ itkShapePriorSegmentationLevelSetFunctionTest(int, char *[])
   using ImageType = itk::Image<PixelType, Dimension>;
 
   // create an input level set using the sphere signed distance function
-  ImageType::SizeType size;
-  size.Fill(128);
+  auto                  size = ImageType::SizeType::Filled(128);
   ImageType::RegionType region;
   region.SetSize(size);
 

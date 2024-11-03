@@ -33,8 +33,7 @@ itkMatrixTest(int, char *[])
 
   using vnlVectorType = vnl_vector_fixed<NumericType, 3>;
 
-  MatrixType matrix;
-  matrix.Fill(0.0);
+  MatrixType matrix{};
   matrix.SetIdentity();
 
   VectorType v1;
@@ -86,8 +85,7 @@ itkMatrixTest(int, char *[])
   MatrixType matrix4;
   matrix4 = matrix.GetTranspose();
 
-  MatrixType matrix5;
-  matrix5.Fill(1.7);
+  auto matrix5 = itk::MakeFilled<MatrixType>(1.7);
 
   constexpr NumericType value = 2;
   matrix5[1][1] = value;
@@ -333,8 +331,7 @@ itkMatrixTest(int, char *[])
   }
 
   using LargeMatrixType = itk::Matrix<NumericType, 7, 7>;
-  LargeMatrixType matrixBad;
-  matrixBad.Fill(2.0);
+  auto matrixBad = itk::MakeFilled<LargeMatrixType>(2.0);
   ITK_TRY_EXPECT_EXCEPTION(matrixBad.GetInverse());
 
   matrixBad.SetIdentity();

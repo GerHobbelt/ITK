@@ -165,22 +165,18 @@ itkMultiResolutionPDEDeformableRegistrationTest(int argc, char * argv[])
   std::cout << "Generate input images and initial field";
   std::cout << std::endl;
 
-  SizeType size;
-  size.Fill(256);
+  auto size = SizeType::Filled(256);
   size[1] = 251;
 
-  IndexType index;
-  index.Fill(0);
+  IndexType index{};
   index[0] = 3;
 
   RegionType region{ index, size };
 
-  ImageType::PointType origin;
-  origin.Fill(0.0);
+  ImageType::PointType origin{};
   origin[0] = 0.8;
 
-  ImageType::SpacingType spacing;
-  spacing.Fill(1.0);
+  auto spacing = itk::MakeFilled<ImageType::SpacingType>(1.0);
   spacing[1] = 1.2;
 
   auto moving = ImageType::New();
@@ -223,8 +219,7 @@ itkMultiResolutionPDEDeformableRegistrationTest(int argc, char * argv[])
   FillWithCircle<ImageType>(fixed, center, radius, fgnd, bgnd);
 
   // fill initial deformation with zero vectors
-  VectorType zeroVec;
-  zeroVec.Fill(0.0);
+  VectorType zeroVec{};
   FillImage<FieldType>(initField, zeroVec);
 
   //----------------------------------------------------------------

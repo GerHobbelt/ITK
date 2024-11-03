@@ -217,8 +217,7 @@ template <typename TInputImage, typename TOutputImage>
 void
 PatchBasedDenoisingImageFilter<TInputImage, TOutputImage>::Initialize()
 {
-  typename InputImageType::IndexType requiredIndex;
-  requiredIndex.Fill(0);
+  typename InputImageType::IndexType        requiredIndex{};
   const typename InputImageType::RegionType largestRegion = this->GetInput()->GetLargestPossibleRegion();
   const PatchRadiusType                     radius = this->GetPatchRadiusInVoxels();
   PatchRadiusType                           two;
@@ -475,8 +474,7 @@ PatchBasedDenoisingImageFilter<TInputImage, TOutputImage>::InitializePatchWeight
 
   // Allocate the patch weights (mask) as an image.
   // Done in physical space.
-  typename WeightsImageType::SizeType physicalSize;
-  physicalSize.Fill(physicalDiameter);
+  auto                                  physicalSize = WeightsImageType::SizeType::Filled(physicalDiameter);
   typename WeightsImageType::RegionType physicalRegion(physicalSize);
   auto                                  physicalWeightsImage = WeightsImageType::New();
   physicalWeightsImage->SetRegions(physicalRegion);
@@ -484,8 +482,7 @@ PatchBasedDenoisingImageFilter<TInputImage, TOutputImage>::InitializePatchWeight
   physicalWeightsImage->Allocate();
   physicalWeightsImage->FillBuffer(1.0);
 
-  typename WeightsImageType::IndexType centerIndex;
-  centerIndex.Fill(patchRadius);
+  auto centerIndex = WeightsImageType::IndexType::Filled(patchRadius);
 
   unsigned int pos = 0;
   for (ImageRegionIteratorWithIndex<WeightsImageType> pwIt(physicalWeightsImage, physicalRegion); !pwIt.IsAtEnd();
@@ -682,8 +679,7 @@ typename PatchBasedDenoisingImageFilter<TInputImage, TOutputImage>::ThreadDataSt
   using FaceCalculatorType = typename NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<InputImageType>;
   using FaceListType = typename FaceCalculatorType::FaceListType;
 
-  typename InputImageType::SizeType radius;
-  radius.Fill(1);
+  auto radius = InputImageType::SizeType::Filled(1);
 
   if (m_NumIndependentComponents != 1)
   {

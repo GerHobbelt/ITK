@@ -412,12 +412,10 @@ itkComposeScaleSkewVersor3DTransformTest(int, char *[])
     translation[2] = 23;
     transform->SetTranslation(translation);
 
-    TransformType::ScaleVectorType scale;
-    scale.Fill(2.5);
+    auto scale = itk::MakeFilled<TransformType::ScaleVectorType>(2.5);
     transform->SetScale(scale);
 
-    TransformType::SkewVectorType skew;
-    skew.Fill(0);
+    TransformType::SkewVectorType skew{};
     skew[0] = 0.1;
     skew[1] = 0.1;
     transform->SetSkew(skew);

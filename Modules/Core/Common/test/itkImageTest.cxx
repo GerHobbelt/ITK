@@ -31,8 +31,7 @@ public:
   OutputPointType
   TransformPoint(const InputPointType & inputPoint) const
   {
-    OutputPointType outputPoint;
-    outputPoint.Fill(0.0);
+    OutputPointType outputPoint{};
     // if InputPoint Dimension < 2 then embed point in 2D space
     // else project the point to 2D space.
     for (unsigned int d = 0; d < std::min(inputPoint.GetPointDimension(), outputPoint.GetPointDimension()); ++d)
@@ -63,10 +62,8 @@ itkImageTest(int, char *[])
   image->GetSource();
   image->DisconnectPipeline();
 
-  Image::SpacingType spacing;
-  spacing.Fill(1.0);
-  Image::PointType origin;
-  origin.Fill(1.0);
+  auto                 spacing = itk::MakeFilled<Image::SpacingType>(1.0);
+  auto                 origin = itk::MakeFilled<Image::PointType>(1.0);
   Image::DirectionType direction;
   direction[0][0] = .5;
   direction[0][1] = .7;
@@ -122,19 +119,15 @@ itkImageTest(int, char *[])
   direction.SetIdentity();
   image->SetDirection(direction);
   Image::RegionType region;
-  Image::IndexType  index;
-  index.Fill(0);
-  Image::SizeType size;
-  size.Fill(4);
+  Image::IndexType  index{};
+  auto              size = Image::SizeType::Filled(4);
   region.SetIndex(index);
   region.SetSize(size);
   image->SetRegions(region);
 
-  auto               imageRef = Image::New();
-  Image::SpacingType spacingRef;
-  spacingRef.Fill(2);
-  Image::PointType originRef;
-  originRef.Fill(0);
+  auto                 imageRef = Image::New();
+  auto                 spacingRef = itk::MakeFilled<Image::SpacingType>(2);
+  Image::PointType     originRef{};
   Image::DirectionType directionRef;
   directionRef.SetIdentity();
   imageRef->SetSpacing(spacingRef);
@@ -155,10 +148,8 @@ itkImageTest(int, char *[])
                                                                           image.GetPointer(),
                                                                           imageRef.GetPointer(),
                                                                           static_cast<TransformType *>(nullptr));
-  Image::IndexType  correctIndex;
-  correctIndex.Fill(0);
-  Image::SizeType correctSize;
-  correctSize.Fill(3);
+  Image::IndexType  correctIndex{};
+  auto              correctSize = Image::SizeType::Filled(3);
   if (!(boxRegion.GetIndex() == correctIndex) || !(boxRegion.GetSize() == correctSize))
   {
     std::cerr << "EnlargeRegionOverBox test failed: "
@@ -167,11 +158,9 @@ itkImageTest(int, char *[])
   }
 
   using Image3D = itk::Image<float, 3>;
-  auto                 volume = Image3D::New();
-  Image3D::SpacingType spacingVol;
-  spacingVol.Fill(1);
-  Image3D::PointType originVol;
-  originVol.Fill(0);
+  auto                   volume = Image3D::New();
+  auto                   spacingVol = itk::MakeFilled<Image3D::SpacingType>(1);
+  Image3D::PointType     originVol{};
   Image3D::DirectionType directionVol;
   directionVol.SetIdentity();
   volume->SetSpacing(spacingVol);
@@ -179,9 +168,8 @@ itkImageTest(int, char *[])
   volume->SetDirection(directionVol);
 
   Image3D::RegionType cuboid;
-  Image3D::IndexType  indexCuboid;
-  indexCuboid.Fill(0);
-  Image3D::SizeType sizeCuboid;
+  Image3D::IndexType  indexCuboid{};
+  Image3D::SizeType   sizeCuboid;
   sizeCuboid[0] = 1;
   sizeCuboid[1] = 2;
   sizeCuboid[2] = 3;
@@ -196,9 +184,8 @@ itkImageTest(int, char *[])
     volume->GetLargestPossibleRegion(), volume.GetPointer(), imageRef.GetPointer(), projectionTransform);
 
   delete projectionTransform;
-  Image::IndexType correctRectangleIndex;
-  correctRectangleIndex.Fill(0);
-  Image::SizeType correctRectangleSize;
+  Image::IndexType correctRectangleIndex{};
+  Image::SizeType  correctRectangleSize;
   correctRectangleSize[0] = 1;
   correctRectangleSize[1] = 2;
   if (!(rectangleRegion.GetIndex() == correctRectangleIndex) || !(rectangleRegion.GetSize() == correctRectangleSize))

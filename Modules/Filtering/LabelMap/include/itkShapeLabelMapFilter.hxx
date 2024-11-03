@@ -95,16 +95,12 @@ ShapeLabelMapFilter<TImage, TLabelImage>::ThreadedProcessLabelObject(LabelObject
 
   // Init the vars
   SizeValueType                           nbOfPixels = 0;
-  ContinuousIndex<double, ImageDimension> centroid;
-  centroid.Fill(0);
-  IndexType mins;
-  mins.Fill(NumericTraits<IndexValueType>::max());
-  IndexType maxs;
-  maxs.Fill(NumericTraits<IndexValueType>::NonpositiveMin());
-  SizeValueType nbOfPixelsOnBorder = 0;
-  double        perimeterOnBorder = 0;
-  MatrixType    centralMoments;
-  centralMoments.Fill(0);
+  ContinuousIndex<double, ImageDimension> centroid{};
+  auto                                    mins = IndexType::Filled(NumericTraits<IndexValueType>::max());
+  auto                                    maxs = IndexType::Filled(NumericTraits<IndexValueType>::NonpositiveMin());
+  SizeValueType                           nbOfPixelsOnBorder = 0;
+  double                                  perimeterOnBorder = 0;
+  MatrixType                              centralMoments{};
 
   using LengthType = typename LabelObjectType::LengthType;
 
@@ -434,8 +430,7 @@ ShapeLabelMapFilter<TImage, TLabelImage>::ComputeFeretDiameter(LabelObjectType *
   IndexListType idxList;
 
   using NeighborIteratorType = typename itk::ConstNeighborhoodIterator<LabelImageType>;
-  SizeType neighborHoodRadius;
-  neighborHoodRadius.Fill(1);
+  auto                                      neighborHoodRadius = SizeType::Filled(1);
   NeighborIteratorType                      it(neighborHoodRadius, m_LabelImage, m_LabelImage->GetBufferedRegion());
   ConstantBoundaryCondition<LabelImageType> lcbc;
   // Use label + 1 to have a label different of the current label on the border
@@ -551,8 +546,7 @@ ShapeLabelMapFilter<TImage, TLabelImage>::ComputePerimeter(LabelObjectType * lab
     const VectorLineType & ls = lIt.GetCenterPixel();
 
     // there are two intercepts on the 0 axis for each line
-    OffsetType no;
-    no.Fill(0);
+    OffsetType no{};
     no[0] = 1;
     // std::cout << no << "-> " << 2 * ls.size() << std::endl;
     intercepts[no] += 2 * static_cast<SizeValueType>(ls.size());
@@ -677,8 +671,7 @@ ShapeLabelMapFilter<TImage, TLabelImage>::PerimeterFromInterceptCount(TMapInterc
 
   for (int i = 0; i < dim; ++i)
   {
-    OffsetType no;
-    no.Fill(0);
+    OffsetType no{};
     no[i] = 1;
     // std::cout << no << ": " << intercepts[no] << std::endl;
     perimeter += pixelSize / spacing[i] * intercepts[no] / 2.0;

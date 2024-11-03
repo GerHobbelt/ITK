@@ -19,7 +19,7 @@
 #include "itkImageFileWriter.h"
 #include "itkIOCommon.h"
 #include "itkMetaDataObject.h"
-#include "itkSpatialOrientationAdapter.h"
+#include "itkAnatomicalOrientation.h"
 #include "itkTestingMacros.h"
 
 int
@@ -38,17 +38,14 @@ itkReadWriteImageWithDictionaryTest(int argc, char * argv[])
   // Create the 16x16 input image
   auto inputImage = ImageType::New();
 
-  ImageType::SizeType size;
-  size.Fill(16);
-  ImageType::IndexType index;
-  index.Fill(0);
+  auto                  size = ImageType::SizeType::Filled(16);
+  ImageType::IndexType  index{};
   ImageType::RegionType region{ index, size };
   inputImage->SetRegions(region);
   inputImage->Allocate();
   inputImage->FillBuffer(0);
 
-  inputImage->SetDirection(itk::SpatialOrientationAdapter().ToDirectionCosines(
-    itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_COORDINATE_ORIENTATION_RIP));
+  inputImage->SetDirection(itk::AnatomicalOrientation::CreateFromPositiveStringEncoding("LSA").GetAsDirection());
 
   // Add some metadata in the dictionary
   itk::MetaDataDictionary & inputDictionary = inputImage->GetMetaDataDictionary();

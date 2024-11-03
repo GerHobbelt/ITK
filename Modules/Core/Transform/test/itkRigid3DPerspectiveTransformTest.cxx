@@ -46,8 +46,7 @@ itkRigid3DPerspectiveTransformTest(int, char *[])
     vnlVector.fill(1.0);
     ITK_TRY_EXPECT_EXCEPTION(transform->TransformVector(vnlVector));
 
-    typename TransformType::InputCovariantVectorType covVector;
-    covVector.Fill(1.0);
+    auto covVector = itk::MakeFilled<typename TransformType::InputCovariantVectorType>(1.0);
     ITK_TRY_EXPECT_EXCEPTION(transform->TransformCovariantVector(covVector));
 
     auto                                         point = itk::MakeFilled<typename TransformType::InputPointType>(1.0);
@@ -62,21 +61,17 @@ itkRigid3DPerspectiveTransformTest(int, char *[])
     ITK_EXERCISE_BASIC_OBJECT_METHODS(transform, Rigid3DPerspectiveTransform, Transform);
 
 
-    typename TransformType::OffsetType fixedOffset;
-    fixedOffset.Fill(0);
+    typename TransformType::OffsetType fixedOffset{};
 
     transform->SetFixedOffset(fixedOffset);
     ITK_TEST_SET_GET_VALUE(fixedOffset, transform->GetFixedOffset());
 
-    typename TransformType::InputPointType centerOfRotation;
-    centerOfRotation.Fill(0);
+    typename TransformType::InputPointType centerOfRotation{};
     transform->SetCenterOfRotation(centerOfRotation);
     ITK_TEST_SET_GET_VALUE(centerOfRotation, transform->GetCenterOfRotation());
 
     // This transform has no fixed parameters; empty method body; called for coverage purposes
-    typename TransformType::FixedParametersType::ValueType fixedParametersValues = 0;
-    typename TransformType::FixedParametersType            fixedParameters;
-    fixedParameters.Fill(fixedParametersValues);
+    const typename TransformType::FixedParametersType fixedParameters{};
     transform->SetFixedParameters(fixedParameters);
   }
 
@@ -109,8 +104,7 @@ itkRigid3DPerspectiveTransformTest(int, char *[])
     auto translation = TransformType::New();
     translation->SetFocalDistance(focal);
 
-    TransformType::OffsetType ioffset;
-    ioffset.Fill(0.0);
+    TransformType::OffsetType ioffset{};
 
     translation->SetOffset(ioffset);
     ITK_TEST_SET_GET_VALUE(ioffset, translation->GetOffset());
@@ -135,8 +129,7 @@ itkRigid3DPerspectiveTransformTest(int, char *[])
 
     {
       // Projecting  an itk::Point
-      TransformType::InputPointType p;
-      p.Fill(10);
+      auto                          p = itk::MakeFilled<TransformType::InputPointType>(10);
       TransformType::InputPointType q;
       q = p + ioffset;
       TransformType::OutputPointType s;
@@ -172,8 +165,7 @@ itkRigid3DPerspectiveTransformTest(int, char *[])
     auto rigid = TransformType::New();
     rigid->SetFocalDistance(focal);
 
-    TransformType::OffsetType ioffset;
-    ioffset.Fill(0.0);
+    TransformType::OffsetType ioffset{};
 
     rigid->SetOffset(ioffset);
 
@@ -195,8 +187,7 @@ itkRigid3DPerspectiveTransformTest(int, char *[])
 
     {
       // Project an itk::Point
-      TransformType::InputPointType p;
-      p.Fill(10.0);
+      auto                          p = itk::MakeFilled<TransformType::InputPointType>(10.0);
       TransformType::InputPointType q;
       q = p + ioffset;
       TransformType::OutputPointType s;

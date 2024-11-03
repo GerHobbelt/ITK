@@ -124,8 +124,7 @@ itkImageFunctionTest(int, char *[])
 
   auto image = ImageType::New();
 
-  IndexType start;
-  start.Fill(1);
+  auto     start = IndexType::Filled(1);
   SizeType size;
   size[0] = 3;
   size[1] = 4;
@@ -286,8 +285,7 @@ itkImageFunctionTest(int, char *[])
   }
 
   /* IsInsideBuffer with Point type */
-  PointType point;
-  point.Fill(1);
+  auto point = itk::MakeFilled<PointType>(1);
   if (!function->IsInsideBuffer(point))
   {
     std::cout << "Error with IsInsideBuffer 1P." << std::endl;

@@ -41,8 +41,7 @@ itkGaussianSpatialObjectTest(int, char *[])
   myGaussian->SetSigmaInObjectSpace(sigma);
   ITK_TEST_SET_GET_VALUE(sigma, myGaussian->GetSigmaInObjectSpace());
 
-  GaussianType::PointType center;
-  center.Fill(0.0);
+  GaussianType::PointType center{};
   myGaussian->SetCenterInObjectSpace(center);
   ITK_TEST_SET_GET_VALUE(center, myGaussian->GetCenterInObjectSpace());
 
@@ -99,8 +98,7 @@ itkGaussianSpatialObjectTest(int, char *[])
 
   std::cout << "SetOffset" << std::endl;
   const GaussianType::TransformType::OffsetType::ValueType offset10 = 10.0;
-  GaussianType::TransformType::OffsetType                  offset;
-  offset.Fill(offset10);
+  auto offset = itk::MakeFilled<GaussianType::TransformType::OffsetType>(offset10);
   myGaussian->GetModifiableObjectToWorldTransform()->SetOffset(offset);
   myGaussian->ComputeObjectToParentTransform();
 
@@ -110,8 +108,7 @@ itkGaussianSpatialObjectTest(int, char *[])
 
   std::cout << "SetOffset2" << std::endl;
   const GaussianType::TransformType::OffsetType::ValueType offset15 = 15.0;
-  GaussianType::TransformType::OffsetType                  offset2;
-  offset2.Fill(offset15);
+  auto offset2 = itk::MakeFilled<GaussianType::TransformType::OffsetType>(offset15);
   myGaussian2->GetModifiableObjectToWorldTransform()->SetOffset(offset2);
   myGaussian2->ComputeObjectToParentTransform();
 

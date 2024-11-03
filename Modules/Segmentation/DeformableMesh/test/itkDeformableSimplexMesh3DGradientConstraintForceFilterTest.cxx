@@ -49,9 +49,8 @@ itkDeformableSimplexMesh3DGradientConstraintForceFilterTest(int, char *[])
 
   // note : image is volume of 20x20x20 starting at 0,0,0 so make sure
   // the mesh sits on image in space
-  auto      mySphereMeshSource = SphereMeshSourceType::New();
-  PointType center;
-  center.Fill(10);
+  auto                 mySphereMeshSource = SphereMeshSourceType::New();
+  auto                 center = itk::MakeFilled<PointType>(10);
   PointType::ValueType scaleInit[PointDimension] = { 5, 5, 5 };
   VectorType           scale = scaleInit;
 
@@ -74,8 +73,7 @@ itkDeformableSimplexMesh3DGradientConstraintForceFilterTest(int, char *[])
 
   auto originalImage = OriginalImageType::New();
 
-  ImageSizeType imageSize;
-  imageSize.Fill(20);
+  auto imageSize = ImageSizeType::Filled(20);
   originalImage->SetRegions(imageSize);
   originalImage->Allocate();
 

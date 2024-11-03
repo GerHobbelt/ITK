@@ -48,11 +48,9 @@ itkGaussianRandomSpatialNeighborSubsamplerTest(int argc, char * argv[])
   using SamplerType = itk::Statistics::GaussianRandomSpatialNeighborSubsampler<AdaptorType, RegionType>;
   using WriterType = itk::ImageFileWriter<FloatImage>;
 
-  auto     inImage = FloatImage::New();
-  SizeType sz;
-  sz.Fill(35);
-  IndexType idx;
-  idx.Fill(0);
+  auto       inImage = FloatImage::New();
+  auto       sz = SizeType::Filled(35);
+  IndexType  idx{};
   RegionType region{ idx, sz };
 
   inImage->SetRegions(region);

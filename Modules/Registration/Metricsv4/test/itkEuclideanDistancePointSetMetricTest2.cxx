@@ -44,8 +44,7 @@ itkEuclideanDistancePointSetMetricTest2Run()
 
   // Create a few points and apply a small offset to make the moving points
   auto      pointMax = static_cast<float>(100.0);
-  PointType fixedPoint;
-  fixedPoint.Fill(0.0);
+  PointType fixedPoint{};
   fixedPoint[0] = 0.0;
   fixedPoint[1] = 0.0;
   fixedPoints->SetPoint(0, fixedPoint);
@@ -100,24 +99,19 @@ itkEuclideanDistancePointSetMetricTest2Run()
   using FieldType = typename DisplacementFieldTransformType::DisplacementFieldType;
   using RegionType = typename FieldType::RegionType;
 
-  typename FieldType::SpacingType spacing;
-  spacing.Fill(1.0);
+  auto spacing = itk::MakeFilled<typename FieldType::SpacingType>(1.0);
 
-  typename FieldType::DirectionType direction;
-  direction.Fill(0.0);
+  typename FieldType::DirectionType direction{};
   for (unsigned int d = 0; d < Dimension; ++d)
   {
     direction[d][d] = 1.0;
   }
 
-  typename FieldType::PointType origin;
-  origin.Fill(0.0);
+  typename FieldType::PointType origin{};
 
-  typename RegionType::SizeType regionSize;
-  regionSize.Fill(static_cast<itk::SizeValueType>(pointMax + 1.0));
+  auto regionSize = RegionType::SizeType::Filled(static_cast<itk::SizeValueType>(pointMax + 1.0));
 
-  typename RegionType::IndexType regionIndex;
-  regionIndex.Fill(0);
+  typename RegionType::IndexType regionIndex{};
 
   RegionType region{ regionIndex, regionSize };
 
@@ -127,8 +121,7 @@ itkEuclideanDistancePointSetMetricTest2Run()
   displacementField->SetSpacing(spacing);
   displacementField->SetRegions(region);
   displacementField->Allocate();
-  typename DisplacementFieldTransformType::OutputVectorType zeroVector;
-  zeroVector.Fill(0);
+  typename DisplacementFieldTransformType::OutputVectorType zeroVector{};
   displacementField->FillBuffer(zeroVector);
   displacementTransform->SetDisplacementField(displacementField);
 
@@ -232,14 +225,12 @@ itkEuclideanDistancePointSetMetricTest2Run()
 
   // Test with invalid virtual domain, i.e.
   // one that doesn't match the displacement field.
-  typename RegionType::SizeType badSize;
-  badSize.Fill(static_cast<itk::SizeValueType>(pointMax / 2.0));
+  auto       badSize = RegionType::SizeType::Filled(static_cast<itk::SizeValueType>(pointMax / 2.0));
   RegionType badRegion{ regionIndex, badSize };
   metric->SetVirtualDomain(spacing, origin, direction, badRegion);
   ITK_TRY_EXPECT_EXCEPTION(metric->Initialize());
 
-  typename FieldType::SpacingType badSpacing;
-  badSpacing.Fill(0.5);
+  auto badSpacing = itk::MakeFilled<typename FieldType::SpacingType>(0.5);
   metric->SetVirtualDomain(badSpacing, origin, direction, region);
   ITK_TRY_EXPECT_EXCEPTION(metric->Initialize());
 

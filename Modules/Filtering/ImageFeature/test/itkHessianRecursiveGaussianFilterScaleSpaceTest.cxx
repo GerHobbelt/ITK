@@ -38,23 +38,19 @@ itkHessianRecursiveGaussianFilterScaleSpaceTest(int, char *[])
 
   auto inputImage = ImageType::New();
 
-  SizeType size;
-  size.Fill(21);
+  auto size = SizeType::Filled(21);
   size[0] = 401;
 
-  IndexType start;
-  start.Fill(0);
+  IndexType start{};
 
   RegionType region;
   region.SetIndex(start);
   region.SetSize(size);
 
-  PointType origin;
-  origin.Fill(-1.25);
+  auto origin = itk::MakeFilled<PointType>(-1.25);
   origin[0] = -20.0;
 
-  SpacingType spacing;
-  spacing.Fill(0.1);
+  auto spacing = itk::MakeFilled<SpacingType>(0.1);
 
   inputImage->SetOrigin(origin);
   inputImage->SetSpacing(spacing);
@@ -103,8 +99,7 @@ itkHessianRecursiveGaussianFilterScaleSpaceTest(int, char *[])
     HessianImageType::Pointer outputImage = filter->GetOutput();
 
     // Get the value at the center of the image, the location of the peak of the Gaussian
-    PointType center;
-    center.Fill(0.0);
+    PointType center{};
 
     IndexType centerIndex = outputImage->TransformPhysicalPointToIndex(center);
 
@@ -158,8 +153,7 @@ itkHessianRecursiveGaussianFilterScaleSpaceTest(int, char *[])
     HessianImageType::Pointer outputImage = filter->GetOutput();
 
     // Get the value at the center of the image, the location of the peak of the Gaussian
-    PointType center;
-    center.Fill(0.0);
+    PointType center{};
 
     IndexType centerIndex = outputImage->TransformPhysicalPointToIndex(center);
 

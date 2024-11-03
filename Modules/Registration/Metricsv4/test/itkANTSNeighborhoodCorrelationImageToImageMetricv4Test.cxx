@@ -151,15 +151,11 @@ itkANTSNeighborhoodCorrelationImageToImageMetricv4Test(int, char ** const)
 
   constexpr itk::SizeValueType imageSize = 6;
 
-  ImageType::SizeType size;
-  size.Fill(imageSize);
-  ImageType::IndexType index;
-  index.Fill(0);
-  ImageType::RegionType  region{ index, size };
-  ImageType::SpacingType spacing;
-  spacing.Fill(1.0);
-  ImageType::PointType origin;
-  origin.Fill(0);
+  auto                     size = ImageType::SizeType::Filled(imageSize);
+  ImageType::IndexType     index{};
+  ImageType::RegionType    region{ index, size };
+  auto                     spacing = itk::MakeFilled<ImageType::SpacingType>(1.0);
+  ImageType::PointType     origin{};
   ImageType::DirectionType direction;
   direction.SetIdentity();
 
@@ -247,8 +243,7 @@ itkANTSNeighborhoodCorrelationImageToImageMetricv4Test(int, char ** const)
   const MetricType::RadiusType constRadius = metric->GetRadius();
   ITK_TEST_EXPECT_EQUAL(neighborhoodRadius0, constRadius);
 
-  itk::Size<ImageDimension> neighborhoodRadius;
-  neighborhoodRadius.Fill(1);
+  auto neighborhoodRadius = itk::Size<ImageDimension>::Filled(1);
 
   metric->SetRadius(neighborhoodRadius);
   ITK_TEST_SET_GET_VALUE(neighborhoodRadius, metric->GetRadius());

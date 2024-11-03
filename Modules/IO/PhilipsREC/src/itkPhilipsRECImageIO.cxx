@@ -29,7 +29,7 @@
 #include "itkIOCommon.h"
 #include "itkByteSwapper.h"
 #include "itkMetaDataObject.h"
-#include "itkSpatialOrientationAdapter.h"
+#include "itkAnatomicalOrientation.h"
 #include "itksys/SystemTools.hxx"
 #include "itk_zlib.h"
 #include <fstream>
@@ -519,9 +519,8 @@ PhilipsRECImageIO::CanReadFile(const char * FileNameToRead)
   const std::string HeaderFileName = GetHeaderFileName(filename);
 
   // Try to read the par file.
-  struct par_parameter par;
-  // Zero out par_parameter.
-  memset(&par, 0, sizeof(struct par_parameter));
+  struct par_parameter par
+  {};
 
   auto philipsPAR = PhilipsPAR::New();
   try
@@ -546,10 +545,8 @@ void
 PhilipsRECImageIO::ReadImageInformation()
 {
   const std::string    HeaderFileName = GetHeaderFileName(this->m_FileName);
-  struct par_parameter par;
-
-  // Zero out par_parameter.
-  memset(&par, 0, sizeof(struct par_parameter));
+  struct par_parameter par
+  {};
 
   // Read PAR file.
   auto philipsPAR = PhilipsPAR::New();
@@ -713,7 +710,7 @@ PhilipsRECImageIO::ReadImageInformation()
   AffineMatrix spacing;
   spacing.SetIdentity();
 
-  SpatialOrientationEnums::ValidCoordinateOrientations coord_orient;
+  AnatomicalOrientation coord_orient(AnatomicalOrientation::NegativeEnum::RSA);
 
   switch (par.sliceorient)
   {
@@ -721,7 +718,7 @@ PhilipsRECImageIO::ReadImageInformation()
       // Transverse - the REC data appears to be stored as right-left,
       // anterior-posterior, and inferior-superior.
       // Verified using a marker on right side of brain.
-      coord_orient = SpatialOrientationEnums::ValidCoordinateOrientations::ITK_COORDINATE_ORIENTATION_RAI;
+      coord_orient = AnatomicalOrientation::NegativeEnum::RAI;
       spacing[0][0] = par.vox[0];
       spacing[1][1] = par.vox[1];
       spacing[2][2] = par.vox[2];
@@ -730,7 +727,7 @@ PhilipsRECImageIO::ReadImageInformation()
       // Sagittal - the REC data appears to be stored as anterior-posterior,
       // superior-inferior, and right-left.
       // Verified using marker on right side of brain.
-      coord_orient = SpatialOrientationEnums::ValidCoordinateOrientations::ITK_COORDINATE_ORIENTATION_ASL;
+      coord_orient = AnatomicalOrientation::NegativeEnum::ASL;
       spacing[0][0] = par.vox[2];
       spacing[1][1] = par.vox[0];
       spacing[2][2] = par.vox[1];
@@ -741,13 +738,13 @@ PhilipsRECImageIO::ReadImageInformation()
     // Verified using marker on right side of brain.
     // fall thru
     default:
-      coord_orient = SpatialOrientationEnums::ValidCoordinateOrientations::ITK_COORDINATE_ORIENTATION_RSA;
+      coord_orient = AnatomicalOrientation::NegativeEnum::RSA;
       spacing[0][0] = par.vox[0];
       spacing[1][1] = par.vox[2];
       spacing[2][2] = par.vox[1];
   }
 
-  SpatialOrientationAdapter::DirectionType dir = SpatialOrientationAdapter().ToDirectionCosines(coord_orient);
+  AnatomicalOrientation::DirectionType dir = coord_orient.GetAsDirection();
 
   AffineMatrix direction;
   direction.SetIdentity();

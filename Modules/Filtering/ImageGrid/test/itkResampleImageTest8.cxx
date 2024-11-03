@@ -98,8 +98,8 @@ public:
   OutputPointType
   TransformPoint(const InputPointType & inputPoint) const override
   {
-    OutputPointType outputPoint;
-    outputPoint.Fill(std::numeric_limits<typename OutputPointType::ValueType>::max());
+    auto outputPoint =
+      itk::MakeFilled<OutputPointType>(std::numeric_limits<typename OutputPointType::ValueType>::max());
     for (unsigned int d = 0; d < 2; ++d)
     {
       outputPoint[d] = inputPoint[d] * 0.5;
@@ -193,13 +193,11 @@ itkResampleImageTest8(int, char *[])
   resample->SetOutputStartIndex(outputIndex);
   ITK_TEST_SET_GET_VALUE(outputIndex, resample->GetOutputStartIndex());
 
-  OutputImageType::PointType origin;
-  origin.Fill(0.0);
+  OutputImageType::PointType origin{};
   resample->SetOutputOrigin(origin);
   ITK_TEST_SET_GET_VALUE(origin, resample->GetOutputOrigin());
 
-  OutputImageType::SpacingType spacing;
-  spacing.Fill(1.0);
+  auto spacing = itk::MakeFilled<OutputImageType::SpacingType>(1.0);
   resample->SetOutputSpacing(spacing);
   ITK_TEST_SET_GET_VALUE(spacing, resample->GetOutputSpacing());
 

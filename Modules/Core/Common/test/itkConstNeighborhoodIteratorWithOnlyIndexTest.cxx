@@ -29,8 +29,7 @@ itkConstNeighborhoodIteratorWithOnlyIndexTestGetTestImage(int d1, int d2, int d3
   sizeND[2] = d3;
   sizeND[3] = d4;
 
-  itk::Index<4> origND;
-  origND.Fill(0);
+  itk::Index<4> origND{};
 
   itk::ImageRegion<4> RegionND{ origND, sizeND };
 
@@ -242,8 +241,7 @@ itkConstNeighborhoodIteratorWithOnlyIndexTestRun()
   ra_it.SetLocation(loc);
 
   std::cout << "Adding [1, 1, 1, 1]" << std::endl;
-  OffsetType a_off;
-  a_off.Fill(1);
+  auto a_off = itk::MakeFilled<OffsetType>(1);
   ra_it += a_off;
   for (unsigned int i = 0; i < 4; ++i)
   {

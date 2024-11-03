@@ -100,9 +100,8 @@ itkRegistrationParameterScalesFromPhysicalShiftPointSetTest(int, char *[])
   upperRightPoint[1] = virtualDomainSize[1];
 
   // Make a simple point set
-  PointType             testPoint;
-  PointType::VectorType offset;
-  offset.Fill(0.1);
+  PointType testPoint;
+  auto      offset = itk::MakeFilled<PointType::VectorType>(0.1);
   testPoint[0] = 0.0;
   testPoint[1] = 0.0;
   fixedPoints->SetPoint(0, testPoint);
@@ -287,14 +286,12 @@ itkRegistrationParameterScalesFromPhysicalShiftPointSetTest(int, char *[])
   using FieldType = DisplacementTransformType::DisplacementFieldType;
   using VectorType = itk::Vector<double, Dimension>;
 
-  VectorType zero;
-  zero.Fill(0.0);
+  VectorType zero{};
 
   using RegionType = itk::ImageRegion<Dimension>;
   RegionType region;
   region.SetSize(virtualDomainSize);
-  RegionType::IndexType index;
-  index.Fill(0);
+  RegionType::IndexType index{};
   region.SetIndex(index);
 
   auto field = FieldType::New();

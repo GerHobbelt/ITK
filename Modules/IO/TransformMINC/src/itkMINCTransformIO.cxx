@@ -219,8 +219,7 @@ MINCTransformIOTemplate<TParametersValueType>::WriteOneTransform(const int      
   {
     if (matrixOffsetTransform)
     {
-      VIO_Transform lin;
-      memset(&lin, 0, sizeof(VIO_Transform));
+      VIO_Transform lin{};
 
       MatrixType matrix = matrixOffsetTransform->GetMatrix();
       OffsetType offset = matrixOffsetTransform->GetOffset();
@@ -237,7 +236,6 @@ MINCTransformIOTemplate<TParametersValueType>::WriteOneTransform(const int      
       Transform_elem(lin, 3, 3) = 1.0;
 
       xfm.emplace_back();
-      memset(&xfm.back(), 0, sizeof(VIO_General_transform));
       create_linear_transform(&xfm.back(), &lin);
     }
     else if (transformType.find("DisplacementFieldTransform_") != std::string::npos &&

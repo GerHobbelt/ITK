@@ -42,8 +42,7 @@ LabelMapContourOverlayImageFilter<TLabelMap, TFeatureImage, TOutputImage>::Label
   m_Opacity = 0.5;
   m_Type = CONTOUR;
   m_Priority = HIGH_LABEL_ON_TOP;
-  SizeType s;
-  s.Fill(1);
+  auto s = SizeType::Filled(1);
   m_ContourThickness = SizeType(s);
   s.Fill(0);
   m_DilationRadius = SizeType(s);
@@ -153,8 +152,7 @@ LabelMapContourOverlayImageFilter<TLabelMap, TFeatureImage, TOutputImage>::Befor
   using SliceErodeType = BinaryErodeImageFilter<SliceInternalImageType, SliceInternalImageType, SliceKernelType>;
   auto serode = SliceErodeType::New();
   using RadiusType = typename SliceKernelType::RadiusType;
-  RadiusType srad;
-  srad.Fill(typename RadiusType::SizeValueType{});
+  RadiusType srad{};
   for (unsigned int i = 0, j = 0; i < ImageDimension; ++i)
   {
     if (j != static_cast<unsigned int>(m_SliceDimension) && (j < (ImageDimension - 1)))

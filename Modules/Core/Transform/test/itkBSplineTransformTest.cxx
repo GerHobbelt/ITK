@@ -59,16 +59,13 @@ itkBSplineTransformTest1()
    */
 
   using OriginType = TransformType::OriginType;
-  OriginType origin;
-  origin.Fill(0.0);
+  OriginType origin{};
 
   using PhysicalDimensionsType = TransformType::PhysicalDimensionsType;
-  PhysicalDimensionsType dimensions;
-  dimensions.Fill(100);
+  auto dimensions = itk::MakeFilled<PhysicalDimensionsType>(100);
 
   using MeshSizeType = TransformType::MeshSizeType;
-  MeshSizeType meshSize;
-  meshSize.Fill(10);
+  auto meshSize = MeshSizeType::Filled(10);
 
   using DirectionType = TransformType::DirectionType;
   DirectionType direction;
@@ -164,8 +161,7 @@ itkBSplineTransformTest1()
   /**
    * Populate the spline coefficients with some values.
    */
-  CoefficientImageType::IndexType index;
-  index.Fill(5);
+  auto index = CoefficientImageType::IndexType::Filled(5);
 
   coeffImage[1]->SetPixel(index, 1.0);
 
@@ -322,8 +318,7 @@ itkBSplineTransformTest1()
    */
   {
     using VectorType = TransformType::InputVectorType;
-    VectorType vector;
-    vector.Fill(1.0);
+    auto vector = itk::MakeFilled<VectorType>(1.0);
 
     bool pass = false;
     try
@@ -346,8 +341,7 @@ itkBSplineTransformTest1()
 
   {
     using VectorType = TransformType::InputCovariantVectorType;
-    VectorType vector;
-    vector.Fill(1.0);
+    auto vector = itk::MakeFilled<VectorType>(1.0);
 
     bool pass = false;
     try
@@ -615,16 +609,13 @@ itkBSplineTransformTest3()
    */
 
   using OriginType = TransformType::OriginType;
-  OriginType origin;
-  origin.Fill(0.0);
+  OriginType origin{};
 
   using PhysicalDimensionsType = TransformType::PhysicalDimensionsType;
-  PhysicalDimensionsType dimensions;
-  dimensions.Fill(100);
+  auto dimensions = itk::MakeFilled<PhysicalDimensionsType>(100);
 
   using MeshSizeType = TransformType::MeshSizeType;
-  MeshSizeType meshSize;
-  meshSize.Fill(10);
+  auto meshSize = MeshSizeType::Filled(10);
 
   using DirectionType = TransformType::DirectionType;
   DirectionType direction;
@@ -678,8 +669,7 @@ itkBSplineTransformTest3()
   /**
    * Populate the spline coefficients with some values.
    */
-  CoefficientImageType::IndexType index;
-  index.Fill(5);
+  auto index = CoefficientImageType::IndexType::Filled(5);
 
   coeffImage[1]->SetPixel(index, 1.0);
 

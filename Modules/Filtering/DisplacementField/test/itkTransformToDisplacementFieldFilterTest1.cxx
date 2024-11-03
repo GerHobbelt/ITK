@@ -72,10 +72,8 @@ itkTransformToDisplacementFieldFilterTest1(int argc, char * argv[])
 
 
   // Create input image.
-  SizeType size;
-  size.Fill(24);
-  IndexType index;
-  index.Fill(0);
+  auto        size = SizeType::Filled(24);
+  IndexType   index{};
   SpacingType spacing;
   spacing[0] = 1.1;
   spacing[1] = 2.2;
@@ -134,12 +132,10 @@ itkTransformToDisplacementFieldFilterTest1(int argc, char * argv[])
   }
 
   // Set Output information.
-  IndexType outputIndex;
-  outputIndex.Fill(0);
+  IndexType   outputIndex{};
   SpacingType outputSpacing;
-  SizeType    outputSize;
-  outputSize.Fill(24);
-  RegionType outputRegion{ outputIndex, outputSize };
+  auto        outputSize = SizeType::Filled(24);
+  RegionType  outputRegion{ outputIndex, outputSize };
   outputSpacing[0] = 1.0;
   outputSpacing[1] = 2.0;
   outputSpacing[2] = 3.0;
@@ -153,8 +149,7 @@ itkTransformToDisplacementFieldFilterTest1(int argc, char * argv[])
   auto eulerTransform = TransformType::New();
   {
     // Set the options.
-    IndexType imageCenter;
-    imageCenter.Fill(11);
+    auto      imageCenter = IndexType::Filled(11);
     PointType centerPoint;
     image->TransformIndexToPhysicalPoint(imageCenter, centerPoint);
     eulerTransform->SetCenter(centerPoint);

@@ -20,7 +20,8 @@
 
 
 #include "itkImportImageContainer.h"
-#include <memory> // For unique_ptr.
+#include <algorithm> // For reverse.
+#include <memory>    // For unique_ptr.
 
 namespace itk
 {
@@ -31,8 +32,6 @@ PyBuffer<TImage>::_GetArrayViewFromImage(ImageType * image)
 {
   Py_buffer pyBuffer{};
 
-  Py_ssize_t len = 1;
-
   if (!image)
   {
     throw std::runtime_error("Input image is null");
@@ -40,45 +39,29 @@ PyBuffer<TImage>::_GetArrayViewFromImage(ImageType * image)
 
   image->Update();
 
-  ComponentType * buffer =
-    const_cast<ComponentType *>(reinterpret_cast<const ComponentType *>(image->GetBufferPointer()));
-
-  void * itkImageBuffer = buffer;
+  void * const buffer = image->GetBufferPointer();
 
   // Computing the length of data
-  const int numberOfComponents = image->GetNumberOfComponentsPerPixel();
-  SizeType  size = image->GetBufferedRegion().GetSize();
+  const unsigned int  numberOfComponents = image->GetNumberOfComponentsPerPixel();
+  const SizeValueType numberOfPixels = image->GetBufferedRegion().GetNumberOfPixels();
+  const auto          len = static_cast<Py_ssize_t>(numberOfPixels * numberOfComponents * sizeof(ComponentType));
 
-  for (unsigned int dim = 0; dim < ImageDimension; ++dim)
-  {
-    len *= size[dim];
-  }
-
-  len *= numberOfComponents;
-  len *= sizeof(ComponentType);
-
-  PyBuffer_FillInfo(&pyBuffer, nullptr, itkImageBuffer, len, 0, PyBUF_CONTIG);
-  PyObject * const memoryView = PyMemoryView_FromBuffer(&pyBuffer);
-
-  return memoryView;
+  PyBuffer_FillInfo(&pyBuffer, nullptr, buffer, len, 0, PyBUF_CONTIG);
+  return PyMemoryView_FromBuffer(&pyBuffer);
 }
 
 template <class TImage>
 auto
-PyBuffer<TImage>::_GetImageViewFromArray(PyObject * arr, PyObject * shape, PyObject * numOfComponent)
-  -> const OutputImagePointer
+PyBuffer<TImage>::_get_image_view_from_contiguous_array(PyObject * arr, PyObject * shape, PyObject * numOfComponent)
+  -> OutputImagePointer
 {
-  PyObject * item = nullptr;
-
   Py_buffer pyBuffer{};
 
-  SizeType      size;
-  SizeType      sizeFortran;
-  SizeValueType numberOfPixels = 1;
+  SizeType size;
 
-  if (PyObject_GetBuffer(arr, &pyBuffer, PyBUF_ND | PyBUF_ANY_CONTIGUOUS) == -1)
+  if (PyObject_GetBuffer(arr, &pyBuffer, PyBUF_ANY_CONTIGUOUS) == -1)
   {
-    PyErr_SetString(PyExc_RuntimeError, "Cannot get an instance of NumPy array.");
+    PyErr_SetString(PyExc_RuntimeError, "Cannot get a contiguous buffer from the specified NumPy array.");
     return nullptr;
   }
 
@@ -95,17 +78,11 @@ PyBuffer<TImage>::_GetImageViewFromArray(PyObject * arr, PyObject * shape, PyObj
 
   for (unsigned int i = 0; i < dimension; ++i)
   {
-    item = PySequence_Fast_GET_ITEM(shapeseq, i);
+    PyObject * const item = PySequence_Fast_GET_ITEM(shapeseq, i);
     size[i] = static_cast<SizeValueType>(PyInt_AsLong(item));
-    sizeFortran[dimension - 1 - i] = static_cast<SizeValueType>(PyInt_AsLong(item));
-    numberOfPixels *= size[i];
   }
 
-  bool isFortranContiguous = false;
-  if (pyBuffer.strides != nullptr && pyBuffer.itemsize == pyBuffer.strides[0])
-  {
-    isFortranContiguous = true;
-  }
+  const SizeValueType numberOfPixels = size.CalculateProductOfElements();
 
   const size_t len = numberOfPixels * numberOfComponents * sizeof(ComponentType);
   if (bufferLength < 0 || static_cast<size_t>(bufferLength) != len)
@@ -115,26 +92,21 @@ PyBuffer<TImage>::_GetImageViewFromArray(PyObject * arr, PyObject * shape, PyObj
     return nullptr;
   }
 
-  IndexType start;
-  start.Fill(0);
-
-  RegionType region;
-  region.SetIndex(start);
-  region.SetSize(size);
-  if (isFortranContiguous)
+  if (PyBuffer_IsContiguous(&pyBuffer, 'C') == 0)
   {
-    region.SetSize(sizeFortran);
+    if (PyBuffer_IsContiguous(&pyBuffer, 'F') == 1)
+    {
+      // The buffer is Fortran contiguous (and not C-contiguous), so reverse the size elements.
+      std::reverse(size.begin(), size.end());
+    }
+    else
+    {
+      // The buffer is neither Fortran nor C-contiguous. This is unlikely to happen, because PyBUF_ANY_CONTIGUOUS was
+      // specified as argument, when retrieving the buffer. But if it _does_ happen, it's obviously an error.
+      PyErr_SetString(PyExc_RuntimeError, "The buffer should be contiguous, but it is not!");
+      return nullptr;
+    }
   }
-  else
-  {
-    region.SetSize(size);
-  }
-
-  PointType origin;
-  origin.Fill(0.0);
-
-  SpacingType spacing;
-  spacing.Fill(1.0);
 
   using InternalPixelType = typename TImage::InternalPixelType;
   using ImporterType = ImportImageContainer<SizeValueType, InternalPixelType>;
@@ -144,9 +116,7 @@ PyBuffer<TImage>::_GetImageViewFromArray(PyObject * arr, PyObject * shape, PyObj
   importer->SetImportPointer(data, numberOfPixels, importImageFilterWillOwnTheBuffer);
 
   OutputImagePointer output = TImage::New();
-  output->SetRegions(region);
-  output->SetOrigin(origin);
-  output->SetSpacing(spacing);
+  output->SetRegions(size);
   output->SetPixelContainer(importer);
   output->SetNumberOfComponentsPerPixel(numberOfComponents);
 

@@ -180,8 +180,7 @@ GE5ImageIO::ReadHeader(const char * FileNameToRead)
                                                         << "Reason: " << reason);
   }
 
-  curImage = new GEImageHeader;
-  memset(curImage, 0, sizeof(GEImageHeader));
+  curImage = new GEImageHeader();
 
   std::ifstream f;
   this->OpenFileForReading(f, FileNameToRead);
@@ -363,19 +362,27 @@ GE5ImageIO::ReadHeader(const char * FileNameToRead)
   {
     case GE_CORONAL:
       curImage->coordinateOrientation =
-        itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_COORDINATE_ORIENTATION_RSP;
+        AnatomicalOrientation(AnatomicalOrientation::CoordinateEnum::RightToLeft,
+                              AnatomicalOrientation::CoordinateEnum::SuperiorToInferior,
+                              AnatomicalOrientation::CoordinateEnum::PosteriorToAnterior);
       break;
     case GE_SAGITTAL:
       curImage->coordinateOrientation =
-        itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_COORDINATE_ORIENTATION_AIR;
+        AnatomicalOrientation(AnatomicalOrientation::CoordinateEnum::AnteriorToPosterior,
+                              AnatomicalOrientation::CoordinateEnum::InferiorToSuperior,
+                              AnatomicalOrientation::CoordinateEnum::RightToLeft);
       break;
     case GE_AXIAL:
       curImage->coordinateOrientation =
-        itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_COORDINATE_ORIENTATION_RAI;
+        AnatomicalOrientation(AnatomicalOrientation::CoordinateEnum::RightToLeft,
+                              AnatomicalOrientation::CoordinateEnum::AnteriorToPosterior,
+                              AnatomicalOrientation::CoordinateEnum::InferiorToSuperior);
       break;
     default:
       curImage->coordinateOrientation =
-        itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_COORDINATE_ORIENTATION_RSP;
+        AnatomicalOrientation(AnatomicalOrientation::CoordinateEnum::RightToLeft,
+                              AnatomicalOrientation::CoordinateEnum::SuperiorToInferior,
+                              AnatomicalOrientation::CoordinateEnum::PosteriorToAnterior);
       break;
   }
 

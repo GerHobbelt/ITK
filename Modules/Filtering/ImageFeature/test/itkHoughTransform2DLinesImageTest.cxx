@@ -140,11 +140,9 @@ itkHoughTransform2DLinesImageTest(int, char *[])
 
   ImageType::RegionType region;
 
-  ImageType::SizeType size;
-  size.Fill(100);
+  auto size = ImageType::SizeType::Filled(100);
 
-  ImageType::IndexType index;
-  index.Fill(0);
+  ImageType::IndexType index{};
 
   region.SetSize(size);
   region.SetIndex(index);

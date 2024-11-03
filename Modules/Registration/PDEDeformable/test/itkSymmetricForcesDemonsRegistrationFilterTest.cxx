@@ -116,8 +116,7 @@ itkSymmetricForcesDemonsRegistrationFilterTest(int, char *[])
   SizeType                      size;
   size.SetSize(sizeArray);
 
-  IndexType index;
-  index.Fill(0);
+  IndexType index{};
 
   RegionType region{ index, size };
 
@@ -155,8 +154,7 @@ itkSymmetricForcesDemonsRegistrationFilterTest(int, char *[])
   FillWithCircle<ImageType>(fixed, center, radius, fgnd, bgnd);
 
   // fill initial deformation with zero vectors
-  VectorType zeroVec;
-  zeroVec.Fill(0.0);
+  VectorType zeroVec{};
   initField->FillBuffer(zeroVec);
 
   std::cout << "Run registration and warp moving" << std::endl;

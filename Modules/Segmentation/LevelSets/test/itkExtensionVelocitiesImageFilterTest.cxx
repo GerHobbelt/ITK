@@ -47,8 +47,7 @@ template <typename TPoint>
 double
 SimpleSignedDistance(const TPoint & p)
 {
-  TPoint center;
-  center.Fill(50);
+  auto   center = itk::MakeFilled<TPoint>(50);
   double radius = 19.5;
 
   double accum = 0.0;
@@ -65,8 +64,7 @@ template <typename TPoint>
 double
 SimpleVelocity(const TPoint & p)
 {
-  TPoint center;
-  center.Fill(50);
+  auto center = itk::MakeFilled<TPoint>(50);
 
   double value;
   double x = p[0] - center[0];
@@ -125,9 +123,8 @@ itkExtensionVelocitiesImageFilterTest(int, char *[])
   using PointType = itk::Point<double, ImageDimension>;
 
   // Fill an input image with simple signed distance function
-  auto                image = ImageType::New();
-  ImageType::SizeType size;
-  size.Fill(128);
+  auto                  image = ImageType::New();
+  auto                  size = ImageType::SizeType::Filled(128);
   ImageType::RegionType region(size);
 
   image->SetRegions(region);
@@ -216,10 +213,8 @@ itkExtensionVelocitiesImageFilterTest(int, char *[])
   difference->Update();
 
   // mask out the peak at near the center point
-  ImageType::IndexType centerIndex;
-  centerIndex.Fill(50 - 8);
-  ImageType::SizeType centerSize;
-  centerSize.Fill(17);
+  auto                  centerIndex = ImageType::IndexType::Filled(50 - 8);
+  auto                  centerSize = ImageType::SizeType::Filled(17);
   ImageType::RegionType centerRegion{ centerIndex, centerSize };
 
   iter = Iterator(difference->GetOutput(), centerRegion);

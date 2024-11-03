@@ -255,24 +255,19 @@ itkEuclideanDistancePointSetMetricRegistrationTest(int argc, char * argv[])
   using RegionType = FieldType::RegionType;
   using RealType = DisplacementFieldTransformType::ScalarType;
 
-  FieldType::SpacingType spacing;
-  spacing.Fill(static_cast<RealType>(1.0));
+  auto spacing = itk::MakeFilled<FieldType::SpacingType>(static_cast<RealType>(1.0));
 
-  FieldType::DirectionType direction;
-  direction.Fill(static_cast<RealType>(0.0));
+  FieldType::DirectionType direction{};
   for (unsigned int d = 0; d < Dimension; ++d)
   {
     direction[d][d] = static_cast<RealType>(1.0);
   }
 
-  FieldType::PointType origin;
-  origin.Fill(static_cast<RealType>(0.0));
+  FieldType::PointType origin{};
 
-  RegionType::SizeType regionSize;
-  regionSize.Fill(static_cast<itk::SizeValueType>(pointMax) + 1);
+  auto regionSize = RegionType::SizeType::Filled(static_cast<itk::SizeValueType>(pointMax) + 1);
 
-  RegionType::IndexType regionIndex;
-  regionIndex.Fill(0);
+  RegionType::IndexType regionIndex{};
 
   RegionType region{ regionIndex, regionSize };
 
@@ -282,8 +277,7 @@ itkEuclideanDistancePointSetMetricRegistrationTest(int argc, char * argv[])
   displacementField->SetSpacing(spacing);
   displacementField->SetRegions(region);
   displacementField->Allocate();
-  DisplacementFieldTransformType::OutputVectorType zeroVector;
-  zeroVector.Fill(static_cast<RealType>(0.0));
+  DisplacementFieldTransformType::OutputVectorType zeroVector{};
   displacementField->FillBuffer(zeroVector);
   displacementTransform->SetDisplacementField(displacementField);
 

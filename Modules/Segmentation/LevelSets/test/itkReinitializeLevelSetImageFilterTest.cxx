@@ -48,8 +48,7 @@ template <typename TPoint>
 double
 SimpleSignedDistance(const TPoint & p)
 {
-  TPoint center;
-  center.Fill(50);
+  auto   center = itk::MakeFilled<TPoint>(50);
   double radius = 19.5;
 
   double accum = 0.0;
@@ -76,9 +75,8 @@ itkReinitializeLevelSetImageFilterTest(int, char *[])
   using PointType = itk::Point<double, ImageDimension>;
 
   // Fill an input image with simple signed distance function
-  auto                image = ImageType::New();
-  ImageType::SizeType size;
-  size.Fill(128);
+  auto                  image = ImageType::New();
+  auto                  size = ImageType::SizeType::Filled(128);
   ImageType::RegionType region(size);
 
   image->SetRegions(region);

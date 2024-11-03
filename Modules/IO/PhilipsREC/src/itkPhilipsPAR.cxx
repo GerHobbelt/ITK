@@ -211,10 +211,10 @@ struct image_info_defV4
 struct image_info_defV3
 GetImageInformationDefinitionV3(std::string file, int lineNum, PhilipsPAR * philipsPARClass)
 {
-  struct image_info_defV3 tempInfo;
-  std::string             currentLine = "";
+  struct image_info_defV3 tempInfo
+  {};
+  std::string currentLine = "";
 
-  memset((void *)&tempInfo, 0, sizeof(struct image_info_defV3));
   if (lineNum < 89)
   {
     tempInfo.problemreading = 1;
@@ -252,10 +252,10 @@ GetImageInformationDefinitionV3(std::string file, int lineNum, PhilipsPAR * phil
 struct image_info_defV4
 GetImageInformationDefinitionV4(std::string file, int lineNum, PhilipsPAR * philipsPARClass)
 {
-  struct image_info_defV4 tempInfo;
-  std::string             currentLine = "";
+  struct image_info_defV4 tempInfo
+  {};
+  std::string currentLine = "";
 
-  memset((void *)&tempInfo, 0, sizeof(struct image_info_defV4));
   if (lineNum < 92)
   {
     tempInfo.problemreading = 1;
@@ -298,10 +298,10 @@ GetImageInformationDefinitionV4(std::string file, int lineNum, PhilipsPAR * phil
 struct image_info_defV4
 GetImageInformationDefinitionV41(std::string file, int lineNum, PhilipsPAR * philipsPARClass)
 {
-  struct image_info_defV4 tempInfo;
-  std::string             currentLine = "";
+  struct image_info_defV4 tempInfo
+  {};
+  std::string currentLine = "";
 
-  memset((void *)&tempInfo, 0, sizeof(struct image_info_defV4));
   if (lineNum < 99)
   {
     tempInfo.problemreading = 1;
@@ -347,10 +347,10 @@ GetImageInformationDefinitionV41(std::string file, int lineNum, PhilipsPAR * phi
 struct image_info_defV4
 GetImageInformationDefinitionV42(std::string file, int lineNum, PhilipsPAR * philipsPARClass)
 {
-  struct image_info_defV4 tempInfo;
-  std::string             currentLine = "";
+  struct image_info_defV4 tempInfo
+  {};
+  std::string currentLine = "";
 
-  memset((void *)&tempInfo, 0, sizeof(struct image_info_defV4));
   if (lineNum < 101)
   {
     tempInfo.problemreading = 1;
@@ -526,7 +526,7 @@ PhilipsPAR::ReadPAR(std::string parFile, struct par_parameter * pPar)
   }
 
   // Zero out struct.
-  memset((void *)pPar, 0, sizeof(struct par_parameter));
+  *pPar = {};
   // Need to set strings to UNDEFINED to avoid segmentation faults.
   strcpy(pPar->patient_name, UNDEFINED);
   strcpy(pPar->exam_name, UNDEFINED);

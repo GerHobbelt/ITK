@@ -37,11 +37,9 @@ public:
   {
     m_Image = ImageType::New();
 
-    typename ImageType::SizeType size;
-    size.Fill(inputImageSize);
+    auto size = ImageType::SizeType::Filled(inputImageSize);
 
-    typename ImageType::IndexType start;
-    start.Fill(0);
+    typename ImageType::IndexType start{};
 
     typename ImageType::RegionType region{ start, size };
 
@@ -200,8 +198,7 @@ public:
       }
     }
 
-    IndexType zero_freq_index;
-    zero_freq_index.Fill(0);
+    IndexType zero_freq_index{};
     it.GoToBegin();
 
     if (it.GetIndex() == m_Image->GetLargestPossibleRegion().GetIndex() && it.GetFrequencyBin() != zero_freq_index)

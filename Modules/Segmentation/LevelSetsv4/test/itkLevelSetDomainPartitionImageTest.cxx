@@ -37,8 +37,7 @@ itkLevelSetDomainPartitionImageTest(int, char *[])
   using ListImageIteratorType = itk::ImageRegionConstIteratorWithIndex<ListImageType>;
 
   // load binary mask
-  InputImageType::SizeType size;
-  size.Fill(50);
+  auto size = InputImageType::SizeType::Filled(50);
 
   InputImageType::PointType origin;
   origin[0] = 0.0;
@@ -48,8 +47,7 @@ itkLevelSetDomainPartitionImageTest(int, char *[])
   spacing[0] = 1.0;
   spacing[1] = 1.0;
 
-  InputImageType::IndexType index;
-  index.Fill(0);
+  InputImageType::IndexType index{};
 
   InputImageType::RegionType region{ index, size };
 

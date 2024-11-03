@@ -62,8 +62,7 @@ itkPCAShapeSignedDistanceFunctionTest(int, char *[])
 
   ImageType::SizeType imageSize = { { ImageWidth, ImageHeight } };
 
-  ImageType::IndexType startIndex;
-  startIndex.Fill(0);
+  ImageType::IndexType startIndex{};
 
   ImageType::RegionType region{ startIndex, imageSize };
 
@@ -246,8 +245,7 @@ itkPCAShapeSignedDistanceFunctionTest(int, char *[])
   TEST_INITIALIZATION_ERROR(PrincipalComponentImages, badPCImages, pcImages);
 
   // A PC image of the wrong size
-  ImageType::SizeType badSize;
-  badSize.Fill(1);
+  auto                  badSize = ImageType::SizeType::Filled(1);
   ImageType::RegionType badRegion(badSize);
   badPCImages[1] = ImageType::New();
   badPCImages[1]->SetRegions(badRegion);

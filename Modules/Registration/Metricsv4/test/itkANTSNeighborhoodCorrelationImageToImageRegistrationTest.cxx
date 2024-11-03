@@ -145,8 +145,7 @@ itkANTSNeighborhoodCorrelationImageToImageRegistrationTest(int argc, char * argv
             << "fixedImage->GetBufferedRegion(): " << fixedImage->GetBufferedRegion() << std::endl;
   field->Allocate();
   // Fill it with 0's
-  DisplacementTransformType::OutputVectorType zeroVector;
-  zeroVector.Fill(0);
+  DisplacementTransformType::OutputVectorType zeroVector{};
   field->FillBuffer(zeroVector);
   // Assign to transform
   displacementTransform->SetDisplacementField(field);
@@ -160,9 +159,8 @@ itkANTSNeighborhoodCorrelationImageToImageRegistrationTest(int argc, char * argv
 
   // The metric
   using MetricType = itk::ANTSNeighborhoodCorrelationImageToImageMetricv4<FixedImageType, MovingImageType>;
-  auto                 metric = MetricType::New();
-  itk::Size<Dimension> radSize;
-  radSize.Fill(2);
+  auto metric = MetricType::New();
+  auto radSize = itk::Size<Dimension>::Filled(2);
   metric->SetRadius(radSize);
 
   // Assign images and transforms.

@@ -47,11 +47,9 @@ itkMatrixIndexSelectionImageFilterTest(int argc, char * argv[])
   auto                       image = InputImageType::New();
   InputImageType::RegionType region;
 
-  InputImageType::SizeType size;
-  size.Fill(100);
+  auto size = InputImageType::SizeType::Filled(100);
 
-  InputImageType::IndexType index;
-  index.Fill(0);
+  InputImageType::IndexType index{};
 
   region.SetSize(size);
   region.SetIndex(index);

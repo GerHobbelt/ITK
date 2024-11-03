@@ -36,9 +36,8 @@ itkTriangleMeshToBinaryImageFilterTest1(int argc, char * argv[])
   using PointType = SphereMeshSourceType::PointType;
   using VectorType = SphereMeshSourceType::VectorType;
 
-  auto      mySphereMeshSource = SphereMeshSourceType::New();
-  PointType center;
-  center.Fill(50);
+  auto                 mySphereMeshSource = SphereMeshSourceType::New();
+  auto                 center = itk::MakeFilled<PointType>(50);
   PointType::ValueType scaleInit[3] = { 10, 10, 10 };
   VectorType           scale = scaleInit;
 
@@ -48,9 +47,8 @@ itkTriangleMeshToBinaryImageFilterTest1(int argc, char * argv[])
   mySphereMeshSource->Update();
 
   using ImageType = itk::Image<unsigned char, 3>;
-  auto                im = ImageType::New();
-  ImageType::SizeType imSize;
-  imSize.Fill(100);
+  auto im = ImageType::New();
+  auto imSize = ImageType::SizeType::Filled(100);
   im->SetRegions(imSize);
   im->Allocate();
 

@@ -52,8 +52,7 @@ itkMRFImageFilterTest(int, char *[])
 
   VecImageType::SizeType vecImgSize = { { IMGWIDTH, IMGHEIGHT, NFRAMES } };
 
-  VecImageType::IndexType index;
-  index.Fill(0);
+  VecImageType::IndexType index{};
 
   VecImageType::RegionType region;
 
@@ -219,8 +218,7 @@ itkMRFImageFilterTest(int, char *[])
 
   ClassImageType::SizeType classImgSize = { { IMGWIDTH, IMGHEIGHT, NFRAMES } };
 
-  ClassImageType::IndexType classindex;
-  classindex.Fill(0);
+  ClassImageType::IndexType classindex{};
 
   ClassImageType::RegionType classregion;
 
@@ -424,8 +422,7 @@ itkMRFImageFilterTest(int, char *[])
   using OutImageFacesCalculator = itk::NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<ClassImageType>;
   using OutImageFaceListType = OutImageFacesCalculator::FaceListType;
 
-  OutImageNeighborhoodRadiusType outImageNeighborhoodRadius;
-  outImageNeighborhoodRadius.Fill(1);
+  auto outImageNeighborhoodRadius = itk::MakeFilled<OutImageNeighborhoodRadiusType>(1);
 
   // Define the face list for the input/labelled image
   OutImageFacesCalculator outImageFacesCalculator;

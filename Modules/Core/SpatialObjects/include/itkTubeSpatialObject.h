@@ -57,7 +57,7 @@ public:
   using typename Superclass::PointType;
   using typename Superclass::TransformType;
   using typename Superclass::SpatialObjectPointType;
-  using PointContainerType = VectorContainer<IdentifierType, PointType>;
+  using PointContainerType = VectorContainer<PointType>;
   using PointContainerPointer = SmartPointer<PointContainerType>;
   using typename Superclass::VectorType;
   using typename Superclass::CovariantVectorType;
@@ -85,7 +85,10 @@ public:
 
 #if !defined(ITK_LEGACY_REMOVE)
   /** Compute the tangents and normals of the centerline of the tube. */
-  itkLegacyMacro(bool ComputeTangentAndNormals()) { return ComputeTangentsAndNormals(); }
+  itkLegacyMacro(bool ComputeTangentAndNormals())
+  {
+    return ComputeTangentsAndNormals();
+  }
 #endif
 
   /** Remove duplicate points. */

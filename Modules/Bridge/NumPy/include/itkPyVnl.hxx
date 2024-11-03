@@ -18,6 +18,7 @@
 #ifndef itkPyVnl_hxx
 #define itkPyVnl_hxx
 
+#include <memory> // For unique_ptr.
 #include <stdexcept>
 
 namespace itk
@@ -27,12 +28,7 @@ template <class TElement>
 PyObject *
 PyVnl<TElement>::_GetArrayViewFromVnlVector(VectorType * vector)
 {
-  PyObject * memoryView = NULL;
-  Py_buffer  pyBuffer;
-  memset(&pyBuffer, 0, sizeof(Py_buffer));
-
-  size_t elementSize = sizeof(DataType);
-  int    res = 0;
+  Py_buffer pyBuffer{};
 
   if (!vector)
   {
@@ -41,16 +37,14 @@ PyVnl<TElement>::_GetArrayViewFromVnlVector(VectorType * vector)
 
   DataType * buffer = vector->data_block();
 
-  void * vectorBuffer = (void *)(buffer);
+  void * vectorBuffer = buffer;
 
   // Computing the length of data
   Py_ssize_t len = vector->size();
-  len *= elementSize;
+  len *= sizeof(DataType);
 
-  res = PyBuffer_FillInfo(&pyBuffer, NULL, (void *)vectorBuffer, len, 0, PyBUF_CONTIG);
-  memoryView = PyMemoryView_FromBuffer(&pyBuffer);
-
-  PyBuffer_Release(&pyBuffer);
+  PyBuffer_FillInfo(&pyBuffer, nullptr, vectorBuffer, len, 0, PyBUF_CONTIG);
+  PyObject * const memoryView = PyMemoryView_FromBuffer(&pyBuffer);
 
   return memoryView;
 }
@@ -59,53 +53,35 @@ template <class TElement>
 auto
 PyVnl<TElement>::_GetVnlVectorFromArray(PyObject * arr, PyObject * shape) -> const VectorType
 {
-  PyObject * obj = NULL;
-  PyObject * shapeseq = NULL;
-  PyObject * item = NULL;
-
-  Py_ssize_t bufferLength;
-  Py_buffer  pyBuffer;
-  memset(&pyBuffer, 0, sizeof(Py_buffer));
-
-  size_t numberOfElements = 1;
-
-  const void * buffer;
-
-  unsigned int dimension = 0;
-
-
-  size_t elementSize = sizeof(DataType);
-  size_t len = 1;
+  Py_buffer pyBuffer{};
 
   if (PyObject_GetBuffer(arr, &pyBuffer, PyBUF_CONTIG) == -1)
   {
     PyErr_SetString(PyExc_RuntimeError, "Cannot get an instance of NumPy array.");
-    PyBuffer_Release(&pyBuffer);
     return VectorType();
   }
-  else
-  {
-    bufferLength = pyBuffer.len;
-    buffer = pyBuffer.buf;
-  }
 
-  obj = shape;
-  shapeseq = PySequence_Fast(obj, "expected sequence");
-  dimension = PySequence_Size(obj);
+  [[maybe_unused]] const std::unique_ptr<Py_buffer, decltype(&PyBuffer_Release)> bufferScopeGuard(&pyBuffer,
+                                                                                                  &PyBuffer_Release);
 
-  item = PySequence_Fast_GET_ITEM(shapeseq, 0); // Only one dimension
-  numberOfElements = (size_t)PyInt_AsLong(item);
+  const Py_ssize_t   bufferLength = pyBuffer.len;
+  const void * const buffer = pyBuffer.buf;
 
-  len = numberOfElements * elementSize;
-  if (bufferLength != len)
+  PyObject * const   obj = shape;
+  PyObject * const   shapeseq = PySequence_Fast(obj, "expected sequence");
+  const unsigned int dimension = PySequence_Size(obj);
+
+  PyObject * const item = PySequence_Fast_GET_ITEM(shapeseq, 0); // Only one dimension
+  const size_t     numberOfElements = static_cast<size_t>(PyInt_AsLong(item));
+
+  const size_t len = numberOfElements * sizeof(DataType);
+  if (bufferLength < 0 || static_cast<size_t>(bufferLength) != len)
   {
     PyErr_SetString(PyExc_RuntimeError, "Size mismatch of vector and Buffer.");
-    PyBuffer_Release(&pyBuffer);
     return VectorType();
   }
-  DataType * data = (DataType *)buffer;
-  VectorType output(data, numberOfElements);
-  PyBuffer_Release(&pyBuffer);
+  const auto * const data = static_cast<const DataType *>(buffer);
+  VectorType         output(data, numberOfElements);
 
   return output;
 }
@@ -114,12 +90,7 @@ template <class TElement>
 PyObject *
 PyVnl<TElement>::_GetArrayViewFromVnlMatrix(MatrixType * matrix)
 {
-  PyObject * memoryView = NULL;
-  Py_buffer  pyBuffer;
-  memset(&pyBuffer, 0, sizeof(Py_buffer));
-
-  size_t elementSize = sizeof(DataType);
-  int    res = 0;
+  Py_buffer pyBuffer{};
 
   if (!matrix)
   {
@@ -128,16 +99,14 @@ PyVnl<TElement>::_GetArrayViewFromVnlMatrix(MatrixType * matrix)
 
   DataType * buffer = matrix->data_block();
 
-  void * matrixBuffer = (void *)(buffer);
+  void * matrixBuffer = buffer;
 
   // Computing the length of data
   Py_ssize_t len = matrix->size();
-  len *= elementSize;
+  len *= sizeof(DataType);
 
-  res = PyBuffer_FillInfo(&pyBuffer, NULL, (void *)matrixBuffer, len, 0, PyBUF_CONTIG);
-  memoryView = PyMemoryView_FromBuffer(&pyBuffer);
-
-  PyBuffer_Release(&pyBuffer);
+  PyBuffer_FillInfo(&pyBuffer, nullptr, matrixBuffer, len, 0, PyBUF_CONTIG);
+  PyObject * const memoryView = PyMemoryView_FromBuffer(&pyBuffer);
 
   return memoryView;
 }
@@ -146,39 +115,29 @@ template <class TElement>
 auto
 PyVnl<TElement>::_GetVnlMatrixFromArray(PyObject * arr, PyObject * shape) -> const MatrixType
 {
-  PyObject * obj = NULL;
-  PyObject * shapeseq = NULL;
-  PyObject * item = NULL;
+  PyObject * item = nullptr;
 
-  Py_ssize_t bufferLength;
-  Py_buffer  pyBuffer;
-  memset(&pyBuffer, 0, sizeof(Py_buffer));
+  Py_buffer pyBuffer{};
 
   size_t numberOfElements = 1;
 
-  const void * buffer;
-
-  unsigned int dimension = 0;
-
-  size_t       elementSize = sizeof(DataType);
-  size_t       len = 1;
   unsigned int size[2];
 
   if (PyObject_GetBuffer(arr, &pyBuffer, PyBUF_CONTIG) == -1)
   {
     PyErr_SetString(PyExc_RuntimeError, "Cannot get an instance of NumPy array.");
-    PyBuffer_Release(&pyBuffer);
     return MatrixType();
   }
-  else
-  {
-    bufferLength = pyBuffer.len;
-    buffer = pyBuffer.buf;
-  }
 
-  obj = shape;
-  shapeseq = PySequence_Fast(obj, "expected sequence");
-  dimension = PySequence_Size(obj);
+  [[maybe_unused]] const std::unique_ptr<Py_buffer, decltype(&PyBuffer_Release)> bufferScopeGuard(&pyBuffer,
+                                                                                                  &PyBuffer_Release);
+
+  const Py_ssize_t   bufferLength = pyBuffer.len;
+  const void * const buffer = pyBuffer.buf;
+
+  PyObject * const   obj = shape;
+  PyObject * const   shapeseq = PySequence_Fast(obj, "expected sequence");
+  const unsigned int dimension = PySequence_Size(obj);
 
   for (unsigned int i = 0; i < 2; ++i)
   {
@@ -187,17 +146,15 @@ PyVnl<TElement>::_GetVnlMatrixFromArray(PyObject * arr, PyObject * shape) -> con
     numberOfElements *= size[i];
   }
 
-  len = numberOfElements * elementSize;
-  if (bufferLength != len)
+  const size_t len = numberOfElements * sizeof(DataType);
+  if (bufferLength < 0 || static_cast<size_t>(bufferLength) != len)
   {
     PyErr_SetString(PyExc_RuntimeError, "Size mismatch of matrix and Buffer.");
-    PyBuffer_Release(&pyBuffer);
     return MatrixType();
   }
 
-  DataType * data = (DataType *)buffer;
-  MatrixType output(data, size[0], size[1]);
-  PyBuffer_Release(&pyBuffer);
+  const auto * const data = static_cast<const DataType *>(buffer);
+  MatrixType         output(data, size[0], size[1]);
 
   return output;
 }

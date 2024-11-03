@@ -27,9 +27,9 @@
 using TestedElementIdentifierType = size_t;
 
 // Test template instantiations for various TElement template arguments:
-template class itk::VectorContainer<TestedElementIdentifierType, int>;
-template class itk::VectorContainer<TestedElementIdentifierType, bool>;
-template class itk::VectorContainer<TestedElementIdentifierType, std::string>;
+template class itk::detail::VectorContainer<TestedElementIdentifierType, int>;
+template class itk::detail::VectorContainer<TestedElementIdentifierType, bool>;
+template class itk::detail::VectorContainer<TestedElementIdentifierType, std::string>;
 
 
 namespace
@@ -98,5 +98,40 @@ TEST(VectorContainer, HasValueOfCreatedElementAtIdentifier)
   for (int i = 0; i < 3; ++i)
   {
     ExpectContainerHasValueOfCreatedElementAtIdentifier(magicIdentifier, i);
+  }
+}
+
+
+// Tests MakeVectorContainer.
+TEST(VectorContainer, Make)
+{
+  const auto checkCopy = [](const auto & stdVector) {
+    const auto vectorContainer = itk::MakeVectorContainer(stdVector);
+    ASSERT_NE(vectorContainer, nullptr);
+    EXPECT_EQ(vectorContainer->CastToSTLConstContainer(), stdVector);
+  };
+
+  const auto checkMove = [](auto stdVector) {
+    const auto * const originalData = stdVector.data();
+    const auto         vectorContainer = itk::MakeVectorContainer(std::move(stdVector));
+
+    // After the "move", the vectorContainer should hold the original data pointer.
+    ASSERT_NE(vectorContainer, nullptr);
+    EXPECT_EQ(vectorContainer->CastToSTLConstContainer().data(), originalData);
+  };
+
+  checkCopy(std::vector<int>());
+  checkCopy(std::vector<int>{ 0, 1 });
+  checkCopy(std::vector<double>());
+  checkCopy(std::vector<double>{ std::numeric_limits<double>::lowest(),
+                                 std::numeric_limits<double>::denorm_min(),
+                                 std::numeric_limits<double>::min(),
+                                 std::numeric_limits<double>::epsilon(),
+                                 std::numeric_limits<double>::max() });
+
+  for (const unsigned int numberOfElements : { 1, 2 })
+  {
+    checkMove(std::vector<int>(numberOfElements));
+    checkMove(std::vector<double>(numberOfElements));
   }
 }

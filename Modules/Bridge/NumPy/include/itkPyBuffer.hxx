@@ -20,6 +20,7 @@
 
 
 #include "itkImportImageContainer.h"
+#include <memory> // For unique_ptr.
 
 namespace itk
 {
@@ -28,13 +29,9 @@ template <class TImage>
 PyObject *
 PyBuffer<TImage>::_GetArrayViewFromImage(ImageType * image)
 {
-  PyObject * memoryView = NULL;
-  Py_buffer  pyBuffer;
-  memset(&pyBuffer, 0, sizeof(Py_buffer));
+  Py_buffer pyBuffer{};
 
   Py_ssize_t len = 1;
-  size_t     pixelSize = sizeof(ComponentType);
-  int        res = 0;
 
   if (!image)
   {
@@ -46,7 +43,7 @@ PyBuffer<TImage>::_GetArrayViewFromImage(ImageType * image)
   ComponentType * buffer =
     const_cast<ComponentType *>(reinterpret_cast<const ComponentType *>(image->GetBufferPointer()));
 
-  void * itkImageBuffer = (void *)(buffer);
+  void * itkImageBuffer = buffer;
 
   // Computing the length of data
   const int numberOfComponents = image->GetNumberOfComponentsPerPixel();
@@ -58,12 +55,10 @@ PyBuffer<TImage>::_GetArrayViewFromImage(ImageType * image)
   }
 
   len *= numberOfComponents;
-  len *= pixelSize;
+  len *= sizeof(ComponentType);
 
-  res = PyBuffer_FillInfo(&pyBuffer, NULL, (void *)itkImageBuffer, len, 0, PyBUF_CONTIG);
-  memoryView = PyMemoryView_FromBuffer(&pyBuffer);
-
-  PyBuffer_Release(&pyBuffer);
+  PyBuffer_FillInfo(&pyBuffer, nullptr, itkImageBuffer, len, 0, PyBUF_CONTIG);
+  PyObject * const memoryView = PyMemoryView_FromBuffer(&pyBuffer);
 
   return memoryView;
 }
@@ -73,63 +68,49 @@ auto
 PyBuffer<TImage>::_GetImageViewFromArray(PyObject * arr, PyObject * shape, PyObject * numOfComponent)
   -> const OutputImagePointer
 {
-  PyObject * shapeseq = NULL;
-  PyObject * item = NULL;
+  PyObject * item = nullptr;
 
-  Py_ssize_t bufferLength;
-  Py_buffer  pyBuffer;
-  memset(&pyBuffer, 0, sizeof(Py_buffer));
+  Py_buffer pyBuffer{};
 
   SizeType      size;
   SizeType      sizeFortran;
   SizeValueType numberOfPixels = 1;
 
-  const void * buffer;
-
-  long         numberOfComponents = 1;
-  unsigned int dimension = 0;
-
-
-  size_t pixelSize = sizeof(ComponentType);
-  size_t len = 1;
-
   if (PyObject_GetBuffer(arr, &pyBuffer, PyBUF_ND | PyBUF_ANY_CONTIGUOUS) == -1)
   {
     PyErr_SetString(PyExc_RuntimeError, "Cannot get an instance of NumPy array.");
-    PyBuffer_Release(&pyBuffer);
     return nullptr;
   }
-  else
-  {
-    bufferLength = pyBuffer.len;
-    buffer = pyBuffer.buf;
-  }
-  PyBuffer_Release(&pyBuffer);
 
-  shapeseq = PySequence_Fast(shape, "expected sequence");
-  dimension = PySequence_Size(shape);
+  [[maybe_unused]] const std::unique_ptr<Py_buffer, decltype(&PyBuffer_Release)> bufferScopeGuard(&pyBuffer,
+                                                                                                  &PyBuffer_Release);
 
-  numberOfComponents = PyInt_AsLong(numOfComponent);
+  const Py_ssize_t bufferLength = pyBuffer.len;
+  void * const     buffer = pyBuffer.buf;
+
+  PyObject * const   shapeseq = PySequence_Fast(shape, "expected sequence");
+  const unsigned int dimension = PySequence_Size(shape);
+
+  const long numberOfComponents = PyInt_AsLong(numOfComponent);
 
   for (unsigned int i = 0; i < dimension; ++i)
   {
     item = PySequence_Fast_GET_ITEM(shapeseq, i);
-    size[i] = (SizeValueType)PyInt_AsLong(item);
-    sizeFortran[dimension - 1 - i] = (SizeValueType)PyInt_AsLong(item);
+    size[i] = static_cast<SizeValueType>(PyInt_AsLong(item));
+    sizeFortran[dimension - 1 - i] = static_cast<SizeValueType>(PyInt_AsLong(item));
     numberOfPixels *= size[i];
   }
 
   bool isFortranContiguous = false;
-  if (pyBuffer.strides != NULL && pyBuffer.itemsize == pyBuffer.strides[0])
+  if (pyBuffer.strides != nullptr && pyBuffer.itemsize == pyBuffer.strides[0])
   {
     isFortranContiguous = true;
   }
 
-  len = numberOfPixels * numberOfComponents * pixelSize;
-  if (bufferLength != len)
+  const size_t len = numberOfPixels * numberOfComponents * sizeof(ComponentType);
+  if (bufferLength < 0 || static_cast<size_t>(bufferLength) != len)
   {
     PyErr_SetString(PyExc_RuntimeError, "Size mismatch of image and Buffer.");
-    PyBuffer_Release(&pyBuffer);
     SWIG_Py_DECREF(shapeseq);
     return nullptr;
   }
@@ -157,9 +138,9 @@ PyBuffer<TImage>::_GetImageViewFromArray(PyObject * arr, PyObject * shape, PyObj
 
   using InternalPixelType = typename TImage::InternalPixelType;
   using ImporterType = ImportImageContainer<SizeValueType, InternalPixelType>;
-  auto                importer = ImporterType::New();
-  constexpr bool      importImageFilterWillOwnTheBuffer = false;
-  InternalPixelType * data = (InternalPixelType *)buffer;
+  auto           importer = ImporterType::New();
+  constexpr bool importImageFilterWillOwnTheBuffer = false;
+  auto * const   data = static_cast<InternalPixelType *>(buffer);
   importer->SetImportPointer(data, numberOfPixels, importImageFilterWillOwnTheBuffer);
 
   OutputImagePointer output = TImage::New();
@@ -170,7 +151,6 @@ PyBuffer<TImage>::_GetImageViewFromArray(PyObject * arr, PyObject * shape, PyObj
   output->SetNumberOfComponentsPerPixel(numberOfComponents);
 
   SWIG_Py_DECREF(shapeseq);
-  PyBuffer_Release(&pyBuffer);
 
   return output;
 }

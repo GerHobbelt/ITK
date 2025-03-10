@@ -431,9 +431,7 @@ template <typename TInputImage, typename TOutputMesh>
 void
 BinaryMask3DMeshSource<TInputImage, TOutputMesh>::inverse(unsigned char * x)
 {
-  unsigned char tmp;
-
-  tmp = x[2];
+  unsigned char tmp = x[2];
   x[2] = x[1];
   x[1] = tmp;
 }
@@ -1380,11 +1378,9 @@ BinaryMask3DMeshSource<TInputImage, TOutputMesh>::AddCells(unsigned char celltyp
 
   typename TriCell::CellAutoPointer        insertCell;
   typename OutputMeshType::PointIdentifier tripoints[3];
-  unsigned char *                          tp;
-  tp = (unsigned char *)malloc(3 * sizeof(unsigned char));
+  unsigned char *                          tp = (unsigned char *)malloc(3 * sizeof(unsigned char));
 
-  IdentifierType * tpl;
-  tpl = (IdentifierType *)malloc(3 * sizeof(IdentifierType));
+  IdentifierType * tpl = (IdentifierType *)malloc(3 * sizeof(IdentifierType));
 
   switch (static_cast<int>(celltype))
   {

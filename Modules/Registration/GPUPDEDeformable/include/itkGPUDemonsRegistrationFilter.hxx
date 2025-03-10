@@ -25,9 +25,7 @@ template <typename TFixedImage, typename TMovingImage, typename TDisplacementFie
 GPUDemonsRegistrationFilter<TFixedImage, TMovingImage, TDisplacementField, TParentImageFilter>::
   GPUDemonsRegistrationFilter()
 {
-  typename GPUDemonsRegistrationFunctionType::Pointer drfp;
-
-  drfp = GPUDemonsRegistrationFunctionType::New();
+  auto drfp = GPUDemonsRegistrationFunctionType::New();
 
   this->SetDifferenceFunction(drfp);
 

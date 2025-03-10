@@ -59,8 +59,7 @@ ObjectMorphologyImageFilter<TInputImage, TOutputImage, TKernel>::GenerateInputRe
 
   // get a copy of the input requested region (should equal the output
   // requested region)
-  typename TInputImage::RegionType inputRequestedRegion;
-  inputRequestedRegion = inputPtr->GetRequestedRegion();
+  typename TInputImage::RegionType inputRequestedRegion = inputPtr->GetRequestedRegion();
 
   // pad the input requested region by the operator radius
   inputRequestedRegion.PadByRadius(m_Kernel.GetRadius());
@@ -132,8 +131,7 @@ ObjectMorphologyImageFilter<TInputImage, TOutputImage, TKernel>::DynamicThreaded
   // Setup the kernel that spans the immediate neighbors of the current
   // input pixel - used to determine if that pixel abuts a non-object
   // pixel, i.e., is a boundary pixel
-  RadiusType bKernelSize;
-  bKernelSize.Fill(1);
+  constexpr auto bKernelSize = MakeFilled<RadiusType>(1);
 
   TotalProgressReporter progress(this, this->GetOutput()->GetRequestedRegion().GetNumberOfPixels());
 

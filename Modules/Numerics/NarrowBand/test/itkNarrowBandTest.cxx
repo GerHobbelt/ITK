@@ -23,7 +23,6 @@
 int
 itkNarrowBandTest(int, char *[])
 {
-  unsigned int i;
   using IndexType = unsigned int;
   using DataType = float;
   using BandNodeType = itk::BandNode<IndexType, DataType>;
@@ -40,7 +39,7 @@ itkNarrowBandTest(int, char *[])
   BandNodeType node;
   band->SetTotalRadius(10);
   band->SetInnerRadius(5);
-  for (i = 0; i < 20; ++i)
+  for (unsigned int i = 0; i < 20; ++i)
   {
     node.m_Data = i * 5.0;
     node.m_Index = i;
@@ -56,24 +55,21 @@ itkNarrowBandTest(int, char *[])
   itType it = band->Begin();
   itType itend = band->End();
 
-  i = 0;
   //  BandNodeType *tmp;
-  for (; it != itend; ++it)
+  for (unsigned int i = 0; it != itend; ++it)
   {
     std::cout << "Node " << i << std::endl << "Index: " << it->m_Index << " Data: " << it->m_Data << std::endl;
     i++;
   }
 
   // Split the band
-  std::vector<RegionType> regions;
-  regions = band->SplitBand(10);
+  std::vector<RegionType> regions = band->SplitBand(10);
   //  RegionType region;
   using regionitType = std::vector<RegionType>::const_iterator;
   regionitType regionsit = regions.begin();
   regionitType regionsitend = regions.end();
   std::cout << "Number of regions: " << regions.size() << std::endl;
-  i = 0;
-  for (; regionsit != regionsitend; ++regionsit)
+  for (unsigned int i = 0; regionsit != regionsitend; ++regionsit)
   {
     std::cout << "Region " << i << std::endl;
     for (; regions[i].Begin != regions[i].End; regions[i].Begin++)

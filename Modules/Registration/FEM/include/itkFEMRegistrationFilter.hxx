@@ -1131,8 +1131,7 @@ FEMRegistrationFilter<TMovingImage, TFixedImage, TFemObject>::MultiResSolve()
       unsigned int ndofpernode = m_Element->GetNumberOfDegreesOfFreedomPerNode();
       unsigned int numnodesperelt = m_Element->GetNumberOfNodes() + 1;
       unsigned int ndof = solver->GetInput()->GetNumberOfDegreesOfFreedom();
-      unsigned int nzelts;
-      nzelts = numnodesperelt * ndofpernode * ndof;
+      unsigned int nzelts = numnodesperelt * ndofpernode * ndof;
 
       // Used when reading a mesh from file
       // nzelts=((2*numnodesperelt*ndofpernode*ndof > 25*ndof) ? 2*numnodesperelt*ndofpernode*ndof : 25*ndof);
@@ -1437,9 +1436,7 @@ FEMRegistrationFilter<TMovingImage, TFixedImage, TFemObject>::GetLandmark(unsign
                                                                           PointType &  target)
 {
   Element::VectorType localSource;
-  Element::VectorType localTarget;
-
-  localTarget = m_LandmarkArray[index]->GetTarget();
+  Element::VectorType localTarget = m_LandmarkArray[index]->GetTarget();
   localSource = m_LandmarkArray[index]->GetSource();
   for (unsigned int i = 0; i < ImageDimension; ++i)
   {

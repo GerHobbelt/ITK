@@ -146,8 +146,7 @@ ScalarImageToRunLengthMatrixFilter<TImageType, THistogramFrequencyContainer>::Ge
   // distance/intensity pair to the histogram
 
   using NeighborhoodIteratorType = ConstNeighborhoodIterator<ImageType>;
-  typename NeighborhoodIteratorType::RadiusType radius;
-  radius.Fill(1);
+  auto                     radius = MakeFilled<typename NeighborhoodIteratorType::RadiusType>(1);
   NeighborhoodIteratorType neighborIt(radius, inputImage, inputImage->GetRequestedRegion());
 
 
@@ -191,9 +190,7 @@ ScalarImageToRunLengthMatrixFilter<TImageType, THistogramFrequencyContainer>::Ge
       MeasurementType lastBinMax = this->GetOutput()->GetDimensionMaxs(0)[this->GetOutput()->GetSize(0) - 1];
 
       PixelType pixelIntensity(PixelType{});
-      IndexType index;
-
-      index = centerIndex + offset;
+      IndexType index = centerIndex + offset;
       IndexType lastGoodIndex = centerIndex;
       bool      runLengthSegmentAlreadyVisited = false;
 

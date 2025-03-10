@@ -608,8 +608,7 @@ ImageRegistrationMethodv4<TFixedImage, TMovingImage, TTransform, TVirtualImage, 
       if (this->m_SmoothingSigmasPerLevel[level] > 0)
       {
         using FixedImageSmoothingFilterType = SmoothingRecursiveGaussianImageFilter<FixedImageType, FixedImageType>;
-        typename FixedImageSmoothingFilterType::Pointer fixedImageSmoothingFilter =
-          FixedImageSmoothingFilterType::New();
+        auto fixedImageSmoothingFilter = FixedImageSmoothingFilterType::New();
         typename FixedImageSmoothingFilterType::SigmaArrayType fixedImageSigmaArray(
           this->m_SmoothingSigmasPerLevel[level]);
 
@@ -629,8 +628,7 @@ ImageRegistrationMethodv4<TFixedImage, TMovingImage, TTransform, TVirtualImage, 
         fixedImageSmoothingFilter->GetOutput()->DisconnectPipeline();
 
         using MovingImageSmoothingFilterType = SmoothingRecursiveGaussianImageFilter<MovingImageType, MovingImageType>;
-        typename MovingImageSmoothingFilterType::Pointer movingImageSmoothingFilter =
-          MovingImageSmoothingFilterType::New();
+        auto movingImageSmoothingFilter = MovingImageSmoothingFilterType::New();
         typename MovingImageSmoothingFilterType::SigmaArrayType movingImageSigmaArray(
           this->m_SmoothingSigmasPerLevel[level]);
 
@@ -871,8 +869,7 @@ ImageRegistrationMethodv4<TFixedImage, TMovingImage, TTransform, TVirtualImage, 
 
     for (SizeValueType level = 0; level < this->m_NumberOfLevels; ++level)
     {
-      ShrinkFactorsPerDimensionContainerType shrinkFactors;
-      shrinkFactors.Fill(1);
+      constexpr auto shrinkFactors = MakeFilled<ShrinkFactorsPerDimensionContainerType>(1);
       this->SetShrinkFactorsPerDimension(level, shrinkFactors);
     }
 
@@ -941,7 +938,6 @@ ImageRegistrationMethodv4<TFixedImage, TMovingImage, TTransform, TVirtualImage, 
   for (SizeValueType n = 0; n < numberOfLocalMetrics; ++n)
   {
     auto samplePointSet = MetricSamplePointSetType::New();
-    samplePointSet->Initialize();
 
     using SamplePointType = typename MetricSamplePointSetType::PointType;
 

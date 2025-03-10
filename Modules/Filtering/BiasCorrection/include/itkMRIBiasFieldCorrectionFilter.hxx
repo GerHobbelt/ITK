@@ -625,7 +625,7 @@ MRIBiasFieldCorrectionFilter<TInputImage, TOutputImage, TMaskImage>::GenerateDat
   {
     itkDebugMacro("Searching slabs...");
 
-    typename MRASlabIdentifier<InputImageType>::Pointer identifier = MRASlabIdentifier<InputImageType>::New();
+    auto identifier = MRASlabIdentifier<InputImageType>::New();
     // Find slabs
     identifier->SetImage(this->GetInput());
     identifier->SetNumberOfSamples(m_SlabNumberOfSamples);
@@ -785,9 +785,7 @@ void
 MRIBiasFieldCorrectionFilter<TInputImage, TOutputImage, TMaskImage>::Log1PImage(InternalImageType * source,
                                                                                 InternalImageType * target)
 {
-  InternalImageRegionType region;
-
-  region = source->GetRequestedRegion();
+  InternalImageRegionType region = source->GetRequestedRegion();
 
   ImageRegionIterator<InternalImageType> s_iter(source, region);
   ImageRegionIterator<InternalImageType> t_iter(target, region);
@@ -816,9 +814,7 @@ void
 MRIBiasFieldCorrectionFilter<TInputImage, TOutputImage, TMaskImage>::ExpImage(InternalImageType * source,
                                                                               InternalImageType * target)
 {
-  InternalImageRegionType region;
-
-  region = source->GetLargestPossibleRegion();
+  InternalImageRegionType region = source->GetLargestPossibleRegion();
 
   ImageRegionIterator<InternalImageType> s_iter(source, region);
   ImageRegionIterator<InternalImageType> t_iter(target, region);

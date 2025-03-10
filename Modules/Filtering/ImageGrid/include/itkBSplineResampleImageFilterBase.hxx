@@ -348,11 +348,9 @@ BSplineResampleImageFilterBase<TInputImage, TOutputImage>::ReduceNDImage(OutputI
 
   // Initialize scratchImage space and allocate memory
   InitializeScratch(startSize);
-  typename TOutputImage::Pointer scratchImage;
-  scratchImage = TOutputImage::New();
+  auto scratchImage = TOutputImage::New();
   scratchImage->CopyInformation(inputPtr);
-  RegionType scratchRegion;
-  scratchRegion = inputPtr->GetBufferedRegion();
+  RegionType scratchRegion = inputPtr->GetBufferedRegion();
   currentSize = startSize;
   // scratchImage only needs the 1/2 the space of the original
   // image for the first dimension.
@@ -379,8 +377,7 @@ BSplineResampleImageFilterBase<TInputImage, TOutputImage>::ReduceNDImage(OutputI
    * OutputImage for direct writing into the final variable. */
 
   // The first time through the loop our input image is inputPtr
-  typename TInputImage::ConstPointer workingImage;
-  workingImage = inputPtr;
+  typename TInputImage::ConstPointer workingImage = inputPtr;
 
   unsigned int     count = scratchRegion.GetNumberOfPixels() * ImageDimension;
   ProgressReporter progress(this, 0, count, 10);
@@ -463,11 +460,9 @@ BSplineResampleImageFilterBase<TInputImage, TOutputImage>::ExpandNDImage(OutputI
 
   // Initialize scratchImage space and allocate memory
   InitializeScratch(startSize);
-  typename TOutputImage::Pointer scratchImage;
-  scratchImage = TOutputImage::New();
+  auto scratchImage = TOutputImage::New();
   scratchImage->CopyInformation(inputPtr);
-  RegionType scratchRegion;
-  scratchRegion = inputPtr->GetBufferedRegion();
+  RegionType scratchRegion = inputPtr->GetBufferedRegion();
   currentSize = startSize;
 
   // scratchImage 2 times the space of the original image .
@@ -495,8 +490,7 @@ BSplineResampleImageFilterBase<TInputImage, TOutputImage>::ExpandNDImage(OutputI
   **/
 
   // The first time through the loop our input image is m_Image
-  typename TInputImage::ConstPointer workingImage;
-  workingImage = inputPtr;
+  typename TInputImage::ConstPointer workingImage = inputPtr;
 
   RegionType workingRegion = validRegion;
 

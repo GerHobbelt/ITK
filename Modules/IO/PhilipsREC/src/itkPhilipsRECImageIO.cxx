@@ -126,7 +126,7 @@ GetRootName(const std::string & filename)
 
   // Create a base filename
   // i.e Image.PAR --> Image
-  if (fileExt.length() > 0 && filename.length() > fileExt.length())
+  if (!fileExt.empty() && filename.length() > fileExt.length())
   {
     const std::string::size_type it = filename.find_last_of(fileExt);
     std::string                  baseName(filename, 0, it - (fileExt.length() - 1));
@@ -190,18 +190,16 @@ PhilipsRECImageIOGetImageTypeOffset(int                                         
                                     PhilipsPAR::PARSliceIndexImageTypeVector    sliceImageTypesIndex,
                                     PhilipsPAR::PARSliceIndexScanSequenceVector sliceScanSequenceIndex)
 {
-  int index = volumeIndex * parParam.num_slice_repetitions * numSlices + slice * parParam.num_slice_repetitions;
-  int i;
-
-  for (i = 0; i < parParam.num_slice_repetitions; ++i)
+  const int index = volumeIndex * parParam.num_slice_repetitions * numSlices + slice * parParam.num_slice_repetitions;
+  for (int i = 0; i < parParam.num_slice_repetitions; ++i)
   {
     if ((sliceImageTypesIndex[index + i].second == imageType) &&
         (sliceScanSequenceIndex[index + i].second == scanSequence))
     {
-      break;
+      return i;
     }
   }
-  return i;
+  return parParam.num_slice_repetitions;
 }
 
 //----------------------------------------------------------------------------
@@ -584,15 +582,13 @@ PhilipsRECImageIO::ReadImageInformation()
   }
 
   // Get rescale values associated with each scanning sequence.
-  ScanningSequenceImageTypeRescaleValuesContainerType::Pointer scanningSequenceImageTypeRescaleVector =
-    ScanningSequenceImageTypeRescaleValuesContainerType::New();
+  auto scanningSequenceImageTypeRescaleVector = ScanningSequenceImageTypeRescaleValuesContainerType::New();
   scanningSequenceImageTypeRescaleVector->clear();
   // Must match number of scanning sequences.
   scanningSequenceImageTypeRescaleVector->resize(par.num_scanning_sequences);
   for (int scanIndex = 0; scanIndex < par.num_scanning_sequences; ++scanIndex)
   {
-    ImageTypeRescaleValuesContainerType::Pointer imageTypeRescaleValuesVector =
-      ImageTypeRescaleValuesContainerType::New();
+    auto imageTypeRescaleValuesVector = ImageTypeRescaleValuesContainerType::New();
     if (!philipsPAR->GetRECRescaleValues(
           HeaderFileName, imageTypeRescaleValuesVector, par.scanning_sequences[scanIndex]))
     {
@@ -756,7 +752,7 @@ PhilipsRECImageIO::ReadImageInformation()
       direction[columns][rows] = dir[columns][rows];
     }
   }
-//#define DEBUG_ORIENTATION
+// #define DEBUG_ORIENTATION
 #ifdef DEBUG_ORIENTATION
   std::cout << "Direction cosines = " << direction << std::endl << "Spacing = " << spacing << std::endl;
 #endif

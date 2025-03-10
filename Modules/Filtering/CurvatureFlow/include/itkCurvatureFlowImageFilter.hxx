@@ -29,8 +29,7 @@ CurvatureFlowImageFilter<TInputImage, TOutputImage>::CurvatureFlowImageFilter()
   this->SetNumberOfIterations(0);
   m_TimeStep = 0.05f;
 
-  typename CurvatureFlowFunctionType::Pointer cffp;
-  cffp = CurvatureFlowFunctionType::New();
+  auto cffp = CurvatureFlowFunctionType::New();
 
   this->SetDifferenceFunction(static_cast<FiniteDifferenceFunctionType *>(cffp.GetPointer()));
 }
@@ -95,9 +94,7 @@ void
 CurvatureFlowImageFilter<TInputImage, TOutputImage>::EnlargeOutputRequestedRegion(DataObject * ptr)
 {
   // convert DataObject pointer to OutputImageType pointer
-  OutputImageType * outputPtr;
-
-  outputPtr = dynamic_cast<OutputImageType *>(ptr);
+  auto * outputPtr = dynamic_cast<OutputImageType *>(ptr);
 
   // get input image pointer
   typename Superclass::InputImagePointer inputPtr = const_cast<InputImageType *>(this->GetInput());

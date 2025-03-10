@@ -106,8 +106,7 @@ DisplacementFieldJacobianDeterminantFilter<TInputImage, TRealType, TOutputImage>
 
   // get a copy of the input requested region (should equal the output
   // requested region)
-  typename TInputImage::RegionType inputRequestedRegion;
-  inputRequestedRegion = inputPtr->GetRequestedRegion();
+  typename TInputImage::RegionType inputRequestedRegion = inputPtr->GetRequestedRegion();
 
   // pad the input requested region by the operator radius
   inputRequestedRegion.PadByRadius(m_NeighborhoodRadius);
@@ -161,8 +160,7 @@ DisplacementFieldJacobianDeterminantFilter<TInputImage, TRealType, TOutputImage>
   //
   // cast might not be necessary, but CastImageFilter is optimized for
   // the case where the InputImageType == OutputImageType
-  typename CastImageFilter<TInputImage, RealVectorImageType>::Pointer caster =
-    CastImageFilter<TInputImage, RealVectorImageType>::New();
+  auto caster = CastImageFilter<TInputImage, RealVectorImageType>::New();
   caster->SetInput(this->GetInput());
   caster->Update();
   m_RealValuedInputImage = caster->GetOutput();

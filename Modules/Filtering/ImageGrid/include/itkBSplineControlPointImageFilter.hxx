@@ -114,8 +114,7 @@ BSplineControlPointImageFilter<TInputImage, TOutputImage>::SetSplineOrder(ArrayT
 
     if (this->m_DoMultilevel)
     {
-      typename KernelType::MatrixType C;
-      C = this->m_Kernel[i]->GetShapeFunctionsInZeroToOneInterval();
+      typename KernelType::MatrixType C = this->m_Kernel[i]->GetShapeFunctionsInZeroToOneInterval();
 
       vnl_matrix<RealType> R;
       vnl_matrix<RealType> S;
@@ -215,8 +214,7 @@ BSplineControlPointImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenera
     }
   }
   FixedArray<RealType, ImageDimension> U;
-  FixedArray<RealType, ImageDimension> currentU;
-  currentU.Fill(-1);
+  auto                                 currentU = MakeFilled<FixedArray<RealType, ImageDimension>>(-1);
 
   typename OutputImageType::IndexType    startIndex = outputPtr->GetRequestedRegion().GetIndex();
   typename PointDataImageType::IndexType startPhiIndex = inputPtr->GetLargestPossibleRegion().GetIndex();

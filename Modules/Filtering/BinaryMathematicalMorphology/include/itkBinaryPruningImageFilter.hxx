@@ -91,8 +91,7 @@ BinaryPruningImageFilter<TInputImage, TOutputImage>::ComputePruneImage()
 
   typename OutputImageType::RegionType region = pruneImage->GetRequestedRegion();
 
-  typename NeighborhoodIteratorType::RadiusType radius;
-  radius.Fill(1);
+  auto                     radius = MakeFilled<typename NeighborhoodIteratorType::RadiusType>(1);
   NeighborhoodIteratorType ot(radius, pruneImage, region);
 
   typename NeighborhoodIteratorType::OffsetType offset1 = { { -1, -1 } };
@@ -112,8 +111,7 @@ BinaryPruningImageFilter<TInputImage, TOutputImage>::ComputePruneImage()
     {
       if (ot.GetCenterPixel())
       {
-        PixelType genus;
-        genus = ot.GetPixel(offset1) + ot.GetPixel(offset2);
+        PixelType genus = ot.GetPixel(offset1) + ot.GetPixel(offset2);
         genus += ot.GetPixel(offset3) + ot.GetPixel(offset4);
         genus += ot.GetPixel(offset5) + ot.GetPixel(offset6);
         genus += ot.GetPixel(offset7) + ot.GetPixel(offset8);

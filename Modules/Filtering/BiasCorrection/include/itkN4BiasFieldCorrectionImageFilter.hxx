@@ -227,8 +227,7 @@ N4BiasFieldCorrectionImageFilter<TInputImage, TMaskImage, TOutputImage>::Generat
     reconstructer->SetSplineOrder(this->m_SplineOrder);
     reconstructer->Update();
 
-    typename BSplineReconstructerType::ArrayType numberOfLevels;
-    numberOfLevels.Fill(1);
+    auto numberOfLevels = MakeFilled<typename BSplineReconstructerType::ArrayType>(1);
     for (unsigned int d = 0; d < ImageDimension; ++d)
     {
       if (this->m_NumberOfFittingLevels[d] + 1 >= this->m_CurrentLevel &&
@@ -500,14 +499,12 @@ N4BiasFieldCorrectionImageFilter<TInputImage, TMaskImage, TOutputImage>::UpdateB
   const typename ImporterType::OutputImageType * parametricFieldEstimate = importer->GetOutput();
 
   PointSetPointer fieldPoints = PointSetType::New();
-  fieldPoints->Initialize();
-  auto & pointSTLContainer = fieldPoints->GetPoints()->CastToSTLContainer();
+  auto &          pointSTLContainer = fieldPoints->GetPoints()->CastToSTLContainer();
   pointSTLContainer.reserve(numberOfIncludedPixels);
   auto & pointDataSTLContainer = fieldPoints->GetPointData()->CastToSTLContainer();
   pointDataSTLContainer.reserve(numberOfIncludedPixels);
 
-  typename BSplineFilterType::WeightsContainerType::Pointer weights = BSplineFilterType::WeightsContainerType::New();
-  weights->Initialize();
+  auto   weights = BSplineFilterType::WeightsContainerType::New();
   auto & weightSTLContainer = weights->CastToSTLContainer();
   weightSTLContainer.reserve(numberOfIncludedPixels);
 
@@ -546,8 +543,7 @@ N4BiasFieldCorrectionImageFilter<TInputImage, TMaskImage, TOutputImage>::UpdateB
   auto bspliner = BSplineFilterType::New();
 
   typename BSplineFilterType::ArrayType numberOfControlPoints;
-  typename BSplineFilterType::ArrayType numberOfFittingLevels;
-  numberOfFittingLevels.Fill(1);
+  auto                                  numberOfFittingLevels = MakeFilled<typename BSplineFilterType::ArrayType>(1);
   for (unsigned int d = 0; d < ImageDimension; ++d)
   {
     if (!this->m_LogBiasFieldControlPointLattice)

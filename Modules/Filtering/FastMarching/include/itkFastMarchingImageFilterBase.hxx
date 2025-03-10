@@ -53,7 +53,7 @@ FastMarchingImageFilterBase<TInput, TOutput>::FastMarchingImageFilterBase()
   m_StartIndex.Fill(0);
   m_LastIndex.Fill(0);
 
-  auto outputSize = OutputSizeType::Filled(16);
+  constexpr auto outputSize = OutputSizeType::Filled(16);
 
   NodeType outputIndex{};
 
@@ -358,8 +358,7 @@ FastMarchingImageFilterBase<TInput, TOutput>::CheckTopology(OutputImageType * oI
         if (strictTopologyViolation)
         {
           // Check for handles
-          typename NeighborhoodIteratorType::RadiusType radius;
-          radius.Fill(1);
+          auto                     radius = MakeFilled<typename NeighborhoodIteratorType::RadiusType>(1);
           NeighborhoodIteratorType ItL(radius, this->m_LabelImage, this->m_LabelImage->GetBufferedRegion());
           ItL.SetLocation(iNode);
 
@@ -437,8 +436,7 @@ FastMarchingImageFilterBase<TInput, TOutput>::InitializeOutput(OutputImageType *
   m_OutputOrigin = oImage->GetOrigin();
   m_OutputDirection = oImage->GetDirection();
 
-  typename OutputImageType::OffsetType offset;
-  offset.Fill(1);
+  constexpr auto offset = MakeFilled<typename OutputImageType::OffsetType>(1);
   m_LastIndex -= offset;
 
   // Checking for handles only requires an image to keep track of
@@ -610,8 +608,7 @@ template <typename TInput, typename TOutput>
 bool
 FastMarchingImageFilterBase<TInput, TOutput>::DoesVoxelChangeViolateStrictTopology(const NodeType & idx) const
 {
-  typename NeighborhoodIteratorType::RadiusType radius;
-  radius.Fill(1);
+  constexpr auto radius = MakeFilled<typename NeighborhoodIteratorType::RadiusType>(1);
 
   NeighborhoodIteratorType It(radius, this->m_LabelImage, this->m_LabelImage->GetBufferedRegion());
   It.SetLocation(idx);
@@ -647,8 +644,7 @@ template <typename TInput, typename TOutput>
 bool
 FastMarchingImageFilterBase<TInput, TOutput>::IsChangeWellComposed2D(const NodeType & idx) const
 {
-  NeighborhoodRadiusType radius;
-  radius.Fill(1);
+  constexpr auto radius = MakeFilled<NeighborhoodRadiusType>(1);
 
   NeighborhoodIteratorType It(radius, this->m_LabelImage, this->m_LabelImage->GetBufferedRegion());
   It.SetLocation(idx);
@@ -808,8 +804,7 @@ FastMarchingImageFilterBase<TInput, TOutput>::IsChangeWellComposed3D(const NodeT
 {
   std::bitset<8> neighborhoodPixels;
 
-  NeighborhoodRadiusType radius;
-  radius.Fill(1);
+  constexpr auto radius = MakeFilled<NeighborhoodRadiusType>(1);
 
   NeighborhoodIteratorType It(radius, this->m_LabelImage, this->m_LabelImage->GetRequestedRegion());
 

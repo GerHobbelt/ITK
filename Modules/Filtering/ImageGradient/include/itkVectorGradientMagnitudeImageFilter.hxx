@@ -99,11 +99,9 @@ VectorGradientMagnitudeImageFilter<TInputImage, TRealType, TOutputImage>::Genera
 
   // get a copy of the input requested region (should equal the output
   // requested region)
-  typename TInputImage::RegionType inputRequestedRegion;
-  inputRequestedRegion = inputPtr->GetRequestedRegion();
+  typename TInputImage::RegionType inputRequestedRegion = inputPtr->GetRequestedRegion();
 
-  RadiusType r1;
-  r1.Fill(1);
+  constexpr auto r1 = MakeFilled<RadiusType>(1);
   // pad the input requested region by the operator radius
   inputRequestedRegion.PadByRadius(r1);
 
@@ -178,8 +176,7 @@ VectorGradientMagnitudeImageFilter<TInputImage, TRealType, TOutputImage>::Before
   //
   // cast might not be necessary, but CastImageFilter is optimized for
   // the case where the InputImageType == OutputImageType
-  typename CastImageFilter<TInputImage, RealVectorImageType>::Pointer caster =
-    CastImageFilter<TInputImage, RealVectorImageType>::New();
+  auto caster = CastImageFilter<TInputImage, RealVectorImageType>::New();
   caster->SetInput(this->GetInput());
   caster->GetOutput()->SetRequestedRegion(this->GetInput()->GetRequestedRegion());
   caster->Update();
@@ -197,8 +194,7 @@ VectorGradientMagnitudeImageFilter<TInputImage, TRealType, TOutputImage>::Dynami
 
   // Find the data-set boundary "faces"
   NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<RealVectorImageType> bC;
-  RadiusType                                                               r1;
-  r1.Fill(1);
+  auto                                                                     r1 = MakeFilled<RadiusType>(1);
   typename NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<RealVectorImageType>::FaceListType faceList =
     bC(m_RealValuedInputImage.GetPointer(), outputRegionForThread, r1);
 

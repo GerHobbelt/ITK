@@ -61,9 +61,7 @@ void
 KLMRegionGrowImageFilter<TInputImage, TOutputImage>::EnlargeOutputRequestedRegion(DataObject * output)
 {
   // This filter requires all of the output image to be in the buffer
-  TOutputImage * imgData;
-
-  imgData = dynamic_cast<TOutputImage *>(output);
+  auto * imgData = dynamic_cast<TOutputImage *>(output);
   imgData->SetRequestedRegionToLargestPossibleRegion();
 }
 
@@ -742,8 +740,7 @@ KLMRegionGrowImageFilter<TInputImage, TOutputImage>::ResolveRegions()
 
   UnsignedIntVectorType remapLabelsVec(m_InitialNumberOfRegions, 0);
 
-  UnsignedIntVectorType::iterator uniqueLabelsVecIterator;
-  uniqueLabelsVecIterator = uniqueLabelsVec.begin();
+  UnsignedIntVectorType::iterator uniqueLabelsVecIterator = uniqueLabelsVec.begin();
 
   RegionLabelType newLabelValue = 1;
 

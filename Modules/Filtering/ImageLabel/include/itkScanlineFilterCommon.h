@@ -399,8 +399,7 @@ protected:
     using PretendIndexType = typename PretendImageType::RegionType::IndexType;
     using LineNeighborhoodType = ConstShapedNeighborhoodIterator<PretendImageType>;
 
-    typename PretendImageType::Pointer fakeImage;
-    fakeImage = PretendImageType::New();
+    auto fakeImage = PretendImageType::New();
 
     typename PretendImageType::RegionType LineRegion;
 
@@ -427,8 +426,7 @@ protected:
       setConnectivityPrevious(&lnit, m_FullyConnected);
     }
 
-    typename LineNeighborhoodType::IndexListType ActiveIndexes;
-    ActiveIndexes = lnit.GetActiveIndexList();
+    typename LineNeighborhoodType::IndexListType ActiveIndexes = lnit.GetActiveIndexList();
 
     typename LineNeighborhoodType::IndexListType::const_iterator LI;
 

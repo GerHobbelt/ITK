@@ -73,8 +73,7 @@ TimeVaryingVelocityFieldImageRegistrationMethodv4<TFixedImage,
   auto identityTransform = IdentityTransformType::New();
   identityTransform->SetIdentity();
 
-  typename DisplacementFieldTransformType::Pointer identityDisplacementFieldTransform =
-    DisplacementFieldTransformType::New();
+  auto identityDisplacementFieldTransform = DisplacementFieldTransformType::New();
 
   // This transform gets used for the moving image
   auto fieldDuplicatorIdentity = DisplacementFieldDuplicatorType::New();
@@ -174,8 +173,7 @@ TimeVaryingVelocityFieldImageRegistrationMethodv4<TFixedImage,
       fieldDuplicator->SetInputImage(this->m_OutputTransform->GetDisplacementField());
       fieldDuplicator->Update();
 
-      typename DisplacementFieldTransformType::Pointer fixedDisplacementFieldTransform =
-        DisplacementFieldTransformType::New();
+      auto fixedDisplacementFieldTransform = DisplacementFieldTransformType::New();
       fixedDisplacementFieldTransform->SetDisplacementField(fieldDuplicator->GetOutput());
 
       // Get the moving transform
@@ -191,8 +189,7 @@ TimeVaryingVelocityFieldImageRegistrationMethodv4<TFixedImage,
         this->m_OutputTransform->IntegrateVelocityField();
       }
 
-      typename DisplacementFieldTransformType::Pointer movingDisplacementFieldTransform =
-        DisplacementFieldTransformType::New();
+      auto movingDisplacementFieldTransform = DisplacementFieldTransformType::New();
       movingDisplacementFieldTransform->SetDisplacementField(this->m_OutputTransform->GetModifiableDisplacementField());
 
       this->m_CompositeTransform->AddTransform(movingDisplacementFieldTransform);
@@ -362,7 +359,7 @@ TimeVaryingVelocityFieldImageRegistrationMethodv4<TFixedImage,
         RealType spatialNorm{};
         RealType spatioTemporalNorm{};
 
-        auto radius = TimeVaryingVelocityFieldType::SizeType::Filled(1);
+        constexpr auto radius = TimeVaryingVelocityFieldType::SizeType::Filled(1);
 
         using FaceCalculatorType = NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<TimeVaryingVelocityFieldType>;
         FaceCalculatorType                        faceCalculator;

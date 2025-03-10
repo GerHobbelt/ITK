@@ -73,17 +73,14 @@ GrayscaleConnectedClosingImageFilter<TInputImage, TOutputImage>::GenerateData()
   //
 
   // compute the minimum pixel value in the input
-  typename MinimumMaximumImageCalculator<TInputImage>::Pointer calculator =
-    MinimumMaximumImageCalculator<TInputImage>::New();
+  auto calculator = MinimumMaximumImageCalculator<TInputImage>::New();
   calculator->SetImage(inputImage);
   calculator->ComputeMaximum();
 
-  InputImagePixelType maxValue;
-  maxValue = calculator->GetMaximum();
+  InputImagePixelType maxValue = calculator->GetMaximum();
 
   // compare this maximum value to the value at the seed pixel.
-  InputImagePixelType seedValue;
-  seedValue = inputImage->GetPixel(m_Seed);
+  InputImagePixelType seedValue = inputImage->GetPixel(m_Seed);
 
   if (maxValue == seedValue)
   {
@@ -109,8 +106,7 @@ GrayscaleConnectedClosingImageFilter<TInputImage, TOutputImage>::GenerateData()
   // Delegate to a geodesic dilation filter.
   //
   //
-  typename ReconstructionByErosionImageFilter<TInputImage, TInputImage>::Pointer erode =
-    ReconstructionByErosionImageFilter<TInputImage, TInputImage>::New();
+  auto erode = ReconstructionByErosionImageFilter<TInputImage, TInputImage>::New();
 
   // Create a process accumulator for tracking the progress of this minipipeline
   auto progress = ProgressAccumulator::New();

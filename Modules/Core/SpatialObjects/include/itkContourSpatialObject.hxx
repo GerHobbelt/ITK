@@ -105,8 +105,7 @@ ContourSpatialObject<TDimension>::SetControlPoints(const ContourPointListType & 
 {
   m_ControlPoints.clear();
 
-  typename ContourPointListType::const_iterator it;
-  it = points.begin();
+  typename ContourPointListType::const_iterator it = points.begin();
   while (it != points.end())
   {
     m_ControlPoints.push_back(*it);
@@ -211,8 +210,7 @@ ContourSpatialObject<TDimension>::Update()
         // "`ContourSpatialObject<TDimension>::Update()` LINEAR_INTERPOLATION case may need some adjustment"
         // https://github.com/InsightSoftwareConsortium/ITK/issues/3222
 
-        PointType newPoint;
-        newPoint.Fill(NumericTraits<double>::max());
+        auto newPoint = MakeFilled<PointType>(NumericTraits<double>::max());
         for (unsigned int i = 0; i < m_InterpolationFactor; ++i)
         {
           for (unsigned int d = 0; d < TDimension; ++d)
@@ -220,8 +218,7 @@ ContourSpatialObject<TDimension>::Update()
             newPoint[d] = pnt[d] + i * step[d];
           }
         }
-        typename Superclass::SpatialObjectPointType newSOPoint;
-        newSOPoint = (*it);
+        typename Superclass::SpatialObjectPointType newSOPoint = (*it);
         newSOPoint.SetSpatialObject(this);
         newSOPoint.SetPositionInObjectSpace(newPoint);
         this->m_Points.push_back(newSOPoint);

@@ -107,8 +107,7 @@ GrayscaleGeodesicErodeImageFilter<TInputImage, TOutputImage>::GenerateInputReque
 
     // get a copy of the marker image requested region (should equal
     // the output requested region)
-    MarkerImageRegionType markerRequestedRegion;
-    markerRequestedRegion = markerPtr->GetRequestedRegion();
+    MarkerImageRegionType markerRequestedRegion = markerPtr->GetRequestedRegion();
 
     // pad the marker requested region by the elementary operator radius
     markerRequestedRegion.PadByRadius(1);
@@ -180,8 +179,7 @@ GrayscaleGeodesicErodeImageFilter<TInputImage, TOutputImage>::GenerateData()
   // separately. For efficiency, we will delegate to an instance that
   // is templated over <TInputImage, TInputImage> to avoid any
   // pixelwise casting until the final output image is configured.
-  typename GrayscaleGeodesicErodeImageFilter<TInputImage, TInputImage>::Pointer singleIteration =
-    GrayscaleGeodesicErodeImageFilter<TInputImage, TInputImage>::New();
+  auto singleIteration = GrayscaleGeodesicErodeImageFilter<TInputImage, TInputImage>::New();
   bool done = false;
 
   // set up the singleIteration filter. we are not using the grafting
@@ -283,9 +281,9 @@ GrayscaleGeodesicErodeImageFilter<TInputImage, TOutputImage>::DynamicThreadedGen
 
   // Find the boundary "faces". Structuring element is elementary
   // (face connected neighbors within a radius of 1).
-  NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<MarkerImageType>                      fC;
-  typename NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<MarkerImageType>::RadiusType kernelRadius;
-  kernelRadius.Fill(1);
+  NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<MarkerImageType> fC;
+  auto                                                                 kernelRadius =
+    MakeFilled<typename NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<MarkerImageType>::RadiusType>(1);
   typename NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<MarkerImageType>::FaceListType faceList =
     fC(this->GetMarkerImage(), outputRegionForThread, kernelRadius);
 

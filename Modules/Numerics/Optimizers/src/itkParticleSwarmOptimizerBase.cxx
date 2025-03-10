@@ -152,8 +152,7 @@ ParticleSwarmOptimizerBase::PrintSelf(std::ostream & os, Indent indent) const
   os << indent << "Maximal number of iterations: " << this->m_MaximalNumberOfIterations << '\n';
   os << indent << "Number of generations with minimal improvement: ";
   os << this->m_NumberOfGenerationsWithMinimalImprovement << '\n';
-  ParameterBoundsType::const_iterator it, end;
-  end = this->m_ParameterBounds.end();
+  ParameterBoundsType::const_iterator it, end = this->m_ParameterBounds.end();
   os << indent << "Parameter bounds: [";
   for (it = this->m_ParameterBounds.begin(); it != end; ++it)
   {
@@ -180,8 +179,7 @@ ParticleSwarmOptimizerBase::PrintSelf(std::ostream & os, Indent indent) const
 void
 ParticleSwarmOptimizerBase::PrintSwarm(std::ostream & os, Indent indent) const
 {
-  std::vector<ParticleData>::const_iterator it, end;
-  end = this->m_Particles.end();
+  std::vector<ParticleData>::const_iterator it, end = this->m_Particles.end();
   os << indent << "[\n";
   for (it = this->m_Particles.begin(); it != end; ++it)
   {
@@ -212,7 +210,6 @@ ParticleSwarmOptimizerBase::PrintParamtersType(const ParametersType & x, std::os
 void
 ParticleSwarmOptimizerBase::StartOptimization()
 {
-  unsigned int j, k, n, index, prevIndex;
   bool         converged = false;
   unsigned int bestValueMemorySize = this->m_NumberOfGenerationsWithMinimalImprovement + 1;
   auto         percentileIndex =
@@ -225,14 +222,14 @@ ParticleSwarmOptimizerBase::StartOptimization()
   InvokeEvent(StartEvent());
 
   // run the simulation
-  n = static_cast<unsigned int>((GetCostFunction())->GetNumberOfParameters());
+  unsigned int n = static_cast<unsigned int>((GetCostFunction())->GetNumberOfParameters());
   for (this->m_IterationIndex = 1; m_IterationIndex < m_MaximalNumberOfIterations && !converged; ++m_IterationIndex)
   {
 
     UpdateSwarm();
 
     // update the best function value/parameters
-    for (j = 0; j < this->m_NumberOfParticles; ++j)
+    for (unsigned int j = 0; j < this->m_NumberOfParticles; ++j)
     {
       if (this->m_Particles[j].m_BestValue < m_FunctionBestValue)
       {
@@ -244,7 +241,7 @@ ParticleSwarmOptimizerBase::StartOptimization()
     SetCurrentPosition(this->m_ParametersBestValue);
 
     // update the best value memory
-    index = this->m_IterationIndex % bestValueMemorySize;
+    unsigned int index = this->m_IterationIndex % bestValueMemorySize;
     this->m_FunctionBestValueMemory[index] = m_FunctionBestValue;
     // check for convergence. the m_FunctionBestValueMemory is a ring
     // buffer with m_NumberOfGenerationsWithMinimalImprovement+1
@@ -254,14 +251,7 @@ ParticleSwarmOptimizerBase::StartOptimization()
     // are close enough to the best particle.
     if (this->m_IterationIndex >= m_NumberOfGenerationsWithMinimalImprovement)
     {
-      if (index == this->m_NumberOfGenerationsWithMinimalImprovement)
-      {
-        prevIndex = 0;
-      }
-      else
-      {
-        prevIndex = index + 1;
-      }
+      const unsigned int prevIndex = (index == this->m_NumberOfGenerationsWithMinimalImprovement) ? 0 : index + 1;
       // function value hasn't improved for a while, check the
       // parameter space to see if the "best" swarm has collapsed
       // around the swarm's best parameters, indicating convergence
@@ -270,9 +260,9 @@ ParticleSwarmOptimizerBase::StartOptimization()
       {
         converged = true;
         std::vector<ParametersType::ValueType> parameterDiffs(this->m_NumberOfParticles);
-        for (k = 0; k < n && converged; ++k)
+        for (unsigned int k = 0; k < n && converged; ++k)
         {
-          for (j = 0; j < this->m_NumberOfParticles; ++j)
+          for (unsigned int j = 0; j < this->m_NumberOfParticles; ++j)
           {
             parameterDiffs[j] =
               itk::Math::abs(this->m_Particles[j].m_BestParameters[k] - this->m_ParametersBestValue[k]);
@@ -301,8 +291,6 @@ ParticleSwarmOptimizerBase::StartOptimization()
 void
 ParticleSwarmOptimizerBase::ValidateSettings()
 {
-  unsigned int i, n;
-
   // we have to have a cost function
   if (GetCostFunction() == nullptr)
   {
@@ -310,7 +298,7 @@ ParticleSwarmOptimizerBase::ValidateSettings()
   }
   // if we got here it is safe to get the number of parameters the cost
   // function expects
-  n = static_cast<unsigned int>((GetCostFunction())->GetNumberOfParameters());
+  unsigned int n = static_cast<unsigned int>((GetCostFunction())->GetNumberOfParameters());
 
   // check that the number of parameters match
   ParametersType initialPosition = GetInitialPosition();
@@ -339,7 +327,7 @@ ParticleSwarmOptimizerBase::ValidateSettings()
   {
     itkExceptionMacro("cost function and parameter bounds dimensions mismatch");
   }
-  for (i = 0; i < n; ++i)
+  for (unsigned int i = 0; i < n; ++i)
   {
     if (initialPosition[i] < this->m_ParameterBounds[i].first || initialPosition[i] > this->m_ParameterBounds[i].second)
     {
@@ -358,7 +346,7 @@ ParticleSwarmOptimizerBase::ValidateSettings()
     for (it = this->m_Particles.begin(); it != end; ++it)
     {
       ParticleData & p = (*it);
-      for (i = 0; i < n; ++i)
+      for (unsigned int i = 0; i < n; ++i)
       {
         if (p.m_CurrentParameters[i] < m_ParameterBounds[i].first ||
             p.m_CurrentParameters[i] > m_ParameterBounds[i].second ||
@@ -370,7 +358,7 @@ ParticleSwarmOptimizerBase::ValidateSettings()
     }
   }
   // parameters' convergence tolerance has to be positive
-  for (i = 0; i < n; ++i)
+  for (unsigned int i = 0; i < n; ++i)
   {
     if (this->m_ParametersConvergenceTolerance[i] < 0)
     {
@@ -427,8 +415,7 @@ ParticleSwarmOptimizerBase::Initialize()
 void
 ParticleSwarmOptimizerBase::RandomInitialization()
 {
-  unsigned int i, j, n;
-  n = GetInitialPosition().Size();
+  unsigned int                                                    n = GetInitialPosition().Size();
   ParameterBoundsType                                             parameterBounds(this->m_ParameterBounds);
   ParametersType                                                  mean = GetInitialPosition();
   itk::Statistics::MersenneTwisterRandomVariateGenerator::Pointer randomGenerator =
@@ -436,7 +423,7 @@ ParticleSwarmOptimizerBase::RandomInitialization()
 
   // create swarm
   this->m_Particles.resize(m_NumberOfParticles);
-  for (i = 0; i < this->m_NumberOfParticles; ++i)
+  for (unsigned int i = 0; i < this->m_NumberOfParticles; ++i)
   {
     this->m_Particles[i].m_BestParameters.SetSize(n);
     this->m_Particles[i].m_CurrentParameters.SetSize(n);
@@ -452,15 +439,15 @@ ParticleSwarmOptimizerBase::RandomInitialization()
   {
     ParametersType variance(mean.GetSize());
     // variance is set so that 3sigma == bounds
-    for (i = 0; i < n; ++i)
+    for (unsigned int i = 0; i < n; ++i)
     {
       variance[i] = (parameterBounds[i].second - parameterBounds[i].first) / 3.0;
       variance[i] *= variance[i];
     }
 
-    for (i = 1; i < this->m_NumberOfParticles; ++i)
+    for (unsigned int i = 1; i < this->m_NumberOfParticles; ++i)
     {
-      for (j = 0; j < n; ++j)
+      for (unsigned int j = 0; j < n; ++j)
       {
         this->m_Particles[i].m_CurrentParameters[j] = randomGenerator->GetNormalVariate(mean[j], variance[j]);
         // ensure that the particle is inside the feasible region
@@ -475,9 +462,9 @@ ParticleSwarmOptimizerBase::RandomInitialization()
   // create particles with uniform distribution inside the feasible region
   else
   {
-    for (i = 1; i < this->m_NumberOfParticles; ++i)
+    for (unsigned int i = 1; i < this->m_NumberOfParticles; ++i)
     {
-      for (j = 0; j < n; ++j)
+      for (unsigned int j = 0; j < n; ++j)
       {
         this->m_Particles[i].m_CurrentParameters[j] =
           randomGenerator->GetUniformVariate(parameterBounds[j].first, parameterBounds[j].second);
@@ -487,9 +474,9 @@ ParticleSwarmOptimizerBase::RandomInitialization()
 
   // initialize the particles' velocity, so that x_i+v_i is inside the
   // feasible region, and set the best parameters to the current ones
-  for (i = 0; i < this->m_NumberOfParticles; ++i)
+  for (unsigned int i = 0; i < this->m_NumberOfParticles; ++i)
   {
-    for (j = 0; j < n; ++j)
+    for (unsigned int j = 0; j < n; ++j)
     {
       this->m_Particles[i].m_CurrentVelocity[j] =
         (randomGenerator->GetUniformVariate(parameterBounds[j].first, parameterBounds[j].second) -
@@ -498,7 +485,7 @@ ParticleSwarmOptimizerBase::RandomInitialization()
     }
   }
   // initial function evaluations
-  for (i = 0; i < this->m_NumberOfParticles; ++i)
+  for (unsigned int i = 0; i < this->m_NumberOfParticles; ++i)
   {
     this->m_Particles[i].m_CurrentValue = this->m_CostFunction->GetValue(m_Particles[i].m_CurrentParameters);
     this->m_Particles[i].m_BestValue = m_Particles[i].m_CurrentValue;

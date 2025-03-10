@@ -122,7 +122,6 @@ DisplacementFieldToBSplineImageFilter<TInputImage, TInputPointSet, TOutputImage>
   }
 
   auto fieldPoints = InputPointSetType::New();
-  fieldPoints->Initialize();
 
   auto weights = WeightsContainerType::New();
 
@@ -361,8 +360,7 @@ DisplacementFieldToBSplineImageFilter<TInputImage, TInputPointSet, TOutputImage>
 
   itkDebugMacro("Calculating the B-spline displacement field. ");
 
-  ArrayType close;
-  close.Fill(false);
+  constexpr auto close = MakeFilled<ArrayType>(false);
 
   auto bspliner = BSplineFilterType::New();
   bspliner->SetOrigin(this->m_BSplineDomainOrigin);

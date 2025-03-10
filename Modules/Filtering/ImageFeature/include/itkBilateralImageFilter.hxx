@@ -25,6 +25,8 @@
 #include "itkTotalProgressReporter.h"
 #include "itkStatisticsImageFilter.h"
 
+#include <cmath> // For abs.
+
 namespace itk
 {
 template <typename TInputImage, typename TOutputImage>
@@ -90,8 +92,7 @@ BilateralImageFilter<TInputImage, TOutputImage>::GenerateInputRequestedRegion()
 
   // get a copy of the input requested region (should equal the output
   // requested region)
-  typename TInputImage::RegionType inputRequestedRegion;
-  inputRequestedRegion = inputPtr->GetRequestedRegion();
+  typename TInputImage::RegionType inputRequestedRegion = inputPtr->GetRequestedRegion();
 
   // pad the input requested region by the operator radius
   inputRequestedRegion.PadByRadius(radius);
@@ -198,7 +199,7 @@ BilateralImageFilter<TInputImage, TOutputImage>::BeforeThreadedGenerateData()
   localInput->Graft(this->GetInput());
 
   // First, determine the min and max intensity range
-  typename StatisticsImageFilter<TInputImage>::Pointer statistics = StatisticsImageFilter<TInputImage>::New();
+  auto statistics = StatisticsImageFilter<TInputImage>::New();
 
   statistics->SetInput(localInput);
   statistics->Update();
@@ -209,8 +210,7 @@ BilateralImageFilter<TInputImage, TOutputImage>::BeforeThreadedGenerateData()
   double rangeVariance = m_RangeSigma * m_RangeSigma;
 
   // denominator (normalization factor) for Gaussian used for range
-  double rangeGaussianDenom;
-  rangeGaussianDenom = m_RangeSigma * std::sqrt(2.0 * itk::Math::pi);
+  double rangeGaussianDenom = m_RangeSigma * std::sqrt(2.0 * itk::Math::pi);
 
   // Maximum delta for the dynamic range
   double tableDelta;
@@ -281,12 +281,8 @@ BilateralImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerateData(
       {
         // range distance between neighborhood pixel and neighborhood center
         pixel = static_cast<OutputPixelRealType>(b_iter.GetPixel(i));
-        rangeDistance = pixel - centerPixel;
         // flip sign if needed
-        if (rangeDistance < 0.0)
-        {
-          rangeDistance *= -1.0;
-        }
+        rangeDistance = std::abs(pixel - centerPixel);
 
         // if the range distance is close enough, then use the pixel
         if (rangeDistance < rangeDistanceThreshold)

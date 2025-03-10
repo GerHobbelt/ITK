@@ -211,8 +211,7 @@ PatchBasedDenoisingBaseImageFilter<TInputImage, TOutputImage>::GetPatchRadiusInV
     thisPtr->m_InputImage = this->GetInput();
   }
   const typename InputImageType::SpacingType & spacing = this->m_InputImage->GetSpacing();
-  typename InputImageType::SpacingValueType    maxSpacing;
-  maxSpacing = spacing[0];
+  typename InputImageType::SpacingValueType    maxSpacing = spacing[0];
   for (unsigned int dim = 1; dim < ImageDimension; ++dim)
   {
     if (spacing[dim] > maxSpacing)
@@ -220,8 +219,7 @@ PatchBasedDenoisingBaseImageFilter<TInputImage, TOutputImage>::GetPatchRadiusInV
       maxSpacing = spacing[dim];
     }
   }
-  PatchRadiusType radius;
-  radius.Fill(m_PatchRadius);
+  auto radius = MakeFilled<PatchRadiusType>(m_PatchRadius);
   for (unsigned int dim = 0; dim < ImageDimension; ++dim)
   {
     radius[dim] = itk::Math::ceil(maxSpacing * radius[dim] / spacing[dim]);

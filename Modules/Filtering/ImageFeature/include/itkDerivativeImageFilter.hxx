@@ -49,8 +49,7 @@ DerivativeImageFilter<TInputImage, TOutputImage>::GenerateInputRequestedRegion()
 
   // get a copy of the input requested region (should equal the output
   // requested region)
-  typename TInputImage::RegionType inputRequestedRegion;
-  inputRequestedRegion = inputPtr->GetRequestedRegion();
+  typename TInputImage::RegionType inputRequestedRegion = inputPtr->GetRequestedRegion();
 
   // pad the input requested region by the operator radius
   inputRequestedRegion.PadByRadius(oper.GetRadius());
@@ -107,8 +106,7 @@ DerivativeImageFilter<TInputImage, TOutputImage>::GenerateData()
     }
   }
 
-  typename NeighborhoodOperatorImageFilter<InputImageType, OutputImageType, OperatorValueType>::Pointer filter =
-    NeighborhoodOperatorImageFilter<InputImageType, OutputImageType, OperatorValueType>::New();
+  auto filter = NeighborhoodOperatorImageFilter<InputImageType, OutputImageType, OperatorValueType>::New();
 
   // Create a process accumulator for tracking the progress of this minipipeline
   auto progress = ProgressAccumulator::New();

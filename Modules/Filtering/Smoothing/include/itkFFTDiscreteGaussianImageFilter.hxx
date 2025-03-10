@@ -47,8 +47,7 @@ FFTDiscreteGaussianImageFilter<TInputImage, TOutputImage>::GenerateInputRequeste
 
   // get a copy of the input requested region (should equal the output
   // requested region)
-  typename TInputImage::RegionType inputRequestedRegion;
-  inputRequestedRegion = inputPtr->GetRequestedRegion();
+  typename TInputImage::RegionType inputRequestedRegion = inputPtr->GetRequestedRegion();
 
   // pad the input requested region by the operator radius
   RadiusType radius{};
@@ -81,8 +80,7 @@ FFTDiscreteGaussianImageFilter<TInputImage, TOutputImage>::GenerateKernelImage()
     // Get directional 1D Gaussian kernels to compose image
     itk::VariableLengthVector<KernelType> directionalOperators;
     directionalOperators.SetSize(this->GetFilterDimensionality());
-    RadiusType kernelSize;
-    kernelSize.Fill(1);
+    auto kernelSize = MakeFilled<RadiusType>(1);
     for (size_t dim = 0; dim < this->GetFilterDimensionality(); ++dim)
     {
       this->GenerateKernel(dim, directionalOperators[dim]);
@@ -120,7 +118,7 @@ FFTDiscreteGaussianImageFilter<TInputImage, TOutputImage>::GenerateKernelImage()
     using KernelSizeType = typename GaussianImageSourceType::SizeType;
     using KernelMeanType = typename GaussianImageSourceType::ArrayType;
 
-    typename GaussianImageSourceType::Pointer kernelSource = GaussianImageSourceType::New();
+    auto kernelSource = GaussianImageSourceType::New();
 
     auto inputSpacing = this->GetInput()->GetSpacing();
     auto inputOrigin = this->GetInput()->GetOrigin();

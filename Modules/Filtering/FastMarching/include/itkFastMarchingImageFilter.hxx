@@ -99,9 +99,7 @@ FastMarchingImageFilter<TLevelSet, TSpeedImage>::EnlargeOutputRequestedRegion(Da
 {
   // enlarge the requested region of the output
   // to the whole data set
-  TLevelSet * imgData;
-
-  imgData = dynamic_cast<TLevelSet *>(output);
+  auto * imgData = dynamic_cast<TLevelSet *>(output);
   if (imgData)
   {
     imgData->SetRequestedRegionToLargestPossibleRegion();
@@ -127,8 +125,7 @@ FastMarchingImageFilter<TLevelSet, TSpeedImage>::Initialize(LevelSetImageType * 
   m_BufferedRegion = output->GetBufferedRegion();
   m_StartIndex = m_BufferedRegion.GetIndex();
   m_LastIndex = m_StartIndex + m_BufferedRegion.GetSize();
-  typename LevelSetImageType::OffsetType offset;
-  offset.Fill(1);
+  constexpr auto offset = MakeFilled<typename LevelSetImageType::OffsetType>(1);
   m_LastIndex -= offset;
 
   // allocate memory for the PointTypeImage
@@ -139,8 +136,7 @@ FastMarchingImageFilter<TLevelSet, TSpeedImage>::Initialize(LevelSetImageType * 
   // set all output value to infinity
   using OutputIterator = ImageRegionIterator<LevelSetImageType>;
 
-  PixelType outputPixel;
-  outputPixel = m_LargeValue;
+  PixelType outputPixel = m_LargeValue;
 
   for (OutputIterator outIt(output, output->GetBufferedRegion()); !outIt.IsAtEnd(); ++outIt)
   {

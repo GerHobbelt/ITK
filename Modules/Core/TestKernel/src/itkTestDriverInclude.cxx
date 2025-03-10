@@ -441,7 +441,7 @@ void
 GetImageType(const char * fileName, itk::IOPixelEnum & pixelType, itk::IOComponentEnum & componentType)
 {
   using ImageType = itk::Image<unsigned char, 3>;
-  itk::ImageFileReader<ImageType>::Pointer imageReader = itk::ImageFileReader<ImageType>::New();
+  auto imageReader = itk::ImageFileReader<ImageType>::New();
   imageReader->SetFileName(fileName);
   imageReader->UpdateOutputInformation();
 
@@ -503,10 +503,8 @@ RegressionTestHelper(const char *       testImageFilename,
   }
 
   // The sizes of the baseline and test image must match
-  typename ImageType::SizeType baselineSize;
-  baselineSize = baselineReader->GetOutput()->GetLargestPossibleRegion().GetSize();
-  typename ImageType::SizeType testSize;
-  testSize = testReader->GetOutput()->GetLargestPossibleRegion().GetSize();
+  typename ImageType::SizeType baselineSize = baselineReader->GetOutput()->GetLargestPossibleRegion().GetSize();
+  typename ImageType::SizeType testSize = testReader->GetOutput()->GetLargestPossibleRegion().GetSize();
 
   if (baselineSize != testSize)
   {
@@ -907,8 +905,7 @@ HashTestImage(const char * testImageFilename, const std::vector<std::string> & b
   reader->SetFileName(testImageFilename);
   reader->UpdateLargestPossibleRegion();
 
-  ImageType::SizeType size;
-  size = reader->GetOutput()->GetLargestPossibleRegion().GetSize();
+  ImageType::SizeType size = reader->GetOutput()->GetLargestPossibleRegion().GetSize();
 
   // Get the center slice of the image,  In 3D, the first slice
   // is often a black slice with little debugging information.

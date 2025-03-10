@@ -73,17 +73,14 @@ GrayscaleConnectedOpeningImageFilter<TInputImage, TOutputImage>::GenerateData()
   //
 
   // compute the minimum pixel value in the input
-  typename MinimumMaximumImageCalculator<TInputImage>::Pointer calculator =
-    MinimumMaximumImageCalculator<TInputImage>::New();
+  auto calculator = MinimumMaximumImageCalculator<TInputImage>::New();
   calculator->SetImage(inputImage);
   calculator->ComputeMinimum();
 
-  InputImagePixelType minValue;
-  minValue = calculator->GetMinimum();
+  InputImagePixelType minValue = calculator->GetMinimum();
 
   // compare this minimum value to the value at the seed pixel.
-  InputImagePixelType seedValue;
-  seedValue = inputImage->GetPixel(m_Seed);
+  InputImagePixelType seedValue = inputImage->GetPixel(m_Seed);
 
   if (minValue == seedValue)
   {
@@ -108,8 +105,7 @@ GrayscaleConnectedOpeningImageFilter<TInputImage, TOutputImage>::GenerateData()
   // Delegate to a geodesic dilation filter.
   //
   //
-  typename ReconstructionByDilationImageFilter<TInputImage, TInputImage>::Pointer dilate =
-    ReconstructionByDilationImageFilter<TInputImage, TInputImage>::New();
+  auto dilate = ReconstructionByDilationImageFilter<TInputImage, TInputImage>::New();
 
   // Create a process accumulator for tracking the progress of this minipipeline
   auto progress = ProgressAccumulator::New();

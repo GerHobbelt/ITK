@@ -150,13 +150,10 @@ TimeVaryingBSplineVelocityFieldImageRegistrationMethod<TFixedImage,
 
   // Keep track of velocityFieldPointSet from the previous iteration
   VelocityFieldPointSetPointer velocityFieldPointSetFromPreviousIteration = VelocityFieldPointSetType::New();
-  velocityFieldPointSetFromPreviousIteration->Initialize();
 
   VelocityFieldPointSetPointer velocityFieldPointSet = VelocityFieldPointSetType::New();
-  velocityFieldPointSet->Initialize();
 
   auto velocityFieldWeights = WeightsContainerType::New();
-  velocityFieldWeights->Initialize();
 
   // Monitor the convergence
   using ConvergenceMonitoringType = itk::Function::WindowConvergenceMonitoringFunction<RealType>;
@@ -299,7 +296,7 @@ TimeVaryingBSplineVelocityFieldImageRegistrationMethod<TFixedImage,
         RealType spatialNorm{};
         RealType spatioTemporalNorm{};
 
-        auto radius = TimeVaryingVelocityFieldType::SizeType::Filled(1);
+        constexpr auto radius = TimeVaryingVelocityFieldType::SizeType::Filled(1);
 
         using FaceCalculatorType = NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<TimeVaryingVelocityFieldType>;
         FaceCalculatorType                        faceCalculator;
@@ -391,8 +388,7 @@ TimeVaryingBSplineVelocityFieldImageRegistrationMethod<
     inverseFieldDuplicator->SetInputImage(this->m_OutputTransform->GetInverseDisplacementField());
     inverseFieldDuplicator->Update();
 
-    typename DisplacementFieldTransformType::Pointer fixedDisplacementFieldTransform =
-      DisplacementFieldTransformType::New();
+    auto fixedDisplacementFieldTransform = DisplacementFieldTransformType::New();
     fixedDisplacementFieldTransform->SetDisplacementField(fieldDuplicator->GetOutput());
     fixedDisplacementFieldTransform->SetInverseDisplacementField(inverseFieldDuplicator->GetOutput());
 
@@ -422,8 +418,7 @@ TimeVaryingBSplineVelocityFieldImageRegistrationMethod<
       this->m_OutputTransform->IntegrateVelocityField();
     }
 
-    typename DisplacementFieldTransformType::Pointer movingDisplacementFieldTransform =
-      DisplacementFieldTransformType::New();
+    auto movingDisplacementFieldTransform = DisplacementFieldTransformType::New();
     movingDisplacementFieldTransform->SetDisplacementField(this->m_OutputTransform->GetModifiableDisplacementField());
     movingDisplacementFieldTransform->SetInverseDisplacementField(
       this->m_OutputTransform->GetModifiableInverseDisplacementField());

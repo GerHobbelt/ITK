@@ -28,8 +28,7 @@ DiffeomorphicDemonsRegistrationFilter<TFixedImage, TMovingImage, TDisplacementFi
   DiffeomorphicDemonsRegistrationFilter()
 
 {
-  typename DemonsRegistrationFunctionType::Pointer drfp;
-  drfp = DemonsRegistrationFunctionType::New();
+  auto drfp = DemonsRegistrationFunctionType::New();
 
   this->SetDifferenceFunction(drfp);
 

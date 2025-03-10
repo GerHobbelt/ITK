@@ -299,9 +299,8 @@ MaskedFFTNormalizedCorrelationImageFilter<TInputImage, TOutputImage, TMaskImage>
 
   // Flip the moving images along all dimensions so that the correlation can be more easily handled.
   using FlipperType = itk::FlipImageFilter<LocalInputImageType>;
-  typename FlipperType::FlipAxesArrayType flipAxes;
-  flipAxes.Fill(true);
-  auto rotater = FlipperType::New();
+  constexpr auto flipAxes = MakeFilled<typename FlipperType::FlipAxesArrayType>(true);
+  auto           rotater = FlipperType::New();
   rotater->SetFlipAxes(flipAxes);
   rotater->SetInput(inputImage);
   rotater->Update();
@@ -378,8 +377,7 @@ MaskedFFTNormalizedCorrelationImageFilter<TInputImage, TOutputImage, TMaskImage>
   InputSizeType &       FFTImageSize)
 {
   typename LocalInputImageType::PixelType constantPixel = 0;
-  typename LocalInputImageType::SizeType  upperPad;
-  upperPad = FFTImageSize - inputImage->GetLargestPossibleRegion().GetSize();
+  typename LocalInputImageType::SizeType  upperPad = FFTImageSize - inputImage->GetLargestPossibleRegion().GetSize();
 
   using PadType = itk::ConstantPadImageFilter<LocalInputImageType, RealImageType>;
   auto padder = PadType::New();
@@ -648,15 +646,13 @@ MaskedFFTNormalizedCorrelationImageFilter<TInputImage, TOutputImage, TMaskImage>
   // is bigger than our input.
 
   // Cast away the constness so we can set the requested region.
-  InputImagePointer inputPtr;
-  inputPtr = const_cast<InputImageType *>(this->GetFixedImage());
+  InputImagePointer inputPtr = const_cast<InputImageType *>(this->GetFixedImage());
   inputPtr->SetRequestedRegion(this->GetFixedImage()->GetLargestPossibleRegion());
 
   inputPtr = const_cast<InputImageType *>(this->GetMovingImage());
   inputPtr->SetRequestedRegion(this->GetMovingImage()->GetLargestPossibleRegion());
 
-  MaskImagePointer maskPtr;
-  maskPtr = const_cast<MaskImageType *>(this->GetFixedImageMask());
+  MaskImagePointer maskPtr = const_cast<MaskImageType *>(this->GetFixedImageMask());
   if (maskPtr)
   {
     maskPtr->SetRequestedRegion(this->GetFixedImageMask()->GetLargestPossibleRegion());

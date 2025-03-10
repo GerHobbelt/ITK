@@ -93,8 +93,7 @@ BSplineScatteredDataPointSetToImageFilter<TInputPointSet, TOutputImage>::SetSpli
 
     if (this->m_DoMultilevel)
     {
-      typename KernelType::MatrixType C;
-      C = this->m_Kernel[i]->GetShapeFunctionsInZeroToOneInterval();
+      typename KernelType::MatrixType C = this->m_Kernel[i]->GetShapeFunctionsInZeroToOneInterval();
 
       vnl_matrix<RealType> R;
       vnl_matrix<RealType> S;
@@ -600,8 +599,7 @@ BSplineScatteredDataPointSetToImageFilter<TInputPointSet, TOutputImage>::Threade
   }
 
   FixedArray<RealType, ImageDimension> U;
-  FixedArray<RealType, ImageDimension> currentU;
-  currentU.Fill(-1);
+  auto                                 currentU = MakeFilled<FixedArray<RealType, ImageDimension>>(-1);
 
   typename ImageType::IndexType          startIndex = this->GetOutput()->GetRequestedRegion().GetIndex();
   typename PointDataImageType::IndexType startPhiIndex = this->m_PhiLattice->GetLargestPossibleRegion().GetIndex();
@@ -921,8 +919,7 @@ BSplineScatteredDataPointSetToImageFilter<TInputPointSet, TOutputImage>::Threade
   }
 
   FixedArray<RealType, ImageDimension> U;
-  FixedArray<RealType, ImageDimension> currentU;
-  currentU.Fill(-1);
+  auto                                 currentU = MakeFilled<FixedArray<RealType, ImageDimension>>(-1);
 
   typename PointDataImageType::IndexType startPhiIndex = this->m_PhiLattice->GetLargestPossibleRegion().GetIndex();
 

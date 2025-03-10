@@ -70,13 +70,11 @@ GrayscaleFillholeImageFilter<TInputImage, TOutputImage>::GenerateData()
   //
 
   // compute the maximum pixel value in the input
-  typename MinimumMaximumImageCalculator<TInputImage>::Pointer calculator =
-    MinimumMaximumImageCalculator<TInputImage>::New();
+  auto calculator = MinimumMaximumImageCalculator<TInputImage>::New();
   calculator->SetImage(this->GetInput());
   calculator->ComputeMaximum();
 
-  InputImagePixelType maxValue;
-  maxValue = calculator->GetMaximum();
+  InputImagePixelType maxValue = calculator->GetMaximum();
 
   // allocate a marker image
   InputImagePointer markerPtr = InputImageType::New();
@@ -110,8 +108,7 @@ GrayscaleFillholeImageFilter<TInputImage, TOutputImage>::GenerateData()
   // Delegate to a geodesic erosion filter.
   //
   //
-  typename ReconstructionByErosionImageFilter<TInputImage, TInputImage>::Pointer erode =
-    ReconstructionByErosionImageFilter<TInputImage, TInputImage>::New();
+  auto erode = ReconstructionByErosionImageFilter<TInputImage, TInputImage>::New();
 
   // Create a process accumulator for tracking the progress of this minipipeline
   auto progress = ProgressAccumulator::New();

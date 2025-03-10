@@ -89,13 +89,11 @@ WindowConvergenceMonitoringFunction<TScalar>::GetConvergenceValue() const -> Rea
   bspliner->SetSize(size);
   bspliner->SetNumberOfLevels(1);
   bspliner->SetSplineOrder(1);
-  typename BSplinerType::ArrayType ncps;
-  ncps.Fill(bspliner->GetSplineOrder()[0] + 1);
+  auto ncps = MakeFilled<typename BSplinerType::ArrayType>(bspliner->GetSplineOrder()[0] + 1);
   bspliner->SetNumberOfControlPoints(ncps);
   bspliner->SetNumberOfWorkUnits(1);
 
   auto energyProfileWindow = EnergyProfileType::New();
-  energyProfileWindow->Initialize();
 
   for (unsigned int n = 0; n < this->m_WindowSize; ++n)
   {
